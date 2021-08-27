@@ -43,6 +43,10 @@
   box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
 }
 
+.ui-selectonemenu-panel .ui-selectonemenu-item {
+  background-color: #fff;
+}
+
 .border-none {
   border-radius: 0;
 }
