@@ -82,12 +82,7 @@ public class UserTransactionController implements Serializable {
     public String toSearchUserTransactions() {
         items = null;
         return "/webUser/transactions";
-    }
-
-    public String toSuspiciousLoginAttempts() {
-        suspiciousLogins = null;
-        return "/webUser/suspicious_logins";
-    }
+    }    
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">

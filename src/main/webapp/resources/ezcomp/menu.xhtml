@@ -111,8 +111,6 @@
                                     rendered="#{webUserController.hasPrivilege('System_Administration')}" />
                         <p:menuitem value="View Transactions" action="#{userTransactionController.toSearchUserTransactions()}" ajax="false"
                                     rendered="#{webUserController.hasPrivilege('System_Administration')}"/>
-                        <p:menuitem value="Suspicious Login Attempts" action="#{userTransactionController.toSuspiciousLoginAttempts()}" ajax="false"
-                                    rendered="#{webUserController.hasPrivilege('System_Administration')}"/>
                     </p:submenu>
                     <p:submenu label="Manage Institutions" rendered="#{webUserController.hasPrivilege('System_Administration')}">
                         <p:menuitem value="New Institution" action="#{institutionController.toAddInstitution}" ajax="false"
