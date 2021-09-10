@@ -167,6 +167,43 @@
                         </div>
                     </div>
                 </div>
+                <div class="row my-2 gx-4">
+                    <div class="col">
+                        <div class="d-flex bg-success px-3 py-2 align-items-center">
+                            <div class="flex-grow-1 text-white">
+                                <h4 class="fw-bold">
+                                    <i class="bi mx-2 bi-info-circle-fill"></i>
+                                    Samples awaiting dispatch
+                                </h4>
+                                    
+                                
+                                <div class="d-flex">
+                                    <div class="p-2 w-100">
+                                        <h5>
+                                            <h:commandLink class="text-decoration-none text-white" 
+                                                           value="Samples not dispatched"></h:commandLink>
+                                        </h5>
+                                    </div>
+                                    <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                        <h5>
+                                            <h:outputLabel value="#{dashboardController.samplesAwaitingDispatch}">
+                                            </h:outputLabel>
+                                        </h5>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                                    <h:commandButton value="More Information"
+                                        class="btn text-white btn-small btn-dark-success border-none w-100" type="button">
+                                    </h:commandButton>
+                                </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
             </div>
         </h:form>
 
