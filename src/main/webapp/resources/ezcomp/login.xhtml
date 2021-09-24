@@ -7,18 +7,22 @@
     </cc:interface>
     <cc:implementation>
         <h:form>
-            <div class="container">
+            <p:focus for="username"></p:focus>
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col px-4 py-3 bg-white">
+                    <div class="col vh-100 px-4 py-3 bg-white">
+                        <div class="my-2 d-flex justify-content-center">
+                            <h:graphicImage style="height: 18em;" library="image" name="login1.png"></h:graphicImage>
+                        </div>
                         <h3 class="fw-bold">Ntional COVID-19 Health Information System</h3>
                         <h4 class="text-muted">Login</h4>
                         <div class="my-2">
-                            <p:inputText placeholder="Username" required="true" requiredMessage="Username is required." autocomplete="off"
+                            <p:inputText id="username" placeholder="Username" required="true" requiredMessage="Username is required." autocomplete="off"
                                 value="#{webUserController.userName}" class="form-control">
                             </p:inputText>
                         </div>
                         <div class="my-2">
-                            <p:password placeholder="Password" required="true" requiredMessage="Password is required." autocomplete="off"
+                            <p:password id="password" placeholder="Password" required="true" requiredMessage="Password is required." autocomplete="off"
                             value="#{webUserController.password}" class="form-control"></p:password>
                         </div>
                         <div class="d-grid">
@@ -37,12 +41,12 @@
                     </div>
                     <div class="col px-4 py-3">
                         <div class="list-group">
-                            <li class="list-group-item active fw-bold">Downloads</li>
+                            <li class="list-group-item list-group-item-info fw-bold">Downloads</li>
                             <a href="https://drive.google.com/file/d/1UVJnSX4j0IQQodTfpbsVBlsH535k4AYF/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for MOH</a>
                             <a href="https://drive.google.com/file/d/1bEBr3Ip35JjMrEFnhk5ExD0P64IydSki/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for Hospitals</a>
                         </div>
                         <div class="list-group">
-                            <li class="list-group-item active fw-bold">News</li>
+                            <li class="list-group-item list-group-item-info fw-bold">News</li>
                         </div>
                     </div>
                 </div>
