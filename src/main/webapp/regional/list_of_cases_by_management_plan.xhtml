@@ -10,12 +10,12 @@
 
        <ui:composition template="/regional/reports_index.xhtml">
            <ui:define name="title">
-                First Contact-RDHS
+                Cases By Management Plan -RDHS
             </ui:define>
             <ui:define name="reports">
                 <h:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
-                        <h:outputLabel value="First Contacts" ></h:outputLabel>
+                        <h:outputLabel value="Management Plan" ></h:outputLabel>
                     </f:facet>
 
                     <h:form >
@@ -45,13 +45,15 @@
                             </h:commandButton>
                             <h:commandButton value="Process"
                                              class="btn btn-dark-warning w-100"
-                                             action="#{regionalController.toListCasesByManagement()}" >
+                                             action="#{regionalController.toListCasesByManagementForNationalLevel()}" >
                             </h:commandButton>
                             </h:panelGrid>
                         </h:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.cecItems}" rendered="true"
+                        <p:dataTable resizableColumns="true" multiViewState="true" 
+                                     resizeMode="expand" id="tbl" value="#{regionalController.tests}" 
+                                     rendered="true"
                                      rowIndexVar="n"
                                      var="c" 
                                      rowKey="#{c.id}" 
@@ -63,31 +65,24 @@
                                      selection="#{regionalController.selectedCecis}"
                                      >
                             <p:column selectionMode="multiple" width="50" resizable="false"></p:column>
-                            <p:column headerText="Name"  sortBy="#{c.shortTextValue}" filterBy="#{c.shortTextValue}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.shortTextValue}" ></h:outputLabel>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" 
+                                      filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Address"  sortBy="#{c.longTextValue}" 
-                                      filterBy="#{c.longTextValue}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.longTextValue}" ></h:outputLabel>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" 
+                                      filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Contact Number" sortBy="#{c.shortTextValue2}" 
-                                      filterBy="#{c.shortTextValue2}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.shortTextValue2}" ></h:outputLabel>
+                            <p:column headerText="Contact Number" sortBy="#{c.client.person.phone1}" 
+                                      filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="District"  sortBy="#{c.areaValue2.name}"
-                                      filterBy="#{c.areaValue2.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.areaValue2.name}" ></h:outputLabel>
+                            <p:column headerText="District"  sortBy="#{c.client.person.district.name}"
+                                      filterBy="#{c.client.person.district.name}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.district.name}" ></h:outputLabel>
                             </p:column>
                            
-                            <p:column headerText="Actions" exportable="false" rendered="false" >
-                                <h:commandLink class="btn btn-success" value="Order PCR" action="#{regionalController.toViewTest()}" >
-                                    <f:setPropertyActionListener value="#{c}" target="#{regionalController.test}" ></f:setPropertyActionListener>
-                                </h:commandLink>
-                                <h:outputLabel value=" | " ></h:outputLabel>
-                                <h:commandLink class="btn btn-success" value="Order RAT" action="#{regionalController.toViewResult()}"  >
-                                    <f:setPropertyActionListener value="#{c}" target="#{regionalController.test}" ></f:setPropertyActionListener>
-                                </h:commandLink>
-                            </p:column>
+                           
                         </p:dataTable>
                     </h:form>
 

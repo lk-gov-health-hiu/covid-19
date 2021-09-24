@@ -20,12 +20,15 @@
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
 
                             <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
-                            <p:calendar value="#{mohController.fromDate}" 
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                            <p:datePicker value="#{mohController.fromDate}" 
+                                          showTime="true"
+                                          pattern="dd MMMM yyyy hh:mm a">
+                            </p:datePicker><!-- comment -->
 
                             <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
-                            <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+                            <p:datePicker value="#{mohController.toDate}" 
+                                          pattern="dd MMMM yyyy hh:mm a"
+                                          showTime="true"></p:datePicker>
 
                             <h:outputLabel class="h6 fw-bold" value="Plan of Management" ></h:outputLabel>
                             <h:selectOneMenu value="#{mohController.managementType}" class="form-select">
