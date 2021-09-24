@@ -8,7 +8,7 @@
 
   <ui:composition template="/template1.xhtml">
     <ui:define name="title">
-      Lab | Search
+      Hospital | Search
     </ui:define>
     <ui:define name="content">
       <h:form>
@@ -124,7 +124,7 @@
           <p:column headerText="Result" sortBy="#{c.client.person.age}">
             <h:outputLabel value="#{c.pcrResult.name}"></h:outputLabel>
           </p:column>
-          <p:column headerText="CT Value 1" soryBy="#{c.ctValue}">
+          <p:column headerText="CT Value 1" sortBy="#{c.ctValue}">
             <h:outputLabel value="#{c.ctValue}"></h:outputLabel>
           </p:column>
           <p:column headerText="CT Value 2" sortBy="#{c.ctValue2}">
