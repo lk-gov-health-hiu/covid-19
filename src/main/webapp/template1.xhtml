@@ -39,11 +39,9 @@
                 </div>
             </h:panelGroup>
 
-
-
-            <div rendered="#{webUserController.loggedUser eq null}" >
+            <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
                 <ez:login/>
-            </div>
+            </h:panelGroup>
 
             <ui:insert name="timeout">
             </ui:insert>
