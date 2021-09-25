@@ -158,6 +158,12 @@
                                     <f:setPropertyActionListener value="#{c}" target="#{hospitalController.deleting}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
+                                <h:commandButton value="Delete"  action="#{hospitalController.deleteTest()}"
+                                                 onclick="if (!confirm('Are you sure you want to delete?'))
+                                                             return false" >
+                                    <f:setPropertyActionListener value="#{c}" target="#{hospitalController.deleting}" >
+                                    </f:setPropertyActionListener>
+                                </h:commandButton>
                             </p:column>
                         </p:dataTable>
                     </h:form>

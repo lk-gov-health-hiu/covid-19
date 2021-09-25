@@ -18,12 +18,14 @@
                     <h:form >
                         <p:panelGrid columns="2" class="border border-light" >
                             <p:outputLabel value="Ordered From" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:calendar value="#{regionalController.fromDate}"
-                                        pattern="dd MMMM yyyy hh:mm" class="fs-6">
-                            </p:calendar><!-- comment -->
+                            <p:datePicker value="#{regionalController.fromDate}"
+                                          pattern="dd MMMM yyyy hh:mm" class="fs-6" showTime="true">
+                            </p:datePicker><!-- comment -->
 
                             <p:outputLabel value="Ordered To" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm" class="fs-6"></p:calendar>
+                            <p:datePicker value="#{regionalController.toDate}" showTime="true"
+                                          pattern="dd MMMM yyyy hh:mm" class="fs-6">
+                            </p:datePicker>
 
                             <p:outputLabel value="Ordering Category" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:selectOneMenu value="#{regionalController.orderingCategory}" class="form-control form-control-sm w-100" >
