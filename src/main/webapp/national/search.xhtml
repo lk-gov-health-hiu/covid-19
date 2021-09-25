@@ -20,12 +20,12 @@
                                     <p:inputText  class="form-control fs-6" id="txtSearchName"
                                                   required="true" 
                                                   requiredMessage="Please enter a name to search"
-                                                  value="#{clientController.searchingName}" >
+                                                  value="#{nationalController.searchingName}" >
                                     </p:inputText>
 
                                     <p:outputLabel class="fs-6 fw-bold" value="District" 
                                                     for="mnuDistrict"></p:outputLabel>
-                                    <p:selectOneMenu  class="form-control form-control-sm w-100 fs-6" id="mnuDistrict" value ="#{clientController.district}" >
+                                    <p:selectOneMenu  class="form-control form-control-sm w-100 fs-6" id="mnuDistrict" value ="#{nationalController.district}" >
                                         <f:selectItem itemLabel="Any District" ></f:selectItem>
                                         <f:selectItems value="#{areaApplicationController.allDistricts}"
                                                        var="d"
@@ -35,7 +35,7 @@
                                     <div></div>
                                     <h:commandButton class="btn btn-success w-100 my-2" value="Search" 
                                                      disabled="false"
-                                                     action="#{clientController.searchByName()}" >
+                                                     action="#{nationalController.searchByName()}" >
                                     </h:commandButton>
                                 </p:panelGrid>
                                 <p:messages ></p:messages>

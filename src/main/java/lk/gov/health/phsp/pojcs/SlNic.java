@@ -88,10 +88,10 @@ public class SlNic {
                 // // System.out.println("strDates = " + strDates);
                 dates = Integer.parseInt(strDates);
                 if (dates > 499) {
-                    sex = "Male";
+                    sex = "Female";
                     dates = dates - 500;
                 } else {
-                    sex = "Female";
+                    sex = "Male";
                 }
             } catch (Exception e) {
                 return;
