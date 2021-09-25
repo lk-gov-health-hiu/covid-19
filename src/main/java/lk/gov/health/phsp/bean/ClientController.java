@@ -549,7 +549,7 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
-                + " and c.referalInstitution=:rins "
+                + " and c.referalInstitution in :rins "
                 + " and c.sentToLab is not null "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
@@ -561,7 +561,9 @@ public class ClientController implements Serializable {
         m.put("td", getToDate());
         m.put("rej", false);
         m.put("sm", false);
-        m.put("rins", referingInstitution);
+        List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
+        cis.add(webUserController.getLoggedInstitution());
+        m.put("rins", cis );
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
         // // System.out.println("getFromDate() = " + getFromDate());
