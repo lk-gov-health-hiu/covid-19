@@ -115,6 +115,8 @@ public class NationalController implements Serializable {
     private Encounter test;
     private Encounter deleting;
 
+    private String searchingName;
+    
     private WebUser assignee;
 
     private List<Encounter> tests;
@@ -168,6 +170,56 @@ public class NationalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    
+    public String searchByName() {
+        if (searchingName == null && searchingName.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter a name to search");
+            return "";
+        }
+
+        if (searchingName.length() < 5) {
+            JsfUtil.addErrorMessage("Please enter at least 4 characters to serach");
+            return "";
+        }
+
+        Map m = new HashMap();
+        String jpql = "select c "
+                + " from Client c "
+                + " where c.retired=:ret "
+                + " and lower(c.person.name) like :name";
+
+        if (district != null) {
+            jpql += " and c.person.district=:dis ";
+            m.put("dis", district);
+        }
+
+        jpql += " order by c.person.name";
+
+        m.put("ret", false);
+        m.put("name", "%" + searchingName.toLowerCase() + "%");
+
+        List<Client> tmpClients = clientFacade.findByJpql(jpql, m, 100);
+
+        if (tmpClients == null || tmpClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No matches found");
+            return "";
+        }
+
+        if (tmpClients.size() == 1) {
+            clientController.setSelected(tmpClients.get(0));
+            return clientController.toClientProfile();
+        } else {
+            if (tmpClients.size() > 99) {
+                JsfUtil.addErrorMessage("Only the first 100 records are shown. Please increase the length of search keyword.");
+            }
+            clientController.setSelectedClients(tmpClients);
+            return clientController.toSelectClient();
+        }
+
+    }
+    
+    
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -2437,6 +2489,8 @@ public class NationalController implements Serializable {
     public String getInstitutionTypeName() {
         return this.institutionType.name();
     }
+    
+    
 
     public void setInstitutionType(InstitutionType institutionType) {
         this.institutionType = institutionType;
@@ -2679,6 +2733,14 @@ public class NationalController implements Serializable {
 
     public void setDivertingLab(Institution divertingLab) {
         this.divertingLab = divertingLab;
+    }
+
+    public String getSearchingName() {
+        return searchingName;
+    }
+
+    public void setSearchingName(String searchingName) {
+        this.searchingName = searchingName;
     }
 
 
