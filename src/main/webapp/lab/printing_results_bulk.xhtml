@@ -11,6 +11,9 @@
   <title>Print Result</title>
 
   <style>
+    body {
+      font-family: sans-serif;
+    }
     @media screen {
         body {
         padding: 10px;
@@ -40,20 +43,56 @@
         cursor: pointer;
       }
     }
-    @page {
-      size: A4;
-    }
     @media print {
+      @page {
+        size: A4 landscape;
+      }
       .no-print {
         display: none;
       }
 
-      .print-area {
+      .main-page {
         break-after: page;
+      }
+
+      .print-area {
         padding: 2cm;
         width: 210mm;
         height: 297mm;
       }
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.9em;
+      font-family: sans-serif;
+      width: 100%;
+    }
+
+    tbody {
+      border-top: 1px solid #dddddd;
+    }
+
+    td {
+      padding: 12px 15px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #dddddd;
+      text-align: center;
+    }
+
+    tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+    }
+
+    tbody tr:last-of-type {
+      border-bottom: 2px solid #009879;
+    }
+
+    p {
+      font-weight: bold;
     }
   </style>
 </head>
