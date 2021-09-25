@@ -1710,6 +1710,7 @@ public class ClientController implements Serializable {
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
+            selectedToPrint = null;
             encounterFacade.edit(e);
         }
 //        selectedToPrint = null;

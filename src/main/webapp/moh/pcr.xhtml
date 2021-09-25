@@ -161,7 +161,7 @@
                                 <div class="col-md-3">
                                     <label for="vaccineStatus" class="form-label fw-bold">Vaccination Status <small
                                             class="text-muted px-2">Required</small></label>
-                                    <h:selectOneMenu id="vaccineStatus" value="#{mohController.pcr.vaccinationStatus}" required="true" class="form-select" requiredMessage="Vaccination Status is required">
+                                    <h:selectOneMenu id="vaccineStatus" value="#{mohController.pcr.vaccinationStatus}" required="false" class="form-select" requiredMessage="Vaccination Status is required">
                                         <f:selectItem itemLabel="Please select"></f:selectItem>
                                         <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
                                                        itemLabel="#{statuses.name}" itemValue="#{statuses}">
