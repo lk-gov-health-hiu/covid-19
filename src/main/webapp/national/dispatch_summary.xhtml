@@ -68,7 +68,7 @@
                                 <h:outputLabel value="#{c.count}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Actions" exportable="false"  >
-                                <h:commandButton value="To Dispatch Samples" action="#{nationalController.toDispatchSamples}" >
+                                <h:commandButton class="btn btn-warning w-80" value="To Dispatch Samples" action="#{nationalController.toDispatchSamples}" >
                                     <f:setPropertyActionListener value="#{c.institution}" target="#{nationalController.institution}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
