@@ -563,7 +563,7 @@ public class ClientController implements Serializable {
         m.put("sm", false);
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
-        m.put("rins", cis );
+        m.put("rins", cis);
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
         // // System.out.println("getFromDate() = " + getFromDate());
@@ -1710,7 +1710,7 @@ public class ClientController implements Serializable {
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
-            selectedToPrint = null;
+//            selectedToPrint = null;
             encounterFacade.edit(e);
         }
 //        selectedToPrint = null;
@@ -1762,6 +1762,11 @@ public class ClientController implements Serializable {
         }
         //Patient Properties
         html = html.replace("{name}", e.getClient().getPerson().getName());
+        if (e.getClient().getPerson().getNic() != null) {
+            html = html.replace("{nic}", e.getClient().getPerson().getNic());
+        }else{
+            html = html.replace("{nic}", "");
+        }
         e.getClient().getPerson().calAgeFromDob();
 
         html = html.replace("{age}", e.getClient().getPerson().getAge());
@@ -2976,13 +2981,13 @@ public class ClientController implements Serializable {
                     if (strResult != null) {
                         if (strResult.toLowerCase().contains("invalid")) {
                             result = itemApplicationController.getPcrInvalid();
-                        }else if (strResult.toLowerCase().contains("inconclusive")) {
+                        } else if (strResult.toLowerCase().contains("inconclusive")) {
                             result = itemApplicationController.getPcrInconclusive();
-                        }else if (strResult.toLowerCase().contains("not") && strResult.toLowerCase().contains("detected") ) {
+                        } else if (strResult.toLowerCase().contains("not") && strResult.toLowerCase().contains("detected")) {
                             result = itemApplicationController.getPcrNegative();
-                        }else if (!strResult.toLowerCase().contains("not") && strResult.toLowerCase().contains("detected") ) {
+                        } else if (!strResult.toLowerCase().contains("not") && strResult.toLowerCase().contains("detected")) {
                             result = itemApplicationController.getPcrPositive();
-                        }else if (strResult.toLowerCase().contains("pos")) {
+                        } else if (strResult.toLowerCase().contains("pos")) {
                             result = itemApplicationController.getPcrPositive();
                         } else {
                             result = itemApplicationController.getPcrNegative();
