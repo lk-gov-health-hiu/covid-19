@@ -56,13 +56,13 @@
                             <p:panelGrid columns="1" styleClass="bg-white border border-light">
                                 <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100" value="PRINT SELECTED AS INDIVIDUAL REPORTS"
                                                  action="#{clientController.toLabPrintSelected()}"></h:commandButton>
-                                
+
                                 <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100" value="SEND SMS TO SELECTED"
                                                  action="#{clientController.toLabSendSmsForSelected}"></h:commandButton>
 
                                 <h:commandButton class="btn fw-bold btn-primary mt-3 w-100" value="PRINT SELECTED AS SINGLE REPORT"
                                                  action="#{clientController.toLabPrintSelectedBulk()}"></h:commandButton>
-                                
+
                             </p:panelGrid>
 
                         </div>
@@ -84,7 +84,7 @@
                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                          rowsPerPageTemplate="5,10,{ShowAll|'All'}"
 
-                                          rowStyleClass="#{(c.pcrResult.name) eq 'Positive'?'bg-danger':''}"
+                                         rowStyleClass="#{(c.pcrResult.name) eq 'Positive'?'bg-danger':''}"
 
                                          selection="#{clientController.selectedToPrint}">
                                 <p:column selectionMode="multiple" width="50" >
@@ -93,7 +93,7 @@
                                     <h:outputLabel value="#{n+1}" ></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Request From" >
-                                     <h:outputLabel value="#{c.institution.name}" >
+                                    <h:outputLabel value="#{c.institution.name}" >
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Received at" >
@@ -124,6 +124,9 @@
                                 <p:column headerText="Age"  sortBy="#{c.client.person.age}"
                                           filterBy="#{c.client.person.age}" filterMatchMode="contains">
                                     <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}"  filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
                                 </p:column>
                                 <p:column  headerText="CT 1" width="100"  sortBy="#{c.ctValue}"
                                            filterBy="#{c.ctValue}" filterMatchMode="contains" >
