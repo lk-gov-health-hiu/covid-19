@@ -28,11 +28,11 @@
                             <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:calendar>
 
                             <h:outputLabel class="fs-6 fw-bold" value="Test" ></h:outputLabel>
-                            <p:selectOneMenu value="#{nationalController.testType}" class="form-select" >
+                            <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
-                            </p:selectOneMenu>
+                            </h:selectOneMenu>
 
                             <h:commandButton value="Generate Excel"
                                              class="btn btn-success">
@@ -68,7 +68,7 @@
                                 <h:outputLabel value="#{c.count}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Actions" exportable="false"  >
-                                <h:commandButton value="To Dispatch Samples" action="#{nationalController.toDispatchSamples}" >
+                                <h:commandButton class="btn btn-warning w-80" value="To Dispatch Samples" action="#{nationalController.toDispatchSamples}" >
                                     <f:setPropertyActionListener value="#{c.institution}" target="#{nationalController.institution}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
