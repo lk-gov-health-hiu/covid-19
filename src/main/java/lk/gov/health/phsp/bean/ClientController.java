@@ -1103,16 +1103,16 @@ public class ClientController implements Serializable {
         referingInstitution = webUserController.getLoggedInstitution();
         String j = "select c "
                 + " from Encounter c "
-                + " where c.retired<>:ret "
+                + " where (c.retired is null or c.retired=:ret)  "
                 + " and c.encounterType=:type "
-                + " and c.encounterDate between :fd and :td "
+                + " and c.createdAt between :fd and :td "
                 + " and c.referalInstitution=:rins"
                 + " and c.receivedAtLab=:rec "
                 + " and (c.resultEntered is null or c.resultEntered=:re ) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) ";
         Map m = new HashMap();
-        m.put("ret", true);
+        m.put("ret", false);
         m.put("re", false);
         m.put("rec", true);
         m.put("type", EncounterType.Test_Enrollment);
@@ -1130,7 +1130,9 @@ public class ClientController implements Serializable {
             j += " and c.plateNumber=:pn ";
         }
         j += " order by c.encounterNumber";
-        listedToEnterResults = getEncounterFacade().findByJpql(j, m, TemporalType.DATE);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        listedToEnterResults = getEncounterFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/lab/enter_results";
     }
 

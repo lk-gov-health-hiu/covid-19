@@ -35,10 +35,10 @@
                             <div class="col-sm-12 col-md-12 col-lg-6 d-flex justify-content-center">
                                 <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white">
                                     <h:outputLabel class="fs-6 fw-bold" value="From Date" ></h:outputLabel>
-                                    <p:calendar class="fs-6" value="#{clientController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+                                    <p:datePicker class="fs-6" value="#{clientController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true"></p:datePicker><!-- comment -->
 
                                     <h:outputLabel class="fs-6 fw-bold" value="To Date" ></h:outputLabel>
-                                    <p:calendar class="fs-6" value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+                                    <p:datePicker class="fs-6" value="#{clientController.toDate}" pattern="dd MMMM yyyy  hh:mm" showTime="true"></p:datePicker>
 
                                     <h:outputLabel class="fs-6 fw-bold" value="From Institution" ></h:outputLabel>
                                     <p:autoComplete value="#{clientController.institution}"
