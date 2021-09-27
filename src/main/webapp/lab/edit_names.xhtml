@@ -15,13 +15,13 @@
             </ui:define>
 
             <ui:define name="content">
-                <p:panelGrid columns="1" styleClass="alignTop w-100 bg-white border border-light" >
+                <h:panelGrid columns="1" styleClass="alignTop w-100 bg-white border border-light" >
                     <f:facet name="header" >
                         <h:outputLabel class="fs-5 fw-bold" value="Test List" ></h:outputLabel>
                     </f:facet>
 
                     <h:form >
-                        <p:panelGrid columns="2"  class="border border-light">
+                        <h:panelGrid columns="2"  class="border border-light">
                             <h:outputLabel class="fs-6 fw-bold" value="Ordered From" ></h:outputLabel>
                             <p:calendar class="fs-6" value="#{labController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
@@ -30,7 +30,7 @@
                             <h:outputLabel class="fs-6 fw-bold" value="Ordered To" ></h:outputLabel>
                             <p:calendar class="fs-6" value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
-                            <h:outputLabel value="Institution" class="form-label"></h:outputLabel>
+                            <h:outputLabel value="Institution" class="h6 fw-bold" ></h:outputLabel>
                             <p:autoComplete class="w-100"
                                             id="acIns"
                                             value="#{labController.institution}"
@@ -40,8 +40,8 @@
                                 <p:ajax process="acIns" event="blur" ></p:ajax>
                             </p:autoComplete>
 
-                            <p:outputLabel value="Test" ></p:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}" >
+                            <h:outputLabel value="Test" class="h6 fw-bold" ></h:outputLabel>
+                            <h:selectOneMenu value="#{labController.testType}" class="form-select" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
@@ -56,9 +56,11 @@
                                              action="#{labController.toEditNames()}" ></h:commandButton>
 
 
-                        </p:panelGrid>
+                        </h:panelGrid>
 
-
+                    <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                value="Columns" />
+              <p:columnToggler datasource="tbl" trigger="toggler" />
                         <p:dataTable id="tbl" value="#{labController.tests}" rendered="true"
                                      rowIndexVar="n"
                                      var="c"
@@ -133,7 +135,7 @@
                             </p:column>
                         </p:dataTable>
                     </h:form>
-                </p:panelGrid>
+                </h:panelGrid>
             </ui:define>
 
         </ui:composition>
