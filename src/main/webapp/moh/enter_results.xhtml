@@ -147,7 +147,7 @@
                             </p:column>
                             <p:column headerText="Result" style="width:10em;"  sortBy="#{c.pcrResult.name}" filterBy="#{c.pcrResult.name}" filterMatchMode="contains" >
                                 <h:selectOneMenu id="cmbResult" value="#{c.pcrResult}"
-                                                 disabled="#{(c.receivedAtLab and c.pcrTestType.code eq 'covid19_pcr_test')}"
+                                                
                                                  class="form-select">
                                     <f:selectItem itemLabel="Select Result" ></f:selectItem>
                                     <f:selectItems value="#{itemApplicationController.pcrResults}"

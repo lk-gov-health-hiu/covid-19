@@ -62,12 +62,15 @@
   <button class="no-print" id="print-button" onclick="window.print()">
     Print Investigation
   </button>
+    
+<h:commandButton class="no-print" action="#{clientController.toLabToSelectForPrintingAfterPrint}" >
+</h:commandButton>
 
   <ui:repeat value="#{clientController.selectedToPrint}" var="p">
 
     <div class="content-area">
       <div class="print-area">
-        <h:outputText value="#{clientController.generateLabReport(p)}" escape="false"></h:outputText>
+          <h:outputText value="#{p.resultPrintHtml}" escape="false"></h:outputText>
       </div>
     </div>
   </ui:repeat>
