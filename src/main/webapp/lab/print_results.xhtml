@@ -55,17 +55,14 @@
 
                             <p:panelGrid columns="1" styleClass="bg-white border border-light">
                                 <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100" value="PRINT SELECTED AS INDIVIDUAL REPORTS"
-                                                 action="#{clientController.toLabPrintSelected()}"
-                                                 onclick="form.target = '_blank'"></h:commandButton>
+                                                 action="#{clientController.toLabPrintSelected()}"></h:commandButton>
+                                
+                                <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100" value="SEND SMS TO SELECTED"
+                                                 action="#{clientController.toLabSendSmsForSelected}"></h:commandButton>
 
                                 <h:commandButton class="btn fw-bold btn-primary mt-3 w-100" value="PRINT SELECTED AS SINGLE REPORT"
-                                                 action="#{clientController.toLabPrintSelectedBulk()}"
-                                                 onclick="form.target = '_blank'"></h:commandButton>
-
-                                <h:commandButton class="btn fw-bold btn-success mt-3 w-100"
-                                                 value="Transfer SELECTED To Enter Results"
-                                                 action="#{clientController.toLabPrintSelectedBulk()}"
-                                                 onclick="form.target = '_blank'"></h:commandButton>
+                                                 action="#{clientController.toLabPrintSelectedBulk()}"></h:commandButton>
+                                
                             </p:panelGrid>
 
                         </div>

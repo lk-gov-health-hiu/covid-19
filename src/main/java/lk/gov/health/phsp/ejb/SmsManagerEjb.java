@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.TemporalType;
+import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.entity.Sms;
 import lk.gov.health.phsp.facade.SmsFacade;
 
@@ -45,6 +47,7 @@ public class SmsManagerEjb {
         List<Sms> smses = getSmsFacade().findByJpql(j,m,TemporalType.DATE);
         for (Sms e : smses) {
             e.setSentSuccessfully(Boolean.TRUE);
+            e.setAwaitingSending(false);
             getSmsFacade().edit(e);
             sendSms(e.getReceipientNumber(), e.getSendingMessage());
             e.setSentSuccessfully(true);
@@ -54,6 +57,9 @@ public class SmsManagerEjb {
     }
 
     public String executePost(String targetURL, Map<String, String> parameters) {
+        System.out.println("executePost");
+        System.out.println("parameters = " + parameters);
+        System.out.println("targetURL = " + targetURL);
         HttpURLConnection connection = null;
         if (parameters != null && !parameters.isEmpty()) {
             targetURL += "?";
@@ -63,6 +69,7 @@ public class SmsManagerEjb {
         while (it.hasNext()) {
             Map.Entry m = (Map.Entry) it.next();
             String pVal;
+            System.out.println("m.getValue() = " + m.getValue());
             try {
                 pVal = java.net.URLEncoder.encode(m.getValue().toString(), "UTF-8");
             } catch (UnsupportedEncodingException ex) {
@@ -70,9 +77,10 @@ public class SmsManagerEjb {
                 Logger.getLogger(SmsManagerEjb.class.getName()).log(Level.SEVERE, null, ex);
             }
             String pPara = (String) m.getKey();
+            System.out.println("pPara = " + pPara);
             targetURL += pPara + "=" + pVal.toString() + "&";
         }
-
+        System.out.println("targetURL = " + targetURL);
         if (parameters != null && !parameters.isEmpty()) {
             targetURL += "last=true";
         }
@@ -106,11 +114,16 @@ public class SmsManagerEjb {
     }
 
     public boolean sendSms(String number, String message) {
+        String pattern = "yyyyMMMMdd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String strDate = simpleDateFormat.format(new Date());
+        String decKey = CommonController.encrypt(strDate);
         Map<String, String> m = new HashMap();
-        m.put("tnum", number);
-        m.put("msg", message);
-        m.put("apikey", "XAOHBFRNKKODDCNOUYB4587GDDS63DHJ");
-        String res = executePost("http://192.168.202.4:6080/sms", m);
+        m.put("number", number);
+        m.put("message", message);
+        m.put("key", decKey);
+        String res = executePost("http://chims.health.gov.lk/sms-mw", m);
+        System.out.println("res = " + res);
         if (res == null) {
             return false;
         } else if (res.toUpperCase().contains("200")) {

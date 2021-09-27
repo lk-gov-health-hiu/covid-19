@@ -119,6 +119,8 @@ public class LabController implements Serializable {
     private Institution institution;
     private Institution referingInstitution;
 
+    private String encryptedId;
+
     private Area pdhs;
     private Area rdhs;
     private InstitutionType institutionType;
@@ -151,6 +153,10 @@ public class LabController implements Serializable {
 
     private Area district;
     private Area mohArea;
+    private String phoneNumber;
+    private boolean clientViewReportDisplayError = true;
+    private boolean clientViewReportDisplayCheck = false;
+    private boolean clientViewReportDisplay = false;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -159,6 +165,92 @@ public class LabController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void prepareToViewClientReport() {
+        clientViewReportDisplayError = true;
+        clientViewReportDisplayCheck = false;
+        clientViewReportDisplay = false;
+        if (encryptedId == null || encryptedId.trim().equals("")) {
+            JsfUtil.addErrorMessage("Wrong Data");
+            return;
+        }
+        System.out.println("encryptedId = " + encryptedId);
+        String decryptedId = CommonController.decrypt(encryptedId);
+        System.out.println("decryptedId = " + decryptedId);
+        if(decryptedId==null){
+            encryptedId = encryptedId.replaceAll("\\s+", "+");
+        }
+        System.out.println("new encryptedId = " + encryptedId);
+        decryptedId = CommonController.decrypt(encryptedId);
+        System.out.println("new decryptedId = " + decryptedId);
+        Long id = CommonController.getLongValue(decryptedId);
+        System.out.println("id = " + id);
+        if (id == null) {
+            JsfUtil.addErrorMessage("Wrong Data.");
+            return;
+        }
+        test = encounterController.getEncounter(id);
+        if (test == null) {
+            JsfUtil.addErrorMessage("Wrong Data..");
+            return;
+        }
+        clientViewReportDisplayError = false;
+        clientViewReportDisplayCheck = true;
+        clientViewReportDisplay = false;
+    }
+
+    public String viewClientReport() {
+        clientViewReportDisplayError = false;
+        clientViewReportDisplayCheck = true;
+        clientViewReportDisplay = false;
+        if (phoneNumber == null || phoneNumber.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please give a phone number");
+            return "";
+        }
+        if (test == null || test.getClient() == null || test.getClient().getPerson() == null || test.getClient().getPerson().getPhone1() == null) {
+            JsfUtil.addErrorMessage("No such Record Found.");
+            return "";
+        }
+        String p1 = phoneNumber.replaceAll("\\s+", "");
+        p1 = p1.replace("+", "");
+
+        String p2 = test.getClient().getPerson().getPhone1().replaceAll("\\s+", "");
+        p2 = p2.replace("+", "");
+
+        if (p1.length() < 9 || p2.length() < 9) {
+            JsfUtil.addErrorMessage("Wrong Phone Number.");
+            return "";
+        }
+        if (p1.length() > 13 || p2.length() > 13) {
+            JsfUtil.addErrorMessage("Wrong Phone Number.");
+            return "";
+        }
+
+        if (p1.length() == p2.length()) {
+            if (p1.equalsIgnoreCase(p2)) {
+                clientViewReportDisplayError = false;
+                clientViewReportDisplayCheck = false;
+                clientViewReportDisplay = true;
+                return "";
+            }
+        } else if (p1.length() > p2.length()) {
+            if (p1.contains(p2)) {
+                clientViewReportDisplayError = false;
+                clientViewReportDisplayCheck = false;
+                clientViewReportDisplay = true;
+                return "";
+            }
+        }else if (p1.length() < p2.length()) {
+            if (p2.contains(p1)) {
+                clientViewReportDisplayError = false;
+                clientViewReportDisplayCheck = false;
+                clientViewReportDisplay = true;
+                return "";
+            }
+        }
+        JsfUtil.addErrorMessage("No match");
+        return "";
+    }
+
     public String toCountOfResultsByOrderedInstitution() {
         Map m = new HashMap();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c))   "
@@ -2215,7 +2307,7 @@ public class LabController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/lab/list_of_tests";
     }
-    
+
     public String toEditNames() {
         Map m = new HashMap();
         String j = "select c "
@@ -2505,7 +2597,7 @@ public class LabController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/lab/list_of_requests_by_confirmed_date";
     }
-    
+
     public String toListOfTestsRegional() {
         System.out.println("toTestList");
         Map m = new HashMap();
@@ -3094,5 +3186,47 @@ public class LabController implements Serializable {
     public void setInstitutionPeformancesFiltered(List<InstitutionPeformance> institutionPeformancesFiltered) {
         this.institutionPeformancesFiltered = institutionPeformancesFiltered;
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
+    }
+
+    public boolean isClientViewReportDisplayError() {
+        return clientViewReportDisplayError;
+    }
+
+    public void setClientViewReportDisplayError(boolean clientViewReportDisplayError) {
+        this.clientViewReportDisplayError = clientViewReportDisplayError;
+    }
+
+    public boolean isClientViewReportDisplayCheck() {
+        return clientViewReportDisplayCheck;
+    }
+
+    public void setClientViewReportDisplayCheck(boolean clientViewReportDisplayCheck) {
+        this.clientViewReportDisplayCheck = clientViewReportDisplayCheck;
+    }
+
+    public boolean isClientViewReportDisplay() {
+        return clientViewReportDisplay;
+    }
+
+    public void setClientViewReportDisplay(boolean clientViewReportDisplay) {
+        this.clientViewReportDisplay = clientViewReportDisplay;
+    }
+    
+    
 
 }

@@ -1344,6 +1344,11 @@ public class ClientController implements Serializable {
         return "/lab/confirm_results";
     }
 
+    public String toLabToSelectForPrintingAfterPrint() {
+        selectedToPrint = null;
+        return toLabToSelectForPrinting();
+    }
+
     public String toLabToSelectForPrinting() {
         referingInstitution = webUserController.getLoggedInstitution();
         String j = "select c "
@@ -1710,11 +1715,43 @@ public class ClientController implements Serializable {
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
+            e.setResultPrintHtml(generateLabReport(e));
 //            selectedToPrint = null;
             encounterFacade.edit(e);
         }
 //        selectedToPrint = null;
         return "/lab/print_preview";
+    }
+
+    public String toLabSendSmsForSelected() {
+        int count = 0;
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            if (e.getResultPrintHtml() == null || e.getResultPrintHtml().trim().equals("")) {
+                e.setResultPrintHtml(generateLabReport(e));
+            }
+            encounterFacade.edit(e);
+            if (e.getClient().getPerson().getPhone1() != null && !e.getClient().getPerson().getPhone1().trim().equals("")) {
+                Sms sms = new Sms();
+                sms.setAwaitingSending(true);
+                sms.setCreatedAt(new Date());
+                sms.setCreater(webUserController.getLoggedUser());
+                sms.setEncounter(e);
+                sms.setInstitution(webUserController.getLoggedInstitution());
+                sms.setReceipientNumber(e.getClient().getPerson().getPhone1());
+                sms.setSmsType("Report View Link");
+                String smsContent = "Your Report available - " + e.getReferalInstitution().getName();
+                smsContent += " - http://nchis.health.gov.lk/app/lab/report.xhtml?id="+CommonController.encrypt(e.getId()+"");
+                sms.setSendingMessage(smsContent);
+                smsFacade.create(sms);
+                count++;
+            }
+        }
+        JsfUtil.addSuccessMessage(count + " SMS were sent.");
+        selectedToPrint = null;
+        return "";
     }
 
     public String toLabPrintSelectedBulk() {
@@ -1764,7 +1801,7 @@ public class ClientController implements Serializable {
         html = html.replace("{name}", e.getClient().getPerson().getName());
         if (e.getClient().getPerson().getNic() != null) {
             html = html.replace("{nic}", e.getClient().getPerson().getNic());
-        }else{
+        } else {
             html = html.replace("{nic}", "");
         }
         e.getClient().getPerson().calAgeFromDob();

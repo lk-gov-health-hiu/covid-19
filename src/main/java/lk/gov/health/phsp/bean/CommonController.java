@@ -324,7 +324,7 @@ public class CommonController implements Serializable {
         return strDate;
     }
 
-    public String encrypt(String word) {
+    public static String encrypt(String word) {
         BasicTextEncryptor en = new BasicTextEncryptor();
         en.setPassword("health");
         try {
@@ -348,7 +348,7 @@ public class CommonController implements Serializable {
         return en.checkPassword(planePassword, encryptedPassword);
     }
 
-    public String decrypt(String word) {
+    public static String decrypt(String word) {
         BasicTextEncryptor en = new BasicTextEncryptor();
         en.setPassword("health");
         try {
@@ -358,7 +358,7 @@ public class CommonController implements Serializable {
         }
     }
 
-    public String decrypt(String word, String encryptKey) {
+    public static String decrypt(String word, String encryptKey) {
         BasicTextEncryptor en = new BasicTextEncryptor();
         en.setPassword("health");
         try {
