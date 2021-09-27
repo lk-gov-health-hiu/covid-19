@@ -93,6 +93,22 @@ public class SmsManagerEjb {
             URL hh = new URL(targetURL);
             URLConnection connection = hh.openConnection();
             String redirect = connection.getHeaderField("Location");
+            System.out.println("redirect = " + redirect);
+            if (redirect != null) {
+                connection = new URL(redirect).openConnection();
+            }
+            redirect = connection.getHeaderField("Location");
+            System.out.println("redirect = " + redirect);
+            if (redirect != null) {
+                connection = new URL(redirect).openConnection();
+            }
+            redirect = connection.getHeaderField("Location");
+            System.out.println("redirect = " + redirect);
+            if (redirect != null) {
+                connection = new URL(redirect).openConnection();
+            }
+            redirect = connection.getHeaderField("Location");
+            System.out.println("redirect = " + redirect);
             if (redirect != null) {
                 connection = new URL(redirect).openConnection();
             }
