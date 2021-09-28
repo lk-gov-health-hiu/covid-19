@@ -54,7 +54,9 @@
                     <p:menuitem ajax="false" value="Results available Summary"
                                 action="#{clientController.toSummaryByOrderedInstitutionVsLabConfirmed()}" />
                 </p:submenu>
-                <p:submenu class="submenu mx-2" label="Lab"  rendered="#{webUserController.hasPrivilege('Lab_Management')}"  >
+                <p:submenu class="submenu mx-2" label="Lab"  rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital' or webUserController.loggedUser.webUserRoleLevel eq 'Lab'}"  >
+                    <p:menuitem ajax="false" value="Action Summary" action="#{labController.toLabSummeries()}"
+                                />
                     <p:menuitem ajax="false" value="Receive Samples" action="#{clientController.toLabReceiveAll()}"
                                 rendered="#{webUserController.hasPrivilege('Receive_Samples')}"/>
                     <p:menuitem ajax="false" value="Enter Results" action="#{clientController.toLabEnterResults()}"

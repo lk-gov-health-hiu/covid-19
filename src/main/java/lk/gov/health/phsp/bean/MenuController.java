@@ -229,7 +229,7 @@ public class MenuController implements Serializable {
             case Hospital:
                 return "/hospital/search";
             case Lab:
-                return "/hospital/search";
+                return "/lab/search";
             case National_Lab:
                 return "/national/search";
             case Moh:

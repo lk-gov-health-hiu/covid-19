@@ -1012,7 +1012,7 @@ public class ClientController implements Serializable {
                 + " and c.encounterDate between :fd and :td "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
-                + " and c.referalInstitution=:rins "
+                + " and c.referalInstitution in :rins "
                 + " and c.sentToLab is not null "
                 + " and c.receivedAtLab is null";
         Map m = new HashMap();
@@ -1021,7 +1021,7 @@ public class ClientController implements Serializable {
         m.put("sm", false);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("rins", webUserController.getLoggedInstitution());
+        m.put("rins", webUserController.getLoggableInstitutions());
         if (institution != null) {
             j += " and c.institution=:ins ";
             m.put("ins", institution);
@@ -1111,7 +1111,7 @@ public class ClientController implements Serializable {
                 + " where (c.retired is null or c.retired=:ret)  "
                 + " and c.encounterType=:type "
                 + " and c.createdAt between :fd and :td "
-                + " and c.referalInstitution=:rins"
+                + " and c.referalInstitution in :rins"
                 + " and c.receivedAtLab=:rec "
                 + " and (c.resultEntered is null or c.resultEntered=:re ) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
@@ -1125,7 +1125,7 @@ public class ClientController implements Serializable {
         m.put("td", toDate);
         m.put("rej", false);
         m.put("sm", false);
-        m.put("rins", referingInstitution);
+        m.put("rins", webUserController.getLoggableInstitutions());
         if (institution != null) {
             m.put("ins", institution);
             j += " and c.institution=:ins ";
@@ -1172,13 +1172,12 @@ public class ClientController implements Serializable {
     }
 
     public String toLabReviewResults() {
-        referingInstitution = webUserController.getLoggedInstitution();
         String j = "select c "
                 + " from Encounter c "
                 + " where c.retired<>:ret "
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
-                + " and c.referalInstitution=:rins"
+                + " and c.referalInstitution in :rins"
                 + " and c.resultEntered=:rec "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and c.resultReviewed is null ";
@@ -1189,7 +1188,7 @@ public class ClientController implements Serializable {
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("rins", referingInstitution);
+        m.put("rins", webUserController.getLoggableInstitutions());
         if (institution != null) {
             j += " and c.institution=:ins ";
             m.put("ins", institution);
@@ -1324,7 +1323,7 @@ public class ClientController implements Serializable {
                 + " where c.retired=:ret "
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
-                + " and c.referalInstitution=:rins"
+                + " and c.referalInstitution in :rins"
                 + " and c.resultReviewed=:rec "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.resultConfirmed is null or c.resultConfirmed=:rc) ";
@@ -1337,7 +1336,7 @@ public class ClientController implements Serializable {
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("rins", referingInstitution);
+        m.put("rins", webUserController.getLoggableInstitutions());
         if (institution != null) {
             m.put("ins", institution);
             j += " and c.institution=:ins ";
@@ -2749,6 +2748,8 @@ public class ClientController implements Serializable {
     }
 
 //   This will search for a patient according to a BHT number
+    //THis is moved to Lab Controller
+    @Deprecated
     public String searchByBhtNo() {
         if (this.searchingBhtno == null || this.searchingBhtno.trim().length() == 0) {
             JsfUtil.addErrorMessage("Please enter a valid BHT number");
@@ -2788,7 +2789,8 @@ public class ClientController implements Serializable {
         return "/hospital/search";
     }
 
-//    This will return a test according to it's ID
+//    This will return a test according to it's ID. It is deprecated as the system do not reveal Encounter.id to user at any point. It is used as the primary key
+    @Deprecated
     public String searchByTestId() {
         if (this.searchingTestId == null) {
             JsfUtil.addErrorMessage("Please enter a valid test number");
@@ -2830,6 +2832,8 @@ public class ClientController implements Serializable {
     }
 
 //    This function will search for a test under the test tube number
+// Moved to Lab Controller    
+    @Deprecated
     public String searchByLabNo() {
         if (this.searchingLabNo == null || this.searchingLabNo.trim().length() == 0) {
             JsfUtil.addErrorMessage("Please enter a valid lab number");
@@ -2878,7 +2882,7 @@ public class ClientController implements Serializable {
         return "/hospital/upload_results";
     }
 
-// This will search patient by name
+// This is a common search patient by name. It will list clients, not encounters. 
     public String searchByName() {
         if (searchingName == null && searchingName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a name to search");
@@ -2890,37 +2894,39 @@ public class ClientController implements Serializable {
             return "";
         }
 
-        this.searchingBhtno = null;
-        this.searchingLabNo = null;
-        this.searchingTestId = null;
-        this.searchingTestNo = null;
+        Map m = new HashMap();
+        String jpql = "select c "
+                + " from Client c "
+                + " where c.retired=:ret "
+                + " and lower(c.person.name) like :name";
 
-        Map hashmap = new HashMap<>();
-        String jpql = "select e from Encounter e where e.retired=:retired";
-        hashmap.put("retired", false);
-
-        jpql += " and e.referalInstitution=:ref";
-        hashmap.put("ref", webUserController.getLoggedInstitution());
-
-        jpql += " and e.encounterType=:etype";
-        hashmap.put("etype", EncounterType.Test_Enrollment);
-
-        jpql += " and e.encounterDate between :fd and :td";
-        hashmap.put("fd", this.fromDate);
-        hashmap.put("td", this.toDate);
-
-        if (this.institution != null) {
-            jpql += " and e.institution=:ins";
-            hashmap.put("ins", this.institution);
+        if (district != null) {
+            jpql += " and c.person.district=:dis ";
+            m.put("dis", district);
         }
 
-        jpql += " and lower(e.client.person.name) like :name";
-        hashmap.put("name", "%" + searchingName.toLowerCase() + "%");
+        jpql += " order by c.person.name";
 
-        jpql += " order by e.id";
+        m.put("ret", false);
+        m.put("name", "%" + searchingName.toLowerCase() + "%");
 
-        testList = encounterFacade.findByJpql(jpql, hashmap, TemporalType.DATE);
-        return "/hospital/search";
+        List<Client> tmpClients = ejbFacade.findByJpql(jpql, m, 100);
+
+        if (tmpClients == null || tmpClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No matches found");
+            return "";
+        }
+
+        if (tmpClients.size() == 1) {
+            selected = tmpClients.get(0);
+            return toClientProfile();
+        } else {
+            if (tmpClients.size() > 99) {
+                JsfUtil.addErrorMessage("Only the first 100 records are shown. Please increase the length of search keyword.");
+            }
+            selectedClients = tmpClients;
+            return toSelectClient();
+        }
 
     }
 

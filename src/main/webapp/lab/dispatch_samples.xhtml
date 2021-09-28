@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+
+                <h:form >
+                    <div class="row" >
+                        <div class="col-12 text-center mt-4 mb-2" >
+                            <h4 class="fw-bold"><h:outputLabel  value="Dispatch Samples" ></h:outputLabel></h4>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-12 text-center mt-4 mb-2" >
+                            <p:messages></p:messages>
+                        </div>
+                    </div>
+                    <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-around align-items-center" >
+                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+                            <f:facet name="header" >
+                                <p:outputLabel value="Listing" ></p:outputLabel>
+                            </f:facet>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                            <p:calendar value="#{labController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
+                            <p:calendar value="#{labController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                            <h:outputLabel class="h6 fw-bold" value="Ordered Institution" ></h:outputLabel>
+                            <p:autoComplete value="#{labController.institution}"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                            </p:autoComplete>
+
+                            <h:outputLabel class="form-label" value="Test" ></h:outputLabel>
+                            <h:selectOneMenu class="form-select" value="#{labController.testType}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:commandButton  value="Generate Excel" class="btn btn-success">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                            </h:commandButton>
+                            <h:commandButton value="Process" class="btn btn-warning w-100"
+                                             action="#{labController.toDispatchSamples()}" ></h:commandButton>
+
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+                            <f:facet name="header" >
+                                <h:outputLabel class="h6 fw-bold" value="Dispatching" ></h:outputLabel>
+                            </f:facet>
+
+                            <h:outputLabel value="Lab" ></h:outputLabel>
+                            <p:selectOneMenu value="#{labController.dispatchingLab}" required="true"
+                                             requiredMessage="Need to select a lab">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}" var="l"
+                                               itemLabel="#{l.name}" itemValue="#{l}" >
+                                </f:selectItems>
+                            </p:selectOneMenu>
+
+                            <h:commandButton value="Dispatch" class="btn btn-primary w-100"
+                                             action="#{labController.dispatchSelectedSamples()}" >
+                            </h:commandButton>
+
+
+                        </h:panelGrid>
+                    </div>
+                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                        <p:dataTable id="tbl" value="#{labController.listedToDispatch}" class="table"
+                                     var="c" rowKey="#{c.id}" 
+                                     selection="#{labController.selectedToDispatch}"
+
+                                     rows="10"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+
+                                     resizableColumns="true"
+                                     resizeMode="expand"
+                                     >
+                            <p:column selectionMode="multiple"  style="width:3em;"></p:column>
+                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}" 
+                                      filterBy="#{c.encounterNumber}" filterMatchMode="contains"  style="width:10em;">
+                                <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}"
+                                      filterBy="#{c.pcrTestType.name}"
+                                      filterMatchMode="contains"  style="width:4em;">
+                                <h:outputLabel value="#{c.pcrTestType.name}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" 
+                                      filterBy="#{c.client.person.name}" filterMatchMode="contains"  style="width:15em;">
+                                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age"  style="width:5em;">
+                                <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex"  style="width:5em;" >
+                                <h:outputLabel value="#{c.client.person.sex.name}"  style="width:5em;"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" 
+                                      filterBy="#{c.client.person.address}" filterMatchMode="contains"
+                                      style="width:15em;">
+                                <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" 
+                                      filterBy="#{c.client.person.phone1}" filterMatchMode="contains"
+                                      style="width:10em;">
+                                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="GN Area"  sortBy="#{c.client.person.gnArea.name}"
+                                      filterBy="#{c.client.person.gnArea.name}" filterMatchMode="contains"  style="width:10em;">
+                                <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="PHI"  sortBy="#{c.client.person.phiArea.name}"
+                                      filterBy="#{c.client.person.phiArea.name}" filterMatchMode="contains"  style="width:10em;">
+                                <p:outputLabel value="#{c.client.person.phiArea.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Current Lab"
+                                      sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}"
+                                      filterMatchMode="contains"
+                                      style="width:10em;">
+                                <h:outputLabel value="#{c.referalInstitution.name}" 
+                                               ></h:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+
+
+
+                <!--</p:panelGrid>-->
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

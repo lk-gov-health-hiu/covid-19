@@ -50,9 +50,11 @@ import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.InstitutionPeformance;
 import lk.gov.health.phsp.pojcs.InstitutionTypeCount;
+import lk.gov.health.phsp.pojcs.LabSummary;
 // </editor-fold>
 
 /**
@@ -72,6 +74,8 @@ public class LabController implements Serializable {
     ClientEncounterComponentItemFacade ceciFacade;
     @EJB
     private SmsFacade smsFacade;
+    @EJB
+    InstitutionFacade institutionFacade;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -119,6 +123,15 @@ public class LabController implements Serializable {
     private Institution institution;
     private Institution referingInstitution;
 
+    private List<LabSummary> labSummaries;
+    private LabSummary labSummary;
+
+    private String searchingName;
+    private String searchingBhtno;
+    private String searchingLabNo;
+    private String searchingTestId;
+    private String searchingTestNo;
+
     private String encryptedId;
 
     private Area pdhs;
@@ -165,6 +178,326 @@ public class LabController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
+    public String toDispatchSamplesWithReferringLab() {
+        String j = "select c "
+                + " from Encounter c "
+                + " where c.retired=:ret "
+                + " and c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td "
+                + " and c.institution=:ins "
+                + " and c.referalInstitution=:rins "
+                + " and c.sentToLab is null "
+                + " order by c.id";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("ins", institution);
+        m.put("rins", referingInstitution);
+        listedToDispatch = getEncounterFacade().findByJpql(j, m, TemporalType.DATE);
+        return "/lab/dispatch_samples";
+    }
+
+    public String searchByName() {
+        if (searchingName == null && searchingName.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter a name to search");
+            return "";
+        }
+
+        if (searchingName.length() < 5) {
+            JsfUtil.addErrorMessage("Please enter at least 4 characters to serach");
+            return "";
+        }
+
+        Map hashmap = new HashMap<>();
+        String jpql = "select e from Encounter e where e.retired=:retired";
+        hashmap.put("retired", false);
+
+        jpql += " and e.referalInstitution in :ref";
+        hashmap.put("ref", webUserController.getLoggableInstitutions());
+
+        jpql += " and e.encounterType=:etype";
+        hashmap.put("etype", EncounterType.Test_Enrollment);
+
+        jpql += " and e.encounterDate between :fd and :td";
+        hashmap.put("fd", this.fromDate);
+        hashmap.put("td", this.toDate);
+
+        jpql += " and e.client.person.name like :name";
+        hashmap.put("name", "%" + searchingName.toLowerCase() + "%");
+
+        jpql += " order by e.id";
+
+        testList = encounterFacade.findByJpql(jpql, hashmap, TemporalType.DATE);
+        return "/lab/search";
+
+    }
+
+    public String searchByTestNo() {
+        if (this.searchingTestNo == null || this.searchingTestNo.length() == 0) {
+            JsfUtil.addErrorMessage("Please enter a valid test number");
+            return "";
+        }
+
+        this.searchingBhtno = null;
+        this.searchingLabNo = null;
+        this.searchingTestId = null;
+        this.searchingName = null;
+
+        Map hashmap = new HashMap<>();
+        String jpql = "select e from Encounter e where e.retired=:retired";
+
+        jpql += " and e.referalInstitution in :ref";
+        hashmap.put("retired", false);
+
+        hashmap.put("ref", webUserController.getLoggableInstitutions());
+
+        jpql += " and e.encounterNumber=:eno";
+        hashmap.put("eno", this.searchingTestNo.toUpperCase());
+
+        jpql += " and e.encounterType=:etype";
+        hashmap.put("etype", EncounterType.Test_Enrollment);
+
+        jpql += " and e.createdAt between :fd and :td";
+        hashmap.put("fd", fromDate);
+        hashmap.put("td", toDate);
+
+        jpql += " order by e.encounterNumber";
+
+        testList = encounterFacade.findByJpql(jpql, hashmap, TemporalType.TIMESTAMP);
+        System.out.println(testList);
+        return "/lab/search";
+    }
+
+    public String searchByBhtNo() {
+        if (this.searchingBhtno == null || this.searchingBhtno.trim().length() == 0) {
+            JsfUtil.addErrorMessage("Please enter a valid BHT number");
+            return "";
+        }
+        this.searchingLabNo = null;
+        this.searchingTestId = null;
+        this.searchingTestNo = null;
+        this.searchingName = null;
+
+        Map hashmap = new HashMap<>();
+        String jpql = "select e from Encounter e where e.retired=:retired";
+        hashmap.put("retired", false);
+
+        jpql += " and e.referalInstitution in :ref";
+        hashmap.put("ref", webUserController.getLoggableInstitutions());
+
+        jpql += " and e.encounterType=:etype";
+        hashmap.put("etype", EncounterType.Test_Enrollment);
+
+        jpql += " and e.createdAt between :fd and :td";
+        hashmap.put("fd", this.fromDate);
+        hashmap.put("td", this.toDate);
+
+        jpql += " and e.bht like :bht";
+        hashmap.put("bht", "%" + this.searchingBhtno.toLowerCase() + "%");
+
+        jpql += " order by e.bht";
+
+        testList = encounterFacade.findByJpql(jpql, hashmap, TemporalType.TIMESTAMP);
+        System.out.println(testList);
+        return "/lab/search";
+    }
+
+    public String searchByLabNo() {
+        if (this.searchingLabNo == null || this.searchingLabNo.trim().length() == 0) {
+            JsfUtil.addErrorMessage("Please enter a valid lab number");
+            return "";
+        }
+
+        this.searchingBhtno = null;
+        this.searchingTestId = null;
+        this.searchingTestNo = null;
+        this.searchingName = null;
+
+        Map hashmap = new HashMap<>();
+        String jpql = "select e from Encounter e where e.retired=:retired";
+        hashmap.put("retired", false);
+
+        jpql += " and e.referalInstitution in :ref";
+        hashmap.put("ref", webUserController.getLoggableInstitutions());
+
+        jpql += " and e.encounterType=:etype";
+        hashmap.put("etype", EncounterType.Test_Enrollment);
+
+        jpql += " and e.createdAt between :fd and :td";
+        hashmap.put("fd", this.fromDate);
+        hashmap.put("td", this.toDate);
+
+        jpql += " and e.labNumber like :labNo";
+        hashmap.put("labNo", "%" + this.searchingLabNo.toLowerCase() + "%");
+
+        jpql += " order by e.bht";
+
+        testList = encounterFacade.findByJpql(jpql, hashmap, TemporalType.TIMESTAMP);
+        System.out.println(testList);
+        return "/lab/search";
+    }
+
+    public String toLabSummeries() {
+        processLabSummary();
+        return "/lab/summary";
+    }
+
+    public String toDispatchFromActionSummary() {
+        if (labSummary == null || labSummary.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Lab is not selected");
+            return "";
+        }
+        institution = labSummary.getInstitution();
+        return toDispatchSamples();
+    }
+
+    public String toReceiveFromActionSummary() {
+        if (labSummary == null || labSummary.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Lab is not selected");
+            return "";
+        }
+        clientController.setFromDate(fromDate);
+        clientController.setToDate(toDate);
+        clientController.setInstitution(labSummary.getInstitution());
+        return clientController.toLabReceiveSelected();
+    }
+
+    public String toEnterFromActionSummary() {
+        if (labSummary == null || labSummary.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Lab is not selected");
+            return "";
+        }
+        clientController.setFromDate(fromDate);
+        clientController.setToDate(toDate);
+        clientController.setInstitution(labSummary.getInstitution());
+        return clientController.toLabEnterResults();
+    }
+
+    public String toReviewFromActionSummary() {
+        if (labSummary == null || labSummary.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Lab is not selected");
+            return "";
+        }
+        clientController.setFromDate(fromDate);
+        clientController.setToDate(toDate);
+        clientController.setInstitution(labSummary.getInstitution());
+        return clientController.toLabReviewResults();
+    }
+
+    public String toConfirmFromActionSummary() {
+        if (labSummary == null || labSummary.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Lab is not selected");
+            return "";
+        }
+        clientController.setFromDate(fromDate);
+        clientController.setToDate(toDate);
+        clientController.setInstitution(labSummary.getInstitution());
+        return clientController.toConfirmResults();
+    }
+
+    public void processLabSummary() {
+        labSummaries = new ArrayList<>();
+        String j;
+        Map m = new HashMap();
+
+        //Institutions
+        j = "select i "
+                + " from Encounter e join e.institution i "
+                + " where (e.retired is null or e.retired=:pf) "
+                + " and e.createdAt between :fd and :td "
+                + " and e.referalInstitution in :rins "
+                + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                + " group by i"
+                + " order by i.name";
+        m = new HashMap();
+        m.put("pf", false);
+        m.put("rins", webUserController.getLoggableInstitutions());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Institution> tins = institutionFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        for (Institution ti : tins) {
+            LabSummary ls = new LabSummary();
+
+            ls.setInstitution(ti);
+
+            m = new HashMap();
+            m.put("rins", webUserController.getLoggableInstitutions());
+            m.put("ins", ti);
+
+            m.put("pf", false);
+            m.put("ins", ti);
+            m.put("fd", getFromDate());
+            m.put("td", getToDate());
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.sentToLab is null or e.sentToLab=:pf) ";
+
+            ls.setToDispatch(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            m.put("pt", true);
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.sentToLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.receivedAtLab is null or e.receivedAtLab=:pf) ";
+            ls.setToReceive(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.receivedAtLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultEntered is null or e.resultEntered=:pf) ";
+            ls.setToEnterData(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultEntered=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultReviewed is null or e.resultReviewed=:pf) ";
+            ls.setToReview(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultReviewed=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
+            ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            labSummaries.add(ls);
+        }
+    }
+
     public void prepareToViewClientReport() {
         clientViewReportDisplayError = true;
         clientViewReportDisplayCheck = false;
@@ -176,7 +509,7 @@ public class LabController implements Serializable {
         System.out.println("encryptedId = " + encryptedId);
         String decryptedId = CommonController.decrypt(encryptedId);
         System.out.println("decryptedId = " + decryptedId);
-        if(decryptedId==null){
+        if (decryptedId == null) {
             encryptedId = encryptedId.replaceAll("\\s+", "+");
         }
         System.out.println("new encryptedId = " + encryptedId);
@@ -239,7 +572,7 @@ public class LabController implements Serializable {
                 clientViewReportDisplay = true;
                 return "";
             }
-        }else if (p1.length() < p2.length()) {
+        } else if (p1.length() < p2.length()) {
             if (p2.contains(p1)) {
                 clientViewReportDisplayError = false;
                 clientViewReportDisplayCheck = false;
@@ -796,6 +1129,7 @@ public class LabController implements Serializable {
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
                 + " and c.institution=:ins "
+                + " and c.referalInstitution in :rins "
                 + " and c.sentToLab is null "
                 + " order by c.id";
         Map m = new HashMap();
@@ -803,7 +1137,8 @@ public class LabController implements Serializable {
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("ins", institution);
+        m.put("rins", webUserController.getLoggableInstitutions());
         listedToDispatch = encounterFacade.findByJpql(j, m, TemporalType.DATE);
         return "/lab/dispatch_samples";
     }
@@ -3226,7 +3561,61 @@ public class LabController implements Serializable {
     public void setClientViewReportDisplay(boolean clientViewReportDisplay) {
         this.clientViewReportDisplay = clientViewReportDisplay;
     }
-    
-    
+
+    public List<LabSummary> getLabSummaries() {
+        return labSummaries;
+    }
+
+    public void setLabSummaries(List<LabSummary> labSummaries) {
+        this.labSummaries = labSummaries;
+    }
+
+    public LabSummary getLabSummary() {
+        return labSummary;
+    }
+
+    public void setLabSummary(LabSummary labSummary) {
+        this.labSummary = labSummary;
+    }
+
+    public String getSearchingName() {
+        return searchingName;
+    }
+
+    public void setSearchingName(String searchingName) {
+        this.searchingName = searchingName;
+    }
+
+    public String getSearchingBhtno() {
+        return searchingBhtno;
+    }
+
+    public void setSearchingBhtno(String searchingBhtno) {
+        this.searchingBhtno = searchingBhtno;
+    }
+
+    public String getSearchingLabNo() {
+        return searchingLabNo;
+    }
+
+    public void setSearchingLabNo(String searchingLabNo) {
+        this.searchingLabNo = searchingLabNo;
+    }
+
+    public String getSearchingTestId() {
+        return searchingTestId;
+    }
+
+    public void setSearchingTestId(String searchingTestId) {
+        this.searchingTestId = searchingTestId;
+    }
+
+    public String getSearchingTestNo() {
+        return searchingTestNo;
+    }
+
+    public void setSearchingTestNo(String searchingTestNo) {
+        this.searchingTestNo = searchingTestNo;
+    }
 
 }
