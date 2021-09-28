@@ -29,6 +29,7 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,8 @@ public class RegionalController implements Serializable {
     @Inject
     private UserTransactionController userTransactionController;
     @Inject
+    private DashboardApplicationController dashboardApplicationController;
+    @Inject
     private PreferenceController preferenceController;
     @Inject
     MenuController menuController;
@@ -169,8 +172,8 @@ public class RegionalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
+
+
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -198,8 +201,8 @@ public class RegionalController implements Serializable {
         }
         return "/regional/summary_received_at_lab";
     }
-    
-    
+
+
     public void processSummaryReceivedAtLab() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -225,8 +228,8 @@ public class RegionalController implements Serializable {
 
         j += " group by c.institution, c.referalInstitution";
         institutionCounts = new ArrayList<>();
-        
-        
+
+
         List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
         Long c=1l;
         for (Object o : obs) {
@@ -238,7 +241,7 @@ public class RegionalController implements Serializable {
             }
         }
     }
-    
+
     public String toSummaryByOrderedInstitutionVsLabToReceive1() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -480,8 +483,8 @@ public class RegionalController implements Serializable {
         return toListOfTestsWithoutMoh();
     }
 
-    
-    
+
+
     public String toMohAreaResultList() {
         Map m = new HashMap();
         String j = "select c "
@@ -723,6 +726,45 @@ public class RegionalController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/regional/list_of_tests";
+    }
+
+    // This function will return the request counts by MOH area fora given RE
+    public String toCountOfTestsByMohArea() {
+        Map m = new HashMap();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.client.person.district=:district) ";
+        m.put("district", webUserController.getLoggedInstitution().getDistrict());
+        j += " and c.resultConfirmedAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        j += " group by c.client.person.mohArea "
+                + " order by count(c) desc";
+        institutionCounts = new ArrayList<>();
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/regional/count_of_requests_by_moh_area";
+        }
+        for (Object o : objCounts) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+            }
+        }
+
+        return "/regional/count_of_requests_by_moh_area";
     }
 
     public String toCountOfTestsByOrderedInstitution() {
