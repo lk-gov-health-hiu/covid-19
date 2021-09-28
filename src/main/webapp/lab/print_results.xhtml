@@ -82,7 +82,7 @@
                                          paginator="true"
                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                         rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                         rowsPerPageTemplate="5,10,50,100,{ShowAll|'All'}"
 
                                          rowStyleClass="#{(c.pcrResult.name) eq 'Positive'?'bg-danger':''}"
 
@@ -126,7 +126,11 @@
                                     <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}"  filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                                    <h:inputText id="txtPhone" value="#{c.client.person.phone1}" style="width: 98%;" >
+                                        <p:ajax event="blur" process="txtPhone"
+                                            listener="#{clientController.saveEncounterAndClient(c)}" >
+                                    </p:ajax>
+                                    </h:inputText>
                                 </p:column>
                                 <p:column  headerText="CT 1" width="100"  sortBy="#{c.ctValue}"
                                            filterBy="#{c.ctValue}" filterMatchMode="contains" >

@@ -11,6 +11,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +47,7 @@ import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.facade.SmsFacade;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
 import lk.gov.health.phsp.pojcs.ClientImport;
@@ -70,11 +73,13 @@ public class ClientController implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
-    private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
+    private ClientFacade ejbFacade;
     @EJB
     private EncounterFacade encounterFacade;
     @EJB
     private SmsFacade smsFacade;
+    @EJB
+    PersonFacade personFacade;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -1455,6 +1460,21 @@ public class ClientController implements Serializable {
         encounterFacade.edit(se);
     }
 
+    public void saveEncounterAndClient(Encounter se) {
+        if (se == null) {
+            return;
+        }
+        encounterFacade.edit(se);
+        if (se.getClient() == null) {
+            return;
+        }
+        ejbFacade.edit(se.getClient());
+        if (se.getClient().getPerson() != null) {
+            return;
+        }
+        personFacade.edit(se.getClient().getPerson());
+    }
+
     public void saveEncounterResultsAtMohForConfirmedDate(Encounter se) {
         if (se == null) {
             return;
@@ -1745,7 +1765,7 @@ public class ClientController implements Serializable {
                 sms.setReceipientNumber(e.getClient().getPerson().getPhone1());
                 sms.setSmsType("Report View Link");
                 String smsContent = "Your Report available - " + e.getReferalInstitution().getName();
-                smsContent += " - http://nchis.health.gov.lk/app/lab/report.xhtml?id="+CommonController.encrypt(e.getId()+"");
+                smsContent += " - http://nchis.health.gov.lk/app/lab/report.xhtml?id=" + CommonController.encrypt(e.getId() + "");
                 sms.setSendingMessage(smsContent);
                 smsFacade.create(sms);
                 count++;
@@ -1809,7 +1829,13 @@ public class ClientController implements Serializable {
         e.getClient().getPerson().calAgeFromDob();
 
         html = html.replace("{age}", e.getClient().getPerson().getAge());
-        html = html.replace("{sex}", e.getClient().getPerson().getSex().getName());
+
+        if (e.getClient().getPerson().getSex() != null) {
+            html = html.replace("{sex}", e.getClient().getPerson().getSex().getName());
+        } else {
+            html = html.replace("{sex}", "");
+        }
+
         html = html.replace("{address}", e.getClient().getPerson().getAddress());
         if (e.getClient().getPerson().getPhone1() != null) {
             html = html.replace("{phone1}", e.getClient().getPerson().getPhone1());
@@ -2969,10 +2995,6 @@ public class ClientController implements Serializable {
                     strNic = cellValue(row.getCell(nicColInt));
                 }
                 Client c = null;
-                if (strNic != null && !strNic.trim().equals("") && strNic.trim().length() > 5) {
-                    c = getClientByNic(strNic);
-                }
-
                 if (c == null) {
                     if (nameColInt != null) {
                         strName = cellValue(row.getCell(nameColInt));
@@ -2982,13 +3004,15 @@ public class ClientController implements Serializable {
                     }
                     if (phoneColInt != null) {
                         strPhone = cellValue(row.getCell(phoneColInt));
-
-                        if (strPhone != null) {
-                            strPhone = "'" + strPhone;
+                        if (strPhone != null && strPhone.length() > 8) {
+                            if (!strPhone.substring(0, 1).equals("0")) {
+                                strPhone = "0" + strPhone;
+                            }
                         } else {
                             Double dbl = cellValueDouble(row.getCell(phoneColInt));
                             if (dbl != null) {
-                                strPhone = "'" + dbl + "";
+                                NumberFormat formatter = new DecimalFormat("0000000000");
+                                strPhone = formatter.format(dbl);
                             }
                         }
                     }
@@ -3453,6 +3477,7 @@ public class ClientController implements Serializable {
         }
         String msg = "" + count + " Orders Imported.";
         JsfUtil.addSuccessMessage(msg);
+        clearUploadedData();
         return toUploadOrders();
     }
 
