@@ -2169,13 +2169,14 @@ public class ClientController implements Serializable {
         String tblHtml = "<table id=\"tbl\" >";
         tblHtml += "<tr>";
         tblHtml += "<th rowspan=\"2\">Lab No</th>";
+        tblHtml += "<th rowspan=\"2\">BHT No</th>";
         tblHtml += "<th rowspan=\"2\">Test No</th>";
         tblHtml += "<th rowspan=\"2\">Name</th>";
         tblHtml += "<th rowspan=\"2\">Age</th>";
         tblHtml += "<th rowspan=\"2\">Gender</th>";
         tblHtml += "<th rowspan=\"2\">Unit</th>";
-        tblHtml += "<th rowspan=\"2\">Test Result<br/>SARS-CoV-2</th>";
-        tblHtml += "<th >CT Values</th>";
+        tblHtml += "<th rowspan=\"2\">Test Result";
+        tblHtml += "<th colspan=\"2\">CT Values</th>";
         tblHtml += "</tr>";
         tblHtml += "<tr>";
         tblHtml += "<th>Target 1</th>";
@@ -2210,8 +2211,13 @@ public class ClientController implements Serializable {
             if (e.getEncounterNumber() == null) {
                 e.setEncounterNumber("");
             }
+            if (e.getBht() == null) {
+                e.setBht("");
+            }
+
             tblHtml += "<tr>";
             tblHtml += "<td>" + e.getLabNumber() + "</td>";
+            tblHtml += "<td>" + e.getBht() + "</td>";
             tblHtml += "<td>" + e.getEncounterNumber() + "</td>";
             tblHtml += "<td>" + e.getClient().getPerson().getName() + "</td>";
             tblHtml += "<td>" + e.getClient().getPerson().getAge() + "</td>";
