@@ -73,9 +73,17 @@
                     <h:form>
                       <h:commandLink value="Request Counts by MOH Area"
                         action="#{regionalController.toCountOfTestsByMohArea()}"
-                        class="btn btn-outline-primary btn-lg btn-block"
+                        class="btn btn-outline-primary btn-lg btn-block w-100"
                       >
                       </h:commandLink>
+                    </h:form>
+                  </div>
+                  <div class="col-12 p-2">
+                    <h:form>
+                      <h:commandLink value="Positivity Rate by MOH Area"
+                        action="#{regionalController.toTestPositivtyRateByMoh()}"
+                        class="btn btn-outline-primary btn-lg btn-block w-100"
+                      ></h:commandLink>
                     </h:form>
                   </div>
                   <div class="col-12 p-2">
