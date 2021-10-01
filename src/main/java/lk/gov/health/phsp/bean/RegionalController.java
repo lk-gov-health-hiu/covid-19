@@ -25,6 +25,8 @@ package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.io.Serializable;
+import java.text.DecimalFormat;
+
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -164,6 +166,7 @@ public class RegionalController implements Serializable {
 
     private Area district;
     private Area mohArea;
+    private Area rdhs;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -483,7 +486,113 @@ public class RegionalController implements Serializable {
         return toListOfTestsWithoutMoh();
     }
 
+    // Get positivity rate by MOH area
+    // Rukshan
+    public String toTestPositivtyRateByMoh() {
+        DecimalFormat df = new DecimalFormat("0.0");
 
+        Map m = new HashMap();
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        j += " and c.institution.rdhsArea=:rd ";
+        m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
+
+
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        j += " group by c.institution.mohArea "
+                + " order by count(c) desc ";
+
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+
+        m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+
+        j += " and c.institution.rdhsArea=:rd";
+        m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
+
+
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+
+
+        j += " and c.pcrResult=:result ";
+        m.put("result", itemApplicationController.getPcrPositive());
+
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        j += " group by c.institution.mohArea "
+                + " order by count(c) desc ";
+
+
+        List<Object> objPositives = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        institutionCounts = new ArrayList<>();
+
+
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/regional/positivity_rate_by_moh";
+        }
+
+        for (int index = 0; index <= objPositives.size()-1; index++) {
+            InstitutionCount incPositive = (InstitutionCount) objPositives.get(index);
+            InstitutionCount incCounts = (InstitutionCount) objCounts.get(index);
+            double tempPositiveRate = ((double) incPositive.getCount()/incCounts.getCount()*100);
+            String tempRate = df.format(tempPositiveRate) + "%";
+            InstitutionCount rateCount = new InstitutionCount();
+            rateCount.setArea(incPositive.getArea());
+            rateCount.setPositiveRate(tempRate);
+            rateCount.setCount(incCounts.getCount());
+            institutionCounts.add(rateCount);
+            System.out.println(tempRate);
+        }
+
+        return "/regional/positivity_rate_by_moh";
+    }
 
     public String toMohAreaResultList() {
         Map m = new HashMap();
@@ -1768,6 +1877,14 @@ public class RegionalController implements Serializable {
 
     public void setDistrict(Area district) {
         this.district = district;
+    }
+
+    public Area getRdhs() {
+        return this.rdhs;
+    }
+
+    public void setRdhs(Area rhds) {
+        this.rdhs = rhds;
     }
 
     public WebUser getAssignee() {
