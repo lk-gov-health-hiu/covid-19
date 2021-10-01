@@ -25,25 +25,32 @@
                     <div class="card-body">
                         <h:form>
 
-                            <div class="card" >
-                                <div class="card-body">
-                                    <p:panelGrid columns="2" style="width: 100%;">
-                                        <h:outputText value="Universal Id:"/>
-                                        <h:outputText value="#{commonController.result.id}" title="Id"/>
-                                        <h:outputText value="Patient :"/>
-                                        <h:outputText value="#{commonController.result.client.person.name}" title="Client"/>
-                                        <h:outputText value="Ordered Date:"/>
-                                        <h:outputText value="#{commonController.result.encounterDate}" title="EncounterDate">
-                                            <f:convertDateTime pattern="MM/dd/yyyy" />
-                                        </h:outputText>
-                                        <h:outputText value="Ordered User:"/>
-                                        <h:outputText value="#{commonController.result.createdBy.person.name} - #{commonController.result.createdBy.person.phone1}" title="CreatedBy"/>
-                                        <h:outputText value="Ordered Institution:"/>
-                                        <h:outputText value="#{commonController.result.institution.name}" title="Institution"/>
-                                    </p:panelGrid>
-                                </div>
+                            <div class="row" >
+                                <div class="col" >
+                                    <div class="card" >
+                                        <div class="card-header">
+                                            
+                                        </div>
+                                        <div class="card-body">
+                                            <p:panelGrid columns="2" style="width: 100%;">
+                                                <h:outputText value="Patient :"/>
+                                                <h:outputText value="#{commonController.result.client.person.name}" title="Client"/>
+                                                <h:outputText value="Ordered Date:"/>
+                                                <h:outputText value="#{commonController.result.encounterDate}" title="EncounterDate">
+                                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                </h:outputText>
+                                                <h:outputText value="Ordered User:"/>
+                                                <h:outputText value="#{commonController.result.createdBy.person.name} - #{commonController.result.createdBy.person.phone1}" title="CreatedBy"/>
+                                                <h:outputText value="Ordered Institution:"/>
+                                                <h:outputText value="#{commonController.result.institution.name}" title="Institution"/>
+                                            </p:panelGrid>
+                                        </div>
 
+                                    </div>
+                                </div>
                             </div>
+
+
 
 
                             <p:panelGrid columns="2" style="width: 100%;">
