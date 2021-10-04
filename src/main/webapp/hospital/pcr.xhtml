@@ -156,7 +156,7 @@
 
 
                                     <div class="col-md-3 mb-4">
-                                        <h:outputLabel value="Age: (Years/Months)*" style="width: 100%;" class="h6 fw-bold mb-2" />
+                                        <h:outputLabel value="Age: (Years/Months/Days)*" style="width: 100%;" class="h6 fw-bold mb-2" />
                                         <div class="d-inline-flex">
                                             <div class="mr-2">
                                                 <p:inputText autocomplete="off" id="year"
@@ -176,6 +176,14 @@
                                                     <f:ajax event="keyup" execute="@this year day" render="calDob" />
                                                 </p:inputText>
                                             </div>
+                                            
+                                            <div class="mr-2">
+                                                <p:inputText tabindex="108"  autocomplete="off" id="day" placeholder="Days"
+                                                             value="#{hospitalController.pcr.client.person.ageDays}" class="form-control w-100" >
+                                                    <f:ajax event="keyup" execute="@this year year" render="calDob" />
+                                                </p:inputText>
+                                            </div>
+                                            
                                             <h:message class="text-danger small" for="year"></h:message>
                                         </div>
                                     </div>

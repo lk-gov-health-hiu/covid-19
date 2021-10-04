@@ -4,8 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
@@ -20,13 +19,13 @@
                     <h:outputLabel class="fs-5 fw-bold" value="Enter Test Results" ></h:outputLabel>
                 </f:facet>-->
 
-                <h:form enctype="multipart/form-data" >
+                <h:form  >
 
                     <p:growl></p:growl>
                     <h:messages ></h:messages>
                     <div class="row" >
                         <div class="col-12 text-center mt-4 mb-2" >
-                            <h4 class="fw-bold"><h:outputLabel  value="Enter Test Results" ></h:outputLabel></h4>
+                            <h4 class="fw-bold"><h:outputLabel  value="Enter PCR Results" ></h:outputLabel></h4>
                         </div>
                     </div>
                     <div class="container mb-4 w-100 d-flex justify-content-around align-items-center" >
@@ -137,21 +136,21 @@
                                     <f:selectItem itemLabel="Select Result"  ></f:selectItem>
                                     <f:selectItems value="#{itemApplicationController.pcrResults}"
                                                    var="i" itemLabel="#{i.name}" itemValue="#{i}" ></f:selectItems>
-                                    <p:ajax event="change" process="cmbResult" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="cmbResult" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:selectOneMenu>
                             </p:column>
                             <p:column  headerText="CT 1" width="60"  sortBy="#{c.ctValue}"
                                        filterBy="#{c.ctValue}" filterMatchMode="contains" >
                                 <p:inputText id="txtCt1" value="#{c.ctValue}" style="width: 98%;" >
-                                    <p:ajax event="keyup" process="txtCt1" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="txtCt1" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
                             <p:column headerText="CT 2" width="60"  sortBy="#{c.ctValue2}"
                                       filterBy="#{c.ctValue2}" filterMatchMode="contains" >
                                 <p:inputText id="txtCt2" value="#{c.ctValue2}" style="width: 98%;" >
-                                    <p:ajax event="keyup" process="txtCt2" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="txtCt2" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>

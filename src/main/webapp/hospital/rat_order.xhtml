@@ -132,6 +132,11 @@
                                                          value="#{hospitalController.rat.client.person.ageMonths}">
                                                 <f:ajax event="keyup" execute="@this year day" render="calDob" />
                                             </p:inputText>
+                                            <p:spacer height="1" width="20" ></p:spacer>
+                                            <p:inputText tabindex="108"  autocomplete="off" id="day" placeholder="Months" class="form-control w-100"
+                                                         value="#{hospitalController.rat.client.person.ageDays}">
+                                                <f:ajax event="keyup" execute="@this year month" render="calDob" />
+                                            </p:inputText>
                                         </div>
                                     </div>
                                 </div>
