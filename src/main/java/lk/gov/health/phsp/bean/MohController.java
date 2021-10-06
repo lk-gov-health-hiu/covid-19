@@ -2281,6 +2281,41 @@ public class MohController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/moh/view_results";
     }
+    
+    public String toPrintResults() {
+        Map m = new HashMap();
+
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and c.institution=:ins ";
+        m.put("ins", webUserController.getLoggedInstitution());
+
+        j += " and c.resultConfirmedAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/moh/view_results";
+    }
 
     public String toListOfResultsForPersonsInMyArea() {
         Map m = new HashMap();

@@ -23,6 +23,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Enter Results" action="#{mohController.toEnterResults()}" />
                     <p:menuitem class="submenu-item" ajax="false" rendered="false" value="Print Results" action="#{clientController.toMohToSelectForPrinting()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="View Results" action="#{mohController.toViewResults()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{mohController.toPrintResults()}" />
                 </p:submenu>
                 <p:submenu class="submenu" label="Tests" rendered="#{webUserController.hasPrivilege('Client_Management') and webUserController.loggedUser.webUserRoleLevel eq 'Hospital' }" >
                     <p:menuitem class="submenu-item" ajax="false" value="New RAT Request" action="#{hospitalController.toAddNewRatOrderWithNewClient()}"  />
