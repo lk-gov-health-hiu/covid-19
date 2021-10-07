@@ -128,7 +128,7 @@
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
-                            <p:column headerText="Result" width="100"  sortBy="#{c.pcrResult.name}"
+                            <p:column exportable="false" headerText="Result" width="100"  sortBy="#{c.pcrResult.name}"
                                       filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
                                 <p:selectOneMenu id="cmbResult" value="#{c.pcrResult}"  >
                                     <f:selectItem itemLabel="Select Result" ></f:selectItem>
@@ -139,6 +139,12 @@
                                 </p:selectOneMenu>
                             </p:column>
 
+                            <p:column style="display:none;" headerText="Result" width="100"  sortBy="#{c.pcrResult.name}"
+                                      filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
+                                <h:outputText  value="#{c.pcrResult.name}"></h:outputText>
+                            </p:column>
+
+                            
                             <h:commandButton class="w-100" value="Delete"  action="#{labController.deleteTest()}"
                                              onclick="if (!confirm('Are you sure you want to delete?'))
                                                                  return false" >
