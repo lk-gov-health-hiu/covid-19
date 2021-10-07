@@ -153,6 +153,11 @@
                                 <h:commandButton  value="View Results" action="#{hospitalController.toViewResult()}" class="btn btn-success">
                                     <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
                                 </h:commandButton>
+                                 <h:commandButton  value="Print Results" 
+                                                   onclick="form.target='_blank'"
+                                                   action="/print_preview" class="btn btn-success">
+                                    <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
+                                </h:commandButton>
                                 <h:commandButton rendered="false" class="btn btn-warning" value="Delete"  action="#{hospitalController.deleteTest()}"
                                                  onclick="if (!confirm('Are you sure you want to delete?'))
                                                              return false" >
