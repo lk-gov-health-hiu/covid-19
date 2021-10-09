@@ -1014,11 +1014,12 @@ public class ClientController implements Serializable {
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and c.referalInstitution in :rins "
                 + " and c.sentToLab is not null "
-                + " and c.receivedAtLab is null";
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rat) ";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("rej", false);
         m.put("sm", false);
+        m.put("rat", false);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         m.put("rins", webUserController.getLoggableInstitutions());
