@@ -94,8 +94,8 @@
                                 </h:commandButton>
 
                                 <h:panelGroup id="barcode" >
-                                    <div class="container-fluid w-100" >
-                                        <div class="row w-100 text-center" >
+                                    <div class="container-fluid " >
+<!--                                        <div class="row w-100 text-center" >
                                             <div class="col-2">Name</div>
                                             <div  class="col-1">:</div>
                                             <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
@@ -104,10 +104,10 @@
                                             <div class="col-2">ID/Passport</div>
                                             <div  class="col-1">:</div>
                                             <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
-                                        </div>
+                                        </div>-->
                                         <div class="row w-100 text-center" >
                                             <div class="col-12 w-100 text-center">
-                                                <p:barcode cache="false"  type="code39" class="w-100" value="#{hospitalController.pcr.encounterNumber}" >
+                                                <p:barcode cache="false" hrp="none"  type="code39" height="10" width="50" value="#{hospitalController.pcr.encounterNumber}" >
                                                 </p:barcode>
                                             </div>
                                         </div>

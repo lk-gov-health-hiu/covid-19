@@ -16,61 +16,14 @@
 
                 <h:panelGrid columns="1"  styleClass="alignTop" >
                     <f:facet name="header" >
-                        <h:outputLabel value="Test List" ></h:outputLabel>
+                        <h:outputLabel value="Test List to Change PCR/RAT" ></h:outputLabel>
                     </f:facet>
 
                     <h:form >
-                        <h:panelGrid rendered="true" styleClass="border border-light bg-white" columns="2" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
-                            <p:calendar value="#{regionalController.fromDate}" 
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                      
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
-                            <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
-
-                            <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
-                            <h:selectOneMenu class="form-select" value="#{regionalController.orderingCategory}" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{regionalController.covidTestOrderingCategories}" 
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
-
-                            <h:outputLabel class="h6 fw-bold"  value="Lab"></h:outputLabel>
-                            <p:autoComplete style="width: 100%;"
-                                            inputStyleClass="autocomplete"
-                                            value="#{regionalController.lab}"
-                                            forceSelection="true" tabindex="100" 
-                                            completeMethod="#{regionalController.completeLab}" 
-                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
-                            </p:autoComplete>
-
-                            <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
-                            <h:selectOneMenu class="form-select" value="#{regionalController.testType}" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{regionalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
-
-
-
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process"
-                                             class="btn btn-warning w-100"
-                                             action="#{regionalController.toListOfTests()}" ></h:commandButton>
-                                             <h:commandButton value="Change Test"
-                                             class="btn btn-warning w-100"
-                                             action="/regional/list_of_tests_to_change_pcrrat" ></h:commandButton>
-
-
-                        </h:panelGrid>
-
-
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}" rendered="true"
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" 
+                                     value="#{regionalController.tests}" rendered="true"
                                      rowIndexVar="n"
                                      var="c" 
                                      rowKey="#{c.id}" 
@@ -85,8 +38,12 @@
                                 <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
                             </p:column>
                             <p:column style="width: 7rem;" headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.pcrTestType.name}">
-                                </h:outputLabel>
+                                <h:selectOneMenu id="cmbTest" value="#{c.pcrTestType}">
+                                    <f:selectItems value="#{regionalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                                               <p:ajax event="change" process="cmbTest" listener="#{regionalController.saveEncounterAndClient(c)}" >
+                                    </p:ajax>
+                                </h:selectOneMenu>
                             </p:column>
                             <p:column headerText="Tube No"  sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>

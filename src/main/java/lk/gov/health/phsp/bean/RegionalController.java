@@ -202,7 +202,7 @@ public class RegionalController implements Serializable {
                 labSummariesToReceive.add((InstitutionCount) o);
             }
         }
-        return "/regional/summary_received_at_lab";
+        return "/regional/summary_lab_vs_ordered_to_receive";
     }
 
 
