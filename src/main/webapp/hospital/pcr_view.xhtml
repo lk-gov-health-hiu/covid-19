@@ -83,9 +83,68 @@
                     </div>
                     <div class="card-footer bg-white">
                         <div class="col-md-6">
-                            <h:commandButton class="my-2 btn btn-warning w-25 me-2" value="To Edit Details" action="#{hospitalController.toPcrEdit()}" ></h:commandButton>
-                            <h:commandButton class="my-2 btn btn-success w-25" value="Add New PCR Order" action="#{hospitalController.toAddNewPcrWithNewClient()}">
-                            </h:commandButton>
+                            <h:form>
+                                <h:commandButton class="my-2 btn btn-warning w-25 me-2" value="To Edit Details" action="#{hospitalController.toPcrEdit()}" ></h:commandButton>
+                                <h:commandButton class="my-2 btn btn-success w-25" value="Add New PCR Order" action="#{hospitalController.toAddNewPcrWithNewClient()}">
+                                </h:commandButton>
+
+                                <h:commandButton class="my-2 btn btn-warning w-25 me-2" value="Print Barcode"
+                                                 >
+                                    <p:printer target="barcode" ></p:printer>
+                                </h:commandButton>
+
+                                <h:panelGroup id="barcode" >
+                                    <div class="container-fluid " >
+<!--                                        <div class="row w-100 text-center" >
+                                            <div class="col-2">Name</div>
+                                            <div  class="col-1">:</div>
+                                            <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
+                                        </div>
+                                        <div class="row w-100 text-center" >
+                                            <div class="col-2">ID/Passport</div>
+                                            <div  class="col-1">:</div>
+                                            <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
+                                        </div>-->
+                                        <div class="row w-100 text-center" >
+                                            <div class="col-12 w-100 text-center">
+                                                <p:barcode cache="false" hrp="none"  type="code39" height="10" width="50" value="#{hospitalController.pcr.encounterNumber}" >
+                                                </p:barcode>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h:panelGroup rendered="false" >
+
+                                        <div class="container-fluid" >
+                                            <div class="row" >
+                                                <div class="col-2">Name</div>
+                                                <div  class="col-1">:</div>
+                                                <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
+                                            </div>
+                                            <div class="row" >
+                                                <div class="col-2">ID/Passport</div>
+                                                <div  class="col-1">:</div>
+                                                <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
+                                            </div>
+                                            <div class="row" >
+
+                                            </div>
+                                            <div class="row" >
+                                                <div class="col-12">
+                                                    <p:barcode cache="false"  type="code39" height="30" width="300" value="#{hospitalController.pcr.id}" >
+                                                    </p:barcode>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </h:panelGroup>
+
+
+                                </h:panelGroup>
+
+
+                            </h:form>
                         </div>
                     </div>
                 </div>

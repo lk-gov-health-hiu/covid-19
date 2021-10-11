@@ -29,7 +29,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="New RAT Request" action="#{hospitalController.toAddNewRatOrderWithNewClient()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New PCR Request" action="#{hospitalController.toAddNewPcrWithNewClient()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="New RAT Result" action="#{hospitalController.toAddNewRatWithNewClient()}" />
-                    <p:menuitem class="submenu-item" ajax="false" rendered="false" value="New PCR Result" action="#{hospitalController.toAddNewPcrWithNewClient()}" disabled="true" />
+                    <p:menuitem class="submenu-item" ajax="false" value="New PCR Result" action="#{hospitalController.toAddNewPcrWithNewClient()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Test Lists" action="#{hospitalController.toTestList()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Dispatch Samples" action="#{hospitalController.toDispatchSamplesByMohOrHospital()}"/>
                     <p:menuitem class="submenu-item" ajax="false" value="Enter Results" action="#{hospitalController.toEnterResults()}" />
@@ -48,7 +48,7 @@
                                 action="#{menuController.toSummaryByOrderedInstitution}" />
                     <p:menuitem ajax="false" value="Awaiting to be Dispatched Summary"
                                 action="#{menuController.toDispatchSummary()}" />
-                    <p:menuitem ajax="false" value="To be Receive at the Lab Summary"
+                    <p:menuitem ajax="false" value="To be Received at the Lab Summary"
                                 action="#{menuController.toDivertSummary()}" />
                     <p:menuitem ajax="false" value="Received at the Lab Summary"
                                 action="#{menuController.toReceivedAtLabSummary()}" />
@@ -75,7 +75,7 @@
                     <p:menuitem ajax="false" value="New RAT Request" rendered="false" action="#{labController.toAddNewRatOrderWithNewClient()}"  />
                     <p:menuitem ajax="false" value="New PCR Request" action="#{labController.toAddNewPcrWithNewClient()}" />
                     <p:menuitem ajax="false" value="New RAT With Result" action="#{labController.toAddNewRatWithNewClient()}" />
-                    <p:menuitem ajax="false" value="New PCR With Result" rendered="false" action="#{labController.toAddNewRatWithNewClient()}" />
+                    <p:menuitem ajax="false" value="New PCR With Result"  action="#{labController.toAddNewRatWithNewClient()}" />
                     <p:menuitem ajax="false" value="Test Lists" action="#{labController.toTestListWithoutResults()}" />
                     <p:menuitem ajax="false" value="Upload Orders" action="#{menuController.toUploadOrders()}" />
                     <p:menuitem ajax="false" value="Upload Results" action="#{menuController.toUploadResults()}" />

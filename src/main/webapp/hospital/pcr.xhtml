@@ -30,8 +30,7 @@
                                     <div class="col-md-3 mb-4">
                                         <h:outputLabel value="BHT / OPD No/ Clinic No:" for="bhtNo" class="h6 fw-bold mb-2"  />
                                         <h:inputText id="bhtNo"  value="#{hospitalController.pcr.bht}"
-
-                                                     required="true"
+                                                     required="false"
                                                      tabindex="2"
                                                      class="form-control w-100"
                                                      requiredMessage="Need a Number">
@@ -57,7 +56,7 @@
                                     </div>
 
                                     <div class="col-md-3 mb-4">
-                                        <h:outputLabel value="Ward | Unit | Clinic" for="wardunit" class="h6 fw-bold mb-2"  />
+                                        <h:outputLabel value="Ward | Unit | Clinic | Flight No" for="wardunit" class="h6 fw-bold mb-2"  />
                                         <h:inputText id="wardunit" tabindex="114" value="#{hospitalController.pcr.unitWard}"
                                                      class="form-control w-100"
                                                      required="true"
@@ -122,7 +121,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-3 mb-4">
-                                        <h:outputLabel value="NIC/NIC of the guardian/Passport No. :" for="nic" class="h6 fw-bold mb-2" />
+                                        <h:outputLabel value="NIC / Passport No. :" for="nic" class="h6 fw-bold mb-2" />
                                         <h:inputText id="nic"
 
                                                      tabindex="5"

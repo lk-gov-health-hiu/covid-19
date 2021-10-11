@@ -276,7 +276,7 @@ public class Encounter implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" + id + "";
+        return id + "";
     }
 
     public Client getClient() {
