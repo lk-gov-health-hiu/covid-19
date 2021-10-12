@@ -59,13 +59,24 @@
     </head>
 
     <body>
-        <button class="no-print" id="print-button" onclick="window.print()">
-            Print Investigation
-        </button>
-    <h:form >
-        <h:commandButton class="no-print" value="Back" action="#{clientController.toLabToSelectForPrinting()}" >
-        </h:commandButton>
-    </h:form>
+
+        <div class="row no-print" >
+            <div class="col-2  no-print" >
+                <button class="no-print btn btn-primary w-75" id="print-button" onclick="window.print()">
+                    Print
+                </button>
+            </div>
+            <div class="col-2  no-print" >
+                <h:form >
+                    <h:commandButton class="no-print btn btn-secondary w-75" value="Back" action="#{clientController.toLabToSelectForPrinting()}" >
+                    </h:commandButton>
+                </h:form>
+            </div>
+        </div>
+
+
+
+
 
 
     <ui:repeat value="#{clientController.selectedToPrint}" var="p">

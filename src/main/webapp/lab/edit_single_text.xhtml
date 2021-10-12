@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+
+            <ui:define name="title">
+                Edit Test
+            </ui:define>
+
+            <ui:define name="content">
+                <h:panelGrid columns="1" styleClass="alignTop w-100 bg-white border border-light" >
+                    <f:facet name="header" >
+                        <h:outputLabel class="fs-5 fw-bold" value="Edit List" ></h:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:commandButton class="btn btn-sm btn-primary" 
+                                         value="Save" />
+                        <p:commandButton class="btn btn-sm btn-secondary" 
+                                         value="Back" />
+                        
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="Sampelled at" ></p:outputLabel>
+                            <p:datePicker showTime="true" 
+                                          value="#{labController.test.sampledAt}" ></p:datePicker>
+                            
+                            <p:outputLabel value="Received at" ></p:outputLabel>
+                            <p:datePicker showTime="true" 
+                                          value="#{labController.test.receivedAtLabAt}" ></p:datePicker>
+                            
+                            <p:outputLabel value="Result Entered at" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Result Reviewed at" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Result Confirmed at" ></p:outputLabel>
+                            
+                        </h:panelGrid>
+                        
+                    </h:form>
+                </h:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

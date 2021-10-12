@@ -103,7 +103,7 @@
                                 <h:outputLabel value="#{n+1}" ></h:outputLabel>
                             </p:column>
 
-                            <p:column headerText="Tube No"  sortBy="#{c.encounterNumber}"
+                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}"
                                       filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <h:inputText id="txtTubeNo" value="#{c.encounterNumber}" style="width: 95%;" >
                                     <p:ajax event="blur" process="txtTubeNo" 

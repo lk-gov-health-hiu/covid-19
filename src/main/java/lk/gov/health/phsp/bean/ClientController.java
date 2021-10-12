@@ -1830,7 +1830,7 @@ public class ClientController implements Serializable {
 
         if (e.getClient().getPerson().getAgeDays() > 2) {
             html = html.replace("{age}", e.getClient().getPerson().getAge());
-        }else{
+        } else {
             html = html.replace("{age}", "");
         }
 
@@ -1951,50 +1951,70 @@ public class ClientController implements Serializable {
 
         if (e.getCreatedAt() != null) {
             html = html.replace("{requested_date}", CommonController.dateTimeToString(e.getCreatedAt()));
+            html = html.replace("{requested_time}", CommonController.dateTimeToString(e.getCreatedAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{requested_date}", "");
+            html = html.replace("{requested_time}", "");
         }
 
         if (e.getSampledAt() != null) {
             html = html.replace("{sampled_date}", CommonController.dateTimeToString(e.getSampledAt()));
+            html = html.replace("{sampled_time}", CommonController.dateTimeToString(e.getSampledAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{sampled_date}", "");
+            html = html.replace("{sampled_time}", "");
         }
 
         if (e.getSentToLabAt() != null) {
             html = html.replace("{dispatched_date}", CommonController.dateTimeToString(e.getSentToLabAt()));
+            html = html.replace("{dispatched_time}", CommonController.dateTimeToString(e.getSentToLabAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{dispatched_date}", "");
+            html = html.replace("{dispatched_time}", "");
         }
 
         if (e.getReceivedAtLabAt() != null) {
             html = html.replace("{received_date}", CommonController.dateTimeToString(e.getReceivedAtLabAt()));
+            html = html.replace("{received_time}", CommonController.dateTimeToString(e.getReceivedAtLabAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{received_date}", "");
+            html = html.replace("{received_time}", "");
         }
 
         if (e.getResultEnteredAt() != null) {
             html = html.replace("{entered_date}", CommonController.dateTimeToString(e.getResultEnteredAt()));
+            html = html.replace("{entered_time}", CommonController.dateTimeToString(e.getResultEnteredAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{entered_date}", "");
+            html = html.replace("{entered_time}", "");
         }
 
         if (e.getResultReviewedAt() != null) {
             html = html.replace("{reviewed_date}", CommonController.dateTimeToString(e.getResultReviewedAt()));
+            html = html.replace("{reviewed_time}", CommonController.dateTimeToString(e.getResultReviewedAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{reviewed_date}", "");
+            html = html.replace("{reviewed_time}", "");
         }
 
         if (e.getResultConfirmedAt() != null) {
             html = html.replace("{confirmed_date}", CommonController.dateTimeToString(e.getResultConfirmedAt()));
+            html = html.replace("{confirmed_time}", CommonController.dateTimeToString(e.getResultConfirmedAt(), "dd-MMM-yyyy hh:mm"));
         } else {
             html = html.replace("{confirmed_date}", "");
+            html = html.replace("{confirmed_time}", "");
+        }
+        
+         if (e.getCreatedBy()!= null) {
+            html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
+        } else {
+            html = html.replace("{created_by}", "");
         }
 
-        if (e.getSampledAt() != null) {
-            html = html.replace("{sampled_date}", CommonController.dateTimeToString(e.getResultConfirmedAt()));
+        if (e.getSampledBy()!= null) {
+            html = html.replace("{sampled_by}", e.getSampledBy().getPerson().getName());
         } else {
-            html = html.replace("{sampled_date}", "");
+            html = html.replace("{sampled_by}", "");
         }
 
         if (e.getResultEnteredBy() != null) {

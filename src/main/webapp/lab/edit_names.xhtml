@@ -71,7 +71,7 @@
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                                      rows="10"
                                      >
-                            <p:column headerText="Tube No." id="txtTubeNo" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                            <p:column headerText="Test No." id="txtTubeNo" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <h:inputText value="#{c.encounterNumber}" >
                                     <p:ajax event="blur" process="txtTubeNo"
                                             listener="#{clientController.saveLabNo(c)}" >

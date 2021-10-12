@@ -101,7 +101,7 @@
                                 <p:outputLabel value="#{c.bht}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column headerText="Tube No"  style="width: 8rem;" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
+                            <p:column headerText="Test No"  style="width: 8rem;" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
                                 <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
                             </p:column>
                             <p:column  headerText="Lab No"  style="width: 8rem;"  sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains" >
@@ -163,7 +163,7 @@
                                 </p:inputText>
                             </p:column>
 
-                            <p:column headerText="Actions" width="60" exportable="false">
+                            <p:column rendered="false" headerText="Actions" width="60" exportable="false">
                                 <h:commandButton value="Reject" action="#{clientController.markSelectedAsRejectedAtDataEntry(c)}" >
                                 </h:commandButton>
                             </p:column>
