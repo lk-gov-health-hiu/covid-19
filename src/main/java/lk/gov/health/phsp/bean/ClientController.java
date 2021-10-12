@@ -1828,7 +1828,11 @@ public class ClientController implements Serializable {
         }
         e.getClient().getPerson().calAgeFromDob();
 
-        html = html.replace("{age}", e.getClient().getPerson().getAge());
+        if (e.getClient().getPerson().getAgeDays() > 2) {
+            html = html.replace("{age}", e.getClient().getPerson().getAge());
+        }else{
+            html = html.replace("{age}", "");
+        }
 
         if (e.getClient().getPerson().getSex() != null) {
             html = html.replace("{sex}", e.getClient().getPerson().getSex().getName());
