@@ -1526,7 +1526,7 @@ public class LabController implements Serializable {
         encounterFacade.edit(deleting);
     }
     
-    public String toEditTest() {
+    public String toEditTestSingle() {
         if (test == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
