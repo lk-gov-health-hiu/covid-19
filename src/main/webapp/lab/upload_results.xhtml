@@ -44,8 +44,8 @@
                             </p:selectOneMenu>
 
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
-                            <p:selectOneMenu value="#{clientController.orderingCategory}" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
+                            <p:selectOneMenu value="#{clientController.orderingCategory}" required="true" >
+                                <f:selectItem itemLabel="Please select" ></f:selectItem>
                                 <f:selectItems value="#{hospitalController.covidTestOrderingCategories}" 
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>

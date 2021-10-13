@@ -3089,6 +3089,10 @@ public class ClientController implements Serializable {
                             result = itemApplicationController.getPcrPositive();
                         } else if (strResult.toLowerCase().contains("pos")) {
                             result = itemApplicationController.getPcrPositive();
+                        } else if (strResult.toLowerCase().contains("not detected")) {
+                            result = itemApplicationController.getPcrNegative();
+                        } else if (strResult.toLowerCase().contains("detected") && !strResult.toLowerCase().contains("not")) {
+                            result = itemApplicationController.getPcrPositive();
                         } else {
                             result = itemApplicationController.getPcrNegative();
                         }
