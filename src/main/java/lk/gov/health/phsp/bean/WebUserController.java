@@ -1909,7 +1909,7 @@ public class WebUserController implements Serializable {
                 personController.save(newPerson);
 
                 WebUser newUser = new WebUser();
-                newUser.setName("sa" + CommonController.prepareAsCode(line).toLowerCase());
+                newUser.setName("sa_" + CommonController.prepareAsCode(line).toLowerCase());
                 newUser.setPerson(newPerson);
                 newUser.setInstitution(newIns);
                 newUser.setArea(institution.getRdhsArea());

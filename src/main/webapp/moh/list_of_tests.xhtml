@@ -79,7 +79,7 @@
                             <f:facet name="header" >
                                 <h3 class="m-0 my-3 fs-5 fw-bold text-secondary">Institution : #{webUserController.loggedInstitution.name}</h3>
                             </f:facet>
-                            <p:column headerText="Tube No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" style="width:10em;">
+                            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" style="width:10em;">
                                 <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains"  style="width:4em;">

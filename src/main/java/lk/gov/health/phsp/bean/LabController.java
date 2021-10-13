@@ -1525,6 +1525,14 @@ public class LabController implements Serializable {
         JsfUtil.addSuccessMessage("Removed");
         encounterFacade.edit(deleting);
     }
+    
+    public String toEditTest() {
+        if (test == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/lab/edit_single_text";
+    }
 
     private void fillRegionalMohsAndHospitals() {
         List<InstitutionType> its = new ArrayList<>();
