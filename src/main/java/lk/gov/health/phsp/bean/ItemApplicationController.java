@@ -34,6 +34,7 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.InvestigationFilterType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
 
@@ -55,6 +56,8 @@ public class ItemApplicationController {
     private List<Item> durationUnits;
     private List<Item> strengthUnits;
     private List<Item> issueUnits;
+
+    private List<Item> investigationFilters;
 
     private List<Item> pcrResults;
 
@@ -533,6 +536,24 @@ public class ItemApplicationController {
 
     public void setRat(Item rat) {
         this.rat = rat;
+    }
+
+    public List<Item> getInvestigationFilters() {
+       List<Item> output = new ArrayList<>();
+       for (InvestigationFilterType filter: InvestigationFilterType.values()) {
+            String code = filter.getCode();
+            String label = filter.getLabel();
+            Item item = new Item();
+            item.setCode(code);
+            item.setName(label);
+            output.add(item);
+       }
+       this.investigationFilters = output;
+       return this.investigationFilters;
+    }
+
+    public void setInvestigationFilters(List<Item> investigationFilters) {
+        this.investigationFilters = investigationFilters;
     }
 
     public List<Item> getCovidTestOrderingCategories() {
