@@ -2145,7 +2145,7 @@ public class RegionalController implements Serializable {
         return awaitingDispatch;
     }
 
-    public List<Item> getInvesgitationFilters() {
+    public List<Item> getInvestigationFilters() {
         return itemApplicationController.getInvestigationFilters();
     }
 
