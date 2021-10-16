@@ -902,7 +902,7 @@ public class LabController implements Serializable {
             this.filter = "createdat";
         }
 
-        switch (this.filter) {
+        switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
                 j += " and (c.createdAt > :fd and c.createdAt < :td) ";
                 break;
