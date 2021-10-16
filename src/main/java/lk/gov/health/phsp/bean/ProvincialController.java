@@ -135,6 +135,7 @@ public class ProvincialController implements Serializable {
 
     private Area district;
     private Area mohArea;
+    private String filter;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -530,7 +531,25 @@ public class ProvincialController implements Serializable {
         j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province ) ";
         m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
         m.put("province", webUserController.getLoggedInstitution().getProvince());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -567,7 +586,25 @@ public class ProvincialController implements Serializable {
         j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province ) ";
         m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
         m.put("province", webUserController.getLoggedInstitution().getProvince());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -720,7 +757,23 @@ public class ProvincialController implements Serializable {
             m.put("province", webUserController.getLoggedInstitution().getProvince());
         }
 
-        j += " and c.createdAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1581,4 +1634,15 @@ public class ProvincialController implements Serializable {
         this.managementType = managementType;
     }
 
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public List<Item> getInvestigationFilters() {
+        return itemApplicationController.getInvestigationFilters();
+    }
 }
