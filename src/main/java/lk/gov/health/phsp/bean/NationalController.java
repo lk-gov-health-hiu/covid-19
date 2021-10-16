@@ -323,6 +323,10 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
                 j += " and (c.createdAt > :fd and c.createdAt < :td) ";
@@ -391,6 +395,10 @@ public class NationalController implements Serializable {
 
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
@@ -594,6 +602,10 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
                 j += " and (c.createdAt > :fd and c.createdAt < :td) ";
@@ -654,6 +666,10 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
                 j += " and (c.createdAt > :fd and c.createdAt < :td) ";
@@ -709,6 +725,10 @@ public class NationalController implements Serializable {
 
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
@@ -770,6 +790,10 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
 
         m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
@@ -942,6 +966,10 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
                 j += " and (c.createdAt > :fd and c.createdAt < :td) ";
@@ -1011,6 +1039,10 @@ public class NationalController implements Serializable {
         j += " and c.institution.rdhsArea is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
@@ -1629,6 +1661,10 @@ public class NationalController implements Serializable {
 
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
