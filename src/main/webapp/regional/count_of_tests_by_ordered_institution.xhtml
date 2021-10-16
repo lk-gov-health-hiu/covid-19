@@ -17,12 +17,18 @@
 
                     <h:form >
                         <p:panelGrid columns="2" class="border border-light" >
-                            <p:outputLabel value="Ordered From" class="fs-6 fw-bold" ></p:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
+                                <f:selectItems value="#{regionalController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a" class="fs-6">
                             </p:calendar><!-- comment -->
 
-                            <p:outputLabel value="Ordered To" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:outputLabel value="To" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm a" class="fs-6"></p:calendar>
 
                             <p:outputLabel value="Ordering Category" class="fs-6 fw-bold"></p:outputLabel>
@@ -34,7 +40,7 @@
                             </p:selectOneMenu>
 
                             <p:outputLabel  value="Lab" class="fs-6 fw-bold"></p:outputLabel>
-                            <p:autoComplete 
+                            <p:autoComplete
                                             inputStyleClass="autocomplete"
                                             value="#{regionalController.lab}"
                                             forceSelection="true" tabindex="100"
