@@ -18,18 +18,24 @@
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
-                            <p:calendar value="#{labController.fromDate}" 
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{labController.filter}" class="form-select">
+                                <f:selectItems value="#{labController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                            <p:calendar value="#{labController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel value="Ordered To" class="h6 fw-bold" ></h:outputLabel>
+                            <h:outputLabel value="To" class="h6 fw-bold" ></h:outputLabel>
                             <p:calendar value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <h:outputLabel value="Ordering Category" class="h6 fw-bold" ></h:outputLabel>
                             <h:selectOneMenu value="#{labController.orderingCategory}" class="form-select" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{labController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
@@ -38,8 +44,8 @@
                             <p:autoComplete style="width: 100%;"
                                             inputStyleClass="autocomplete"
                                             value="#{labController.lab}"
-                                            forceSelection="true" tabindex="100" 
-                                            completeMethod="#{labController.completeLab}" 
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{labController.completeLab}"
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
@@ -64,8 +70,8 @@
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable id="tbl" value="#{labController.institutionTypeCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

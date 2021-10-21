@@ -51,6 +51,7 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.InvestigationFilterType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
@@ -116,7 +117,8 @@ public class NationalController implements Serializable {
     private Encounter deleting;
 
     private String searchingName;
-    
+    private String filter;
+
     private WebUser assignee;
 
     private List<Encounter> tests;
@@ -170,8 +172,8 @@ public class NationalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
+
+
     public String searchByName() {
         if (searchingName == null && searchingName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a name to search");
@@ -218,8 +220,7 @@ public class NationalController implements Serializable {
         }
 
     }
-    
-    
+
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -322,11 +323,24 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
-
-
-
         m.put("td", getToDate());
 
         if (testType != null) {
@@ -382,11 +396,26 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt< :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
-
-
-
         m.put("td", getToDate());
 
         if (testType != null) {
@@ -573,11 +602,26 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
-
-
-
         m.put("td", getToDate());
 
         if (testType != null) {
@@ -621,7 +665,26 @@ public class NationalController implements Serializable {
         j += " and c.institution.pdhsArea is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -663,11 +726,25 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
-
-
-
         m.put("td", getToDate());
 
         if (testType != null) {
@@ -708,10 +785,31 @@ public class NationalController implements Serializable {
                 + " from Encounter c "
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
+
         j += " and c.institution.institutionType is null ";
         j += " and c.encounterType=:etype ";
+
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -868,7 +966,25 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -923,9 +1039,29 @@ public class NationalController implements Serializable {
         j += " and c.institution.rdhsArea is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
         if (pdhs != null) {
             j += " and (c.institution.rdhsArea is null and c.institution.province=:pro) ";
             m.put("pro", pdhs.getProvince());
@@ -1526,7 +1662,24 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and c.createdAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -2262,6 +2415,10 @@ public class NationalController implements Serializable {
         return itemApplicationController.getCovidTestOrderingCategories();
     }
 
+    public List<Item> getInvestigationFilters() {
+        return itemApplicationController.getInvestigationFilters();
+    }
+
     public List<Item> getCovidTestTypes() {
         return itemApplicationController.getCovidTestTypes();
     }
@@ -2509,8 +2666,6 @@ public class NationalController implements Serializable {
     public String getInstitutionTypeName() {
         return this.institutionType.name();
     }
-    
-    
 
     public void setInstitutionType(InstitutionType institutionType) {
         this.institutionType = institutionType;
@@ -2689,6 +2844,14 @@ public class NationalController implements Serializable {
 
     public void setListedToDivert(List<Encounter> listedToDivert) {
         this.listedToDivert = listedToDivert;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public List<Encounter> getSelectedToDivert() {

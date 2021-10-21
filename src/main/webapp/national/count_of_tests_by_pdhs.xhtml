@@ -18,12 +18,19 @@
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                         <h:panelGrid class="shadow-lg p-3 mb-5 bg-white rounded" columns="2" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                <f:selectItems value="#{nationalController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
                             <p:calendar value="#{nationalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
@@ -35,7 +42,7 @@
                             </h:selectOneMenu>
 
                             <h:outputLabel class="h6 fw-bold" value="Lab"></h:outputLabel>
-                            <p:autoComplete style="width: 100%;"
+                            <p:autoComplete
                                             inputStyleClass="autocomplete"
                                             value="#{nationalController.lab}"
                                             forceSelection="true" tabindex="100"
@@ -49,8 +56,6 @@
                                 <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
-
-
 
                             <h:commandButton value="Generate Excel" class="btn btn-success w-100">
                                 <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_provincial_departmants" ></p:dataExporter>
