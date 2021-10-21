@@ -18,23 +18,29 @@
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
-                            <p:calendar value="#{nationalController.fromDate}" 
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                <f:selectItems value="#{nationalController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                            <p:calendar value="#{nationalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                            </p:calendar>
 
-                            <h:outputLabel value="Ordered To" class="h6 fw-bold" ></h:outputLabel>
+                            <h:outputLabel value="To" class="h6 fw-bold" ></h:outputLabel>
                             <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <h:outputLabel value="Ordering Category" class="h6 fw-bold" ></h:outputLabel>
                             <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
 
-                          
+
 
                             <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
                             <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
@@ -57,8 +63,8 @@
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                             <p:dataTable reflow="true" id="tbl" value="#{nationalController.institutionTypeCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

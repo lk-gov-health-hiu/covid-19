@@ -9,11 +9,11 @@
     <h:body>
 
         <ui:composition template="/regional/reports_index.xhtml">
-            
+
             <ui:define name="title">
                 List of test without MOH(RDHS)
             </ui:define>
-            
+
             <ui:define name="reports">
 
                 <h:form >
@@ -26,18 +26,24 @@
                         <div class="col-6 d-flex justify-content-center" >
 
                             <h:panelGrid columns="2" class="shadow-lg p-3 bg-white rounded" >
-                                <h:outputLabel class="fs-6 fw-bold" value="Ordered From" ></h:outputLabel>
-                                <p:calendar value="#{regionalController.fromDate}" 
+                                <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                                <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
+                                    <f:selectItems value="#{regionalController.investigationFilters}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c.code}" ></f:selectItems>
+                                </h:selectOneMenu>
+                                <h:outputLabel class="fs-6 fw-bold" value="From" ></h:outputLabel>
+                                <p:calendar value="#{regionalController.fromDate}"
                                             pattern="dd MMMM yyyy hh:mm a">
                                 </p:calendar><!-- comment -->
 
-                                <h:outputLabel class="fs-6 fw-bold" value="Ordered To" ></h:outputLabel>
+                                <h:outputLabel class="fs-6 fw-bold" value="To" ></h:outputLabel>
                                 <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                                 <h:outputLabel class="fs-6 fw-bold" value="Ordering Category" ></h:outputLabel>
                                 <h:selectOneMenu class="form-select" value="#{regionalController.orderingCategory}" >
                                     <f:selectItem itemLabel="All" ></f:selectItem>
-                                    <f:selectItems value="#{regionalController.covidTestOrderingCategories}" 
+                                    <f:selectItems value="#{regionalController.covidTestOrderingCategories}"
                                                    var="c" itemLabel="#{c.name}"
                                                    itemValue="#{c}" ></f:selectItems>
                                 </h:selectOneMenu>
@@ -60,8 +66,8 @@
                                 <p:autoComplete style="width: 100%;"
                                                 inputStyleClass="autocomplete"
                                                 value="#{regionalController.lab}"
-                                                forceSelection="true" tabindex="100" 
-                                                completeMethod="#{regionalController.completeLab}" 
+                                                forceSelection="true" tabindex="100"
+                                                completeMethod="#{regionalController.completeLab}"
                                                 var="l" itemLabel="#{l.name}" itemValue="#{l}">
                                 </p:autoComplete>
 
@@ -88,7 +94,7 @@
                                                                itemLabel="#{c.name}"
                                                                >
                                                 </f:selectItems>
-                                            </h:selectOneMenu>                            
+                                            </h:selectOneMenu>
                                             <h:commandButton class="w-100 btn btn-warning" action="#{regionalController.assignMohAreaToSelectedEncounters()}"
                                                              value="Assign to MOH" ></h:commandButton>
                                         </h:panelGrid>
@@ -98,7 +104,7 @@
                                     <div class="col-12" >
                                         <h:panelGrid columns="3" class="shadow-lg p-3 bg-white rounded">
                                             <h:outputLabel class="fs-6 fw-bold" value="Assigning District" ></h:outputLabel>
-                                            <h:selectOneMenu class="form-select" value="#{regionalController.district}" 
+                                            <h:selectOneMenu class="form-select" value="#{regionalController.district}"
                                                              style="width: 10em;">
                                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                                 <f:selectItems value="#{areaController.districts}" var="c"
@@ -106,7 +112,7 @@
                                                                itemLabel="#{c.name}"
                                                                >
                                                 </f:selectItems>
-                                            </h:selectOneMenu>                            
+                                            </h:selectOneMenu>
                                             <h:commandButton class="w-100 btn btn-warning " action="#{regionalController.assignDistrictToSelectedEncounters()}"
                                                              value="Assign to District" ></h:commandButton>
                                         </h:panelGrid>
@@ -114,7 +120,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>    
+                    </div>
 
 
 
@@ -124,11 +130,11 @@
 
                     <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}" rendered="true"
                                  rowIndexVar="n"
-                                 var="c" 
-                                 rowKey="#{c.id}" 
+                                 var="c"
+                                 rowKey="#{c.id}"
                                  rowStyleClass="#{c.resultCssClass}"
                                  selection="#{regionalController.selectedToAssign}"
-                                 paginator="true" 
+                                 paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                  rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

@@ -18,12 +18,18 @@
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                <f:selectItems value="#{nationalController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{nationalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                            </p:calendar>
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
@@ -35,7 +41,7 @@
                             </h:selectOneMenu>
 
                             <h:outputLabel class="h6 fw-bold" value="Lab"></h:outputLabel>
-                            <p:autoComplete style="width: 100%;"
+                            <p:autoComplete
                                             inputStyleClass="autocomplete"
                                             value="#{nationalController.lab}"
                                             forceSelection="true" tabindex="100"
