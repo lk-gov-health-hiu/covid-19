@@ -1549,6 +1549,26 @@ public class NationalController implements Serializable {
         return "/national/list_of_tests";
     }
 
+    
+    
+    public String toListOfTestsDetail() {
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and c.createdAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/national/list_of_tests_details";
+    }
+
+    
     public String toListOfTestsWithoutMohForRegionalLevel() {
         Map m = new HashMap();
         String j = "select c "
