@@ -12,8 +12,8 @@
         <ui:composition template="/template1.xhtml">
             <ui:define name="content">
                 <h:form >
-                   
-                    
+
+
                     <h:outputStylesheet library="css" name="tem1.css"/>
                     <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                         <f:facet name="header" >
@@ -100,8 +100,12 @@
                                      >
                             <p:column selectionMode="multiple" width="40" ></p:column>
                             <p:column headerText="Test No" width="90" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
-                                <p:outputLabel id="txtTestNo" value="#{c.encounterNumber}" >
-                                </p:outputLabel>
+                                <p:inputText value="#{c.encounterNumber}" 
+                                             id="txtTubeNo" style="width: 98%;" >
+                                    <p:ajax event="blur" process="txtTubeNo"
+                                            listener="#{clientController.saveLabNo(c)}" >
+                                    </p:ajax>
+                                </p:inputText>
                             </p:column>
                             <p:column headerText="Created at" sortBy="#{c.createdAt}"  >
                                 <p:outputLabel value="#{c.createdAt}" ></p:outputLabel>
