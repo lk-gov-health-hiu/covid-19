@@ -137,7 +137,7 @@
                                 <div class="col-md-3">
                                     <label for="gender" class="form-label fw-bold">Gender<small
                                             class="text-muted px-2">Required</small></label>
-                                    <h:selectOneMenu class="form-select w-100" id="sex" value="#{hospitalController.rat.client.person.sex}"
+                                    <h:selectOneMenu class="form-select w-100" id="gender" value="#{hospitalController.rat.client.person.sex}"
                                                      required="true" tabindex="107" requiredMessage="Please select Gender">
                                         <f:selectItems value="#{hospitalController.sexes}" var="s" itemLabel="#{s.name}" itemValue="#{s}">
                                         </f:selectItems>
@@ -185,7 +185,7 @@
                                                  value="#{hospitalController.rat.client.person.phone1}" title="Mobile"
                                                  validatorMessage="Please check the number">
                                     </h:inputText>
-                                    <h:message class="tex-danger small" for="phone1"></h:message>
+                                    <h:message class="text-danger small" for="phone1"></h:message>
                                 </div>
                             </div>
                             <div class="row mb-4">
