@@ -17,18 +17,24 @@
 
                     <h:form >
                         <p:panelGrid columns="2" >
-                            <p:outputLabel value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{provincialController.fromDate}" 
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
+                                <f:selectItems value="#{provincialController.investigationFilters}"
+                                              var="c" itemLabel="#{c.name}"
+                                              itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{provincialController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <p:outputLabel value="Ordered To" ></p:outputLabel>
+                            <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu value="#{provincialController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
@@ -37,8 +43,8 @@
                             <p:autoComplete style="width: 100%;"
                                             inputStyleClass="autocomplete"
                                             value="#{provincialController.lab}"
-                                            forceSelection="true" tabindex="100" 
-                                            completeMethod="#{provincialController.completeLab}" 
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{provincialController.completeLab}"
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
@@ -61,15 +67,15 @@
                             <p:autoComplete style="width: 100%;"
                                             inputStyleClass="autocomplete"
                                             value="#{provincialController.lab}"
-                                            forceSelection="true" tabindex="100" 
-                                            completeMethod="#{provincialController.completeLab}" 
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{provincialController.completeLab}"
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
                             <p:commandButton ajax="false" value="Generate Excel">
                                 <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
+                            <p:commandButton ajax="false" value="Process"
                                              action="#{provincialController.toCountOfResultsByOrderedInstitution()}" ></p:commandButton>
 
 
@@ -78,8 +84,8 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{provincialController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

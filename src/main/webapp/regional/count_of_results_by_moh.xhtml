@@ -17,12 +17,18 @@
 
                     <h:form >
                         <p:panelGrid columns="2" class="border border-light" >
-                            <p:outputLabel value="Ordered From" class="fs-6 fw-bold" ></p:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
+                                <f:selectItems value="#{provincialController.investigationFilters}"
+                                              var="c" itemLabel="#{c.name}"
+                                              itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:datePicker value="#{regionalController.fromDate}"
                                           pattern="dd MMMM yyyy hh:mm" class="fs-6" showTime="true">
                             </p:datePicker><!-- comment -->
 
-                            <p:outputLabel value="Ordered To" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:outputLabel value="To" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:datePicker value="#{regionalController.toDate}" showTime="true"
                                           pattern="dd MMMM yyyy hh:mm" class="fs-6">
                             </p:datePicker>
