@@ -105,35 +105,35 @@
                                 <div class="col-md-3">
                                     <label for="nic" class="form-label fw-bold">NIC | Passport Number</label>
                                     <p:inputText id="nic" class="form-control" autocomplete="off"
-                                      value="#{hospitalController.rat.client.person.nic}" title="NIC" validatorMessage="Please check the number">
-                                      <f:ajax event="blur" render="year month sex nicExists" execute="@this"
-                                        listener="#{hospitalController.checkNicExistsForRat()}"></f:ajax>
+                                                 value="#{hospitalController.rat.client.person.nic}" title="NIC" validatorMessage="Please check the number">
+                                        <f:ajax event="blur" render="year month sex nicExists" execute="@this"
+                                                listener="#{hospitalController.checkNicExistsForRat()}"></f:ajax>
                                     </p:inputText>
                                     <h:message class="text-danger small" for="nic"></h:message>
                                     <h:panelGroup id="nicExists">
-                                      <h:commandLink rendered="#{hospitalController.nicExistsForRat}" immediate="true"
-                                        action="#{hospitalController.toAddNewRatWithExistingNic(1)}"
-                                        value="NIC exists. Click here to load the patient" class="btn btn-secondary btn-sm"></h:commandLink>
+                                        <h:commandLink rendered="#{hospitalController.nicExistsForRat}" immediate="true"
+                                                       action="#{hospitalController.toAddNewRatWithExistingNic(1)}"
+                                                       value="NIC exists. Click here to load the patient" class="btn btn-secondary btn-sm"></h:commandLink>
                                     </h:panelGroup>
-                                  </div>
-                                  <div class="col-md-3">
+                                </div>
+                                <div class="col-md-3">
                                     <label for="age" class="form-label fw-bold">Age (Y|M|D)</label>
                                     <div class="d-flex">
-                                      <p:inputText class="form-control w-50" autocomplete="off" id="year" requiredMessage="Age is required"
-                                        placeholder="Years" value="#{hospitalController.rat.client.person.ageYears}" required="true">
-                                        <f:ajax event="keyup" execute="@this month day" render="calDob"></f:ajax>
-                                      </p:inputText>
-                                      <h:inputText class="form-control w-25" autocomplete="off" id="month"
-                                        value="#{hospitalController.rat.client.person.ageMonths}">
-                                        <f:ajax event="keyup" execute="@this year day" render="calDob"></f:ajax>
-                                      </h:inputText>
-                                      <h:inputText class="form-control w-25" autocomplete="off" id="day"
-                                        value="#{hospitalController.rat.client.person.ageDays}">
-                                        <f:ajax event="keyup" execute="year month day" render="calDob"></f:ajax>
-                                      </h:inputText>
-                                      <h:message class="small text-danger" for="year"></h:message>
+                                        <p:inputText class="form-control w-50" autocomplete="off" id="year" requiredMessage="Age is required"
+                                                     placeholder="Years" value="#{hospitalController.rat.client.person.ageYears}" required="true">
+                                            <f:ajax event="keyup" execute="@this month day" render="calDob"></f:ajax>
+                                        </p:inputText>
+                                        <h:inputText class="form-control w-25" autocomplete="off" id="month"
+                                                     value="#{hospitalController.rat.client.person.ageMonths}">
+                                            <f:ajax event="keyup" execute="@this year day" render="calDob"></f:ajax>
+                                        </h:inputText>
+                                        <h:inputText class="form-control w-25" autocomplete="off" id="day"
+                                                     value="#{hospitalController.rat.client.person.ageDays}">
+                                            <f:ajax event="keyup" execute="year month day" render="calDob"></f:ajax>
+                                        </h:inputText>
+                                        <h:message class="small text-danger" for="year"></h:message>
                                     </div>
-                                  </div>
+                                </div>
                                 <div class="col-md-3">
                                     <label for="gender" class="form-label fw-bold">Gender<small
                                             class="text-muted px-2">Required</small></label>
@@ -200,6 +200,26 @@
                                                  requiredMessage="Please enter the address" value="#{hospitalController.rat.client.person.address}"
                                                  title="Address"></h:inputText>
                                     <h:message class="text-danger small" for="address"></h:message>
+                                </div>
+                            </div>
+                            <div class="row my-4 py-2 bg-light">
+                                <h5 class="text-muted fw-bold">Workplace Details</h5>
+                                <div class="col-md-4">
+                                    <label for="workplace" class="form-label fw-bold">Workplace Name</label>
+                                    <h:inputText class="form-control" value="#{hospitalController.rat.client.person.workPlace}" id="workplace">
+                                    </h:inputText>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="workplaceContact" class="form-label fw-bold">Workplace Contact Person's Name</label>
+                                    <h:inputText class="form-control" value="#{hospitalController.rat.client.person.workplaceContact}"
+                                                 id="workplaceContact">
+                                    </h:inputText>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="workplaceContactNumber" class="form-label fw-bold">Workplace Contact Number</label>
+                                    <h:inputText tabindex="114" class="form-control"
+                                                 value="#{hospitalController.rat.client.person.workplaceContactDetails}" id="workplaceContactNumber">
+                                    </h:inputText>
                                 </div>
                             </div>
                             <div class="row">
