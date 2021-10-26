@@ -8,11 +8,11 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
-            
+
             <ui:define name="title">
                 Result Counts by Ordered Institution_RDHS
             </ui:define>
-            
+
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
@@ -22,12 +22,18 @@
 
                     <h:form >
                         <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
+                                <f:selectItems value="#{regionalController.investigationFilters}"
+                                              var="c" itemLabel="#{c.name}"
+                                              itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>

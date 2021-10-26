@@ -168,6 +168,8 @@ public class RegionalController implements Serializable {
     private Area mohArea;
     private Area rdhs;
 
+    private String filter;
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
     public RegionalController() {
@@ -501,7 +503,24 @@ public class RegionalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -538,7 +557,21 @@ public class RegionalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -813,7 +846,26 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -848,7 +900,27 @@ public class RegionalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
         j += " and (c.client.person.district=:district) ";
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -887,7 +959,29 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -934,7 +1028,26 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -983,7 +1096,26 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1027,7 +1159,25 @@ public class RegionalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
         j += " and (c.client.person.district=:district) ";
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter = "createdAt") {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1070,7 +1220,26 @@ public class RegionalController implements Serializable {
         j += " and c.client.person.mohArea is null ";
         j += " and c.client.person.district=:district ";
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1366,7 +1535,25 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -2063,6 +2250,10 @@ public class RegionalController implements Serializable {
         return awaitingDispatch;
     }
 
+    public List<Item> getInvestigationFilters() {
+        return itemApplicationController.getInvestigationFilters();
+    }
+
     public void setAwaitingDispatch(List<InstitutionCount> awaitingDispatch) {
         this.awaitingDispatch = awaitingDispatch;
     }
@@ -2081,6 +2272,14 @@ public class RegionalController implements Serializable {
 
     public void setAwaitingResults(List<InstitutionCount> awaitingResults) {
         this.awaitingResults = awaitingResults;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
 }

@@ -171,6 +171,8 @@ public class LabController implements Serializable {
     private boolean clientViewReportDisplayCheck = false;
     private boolean clientViewReportDisplay = false;
 
+    private String filter;
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
     public LabController() {
@@ -594,7 +596,24 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and c.resultConfirmedAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -643,7 +662,26 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
 
         m.put("td", getToDate());
@@ -687,7 +725,21 @@ public class LabController implements Serializable {
         j += " and c.institution.pdhsArea is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt> :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -734,7 +786,25 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -777,7 +847,21 @@ public class LabController implements Serializable {
         j += " and c.institution.institutionType is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -831,7 +915,24 @@ public class LabController implements Serializable {
 
         j += " and c.institution.rdhsArea is null ";
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
 
         m.put("td", getToDate());
@@ -882,6 +983,24 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         j += " and (c.createdAt > :fd and c.createdAt < :td) ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
@@ -934,7 +1053,21 @@ public class LabController implements Serializable {
         j += " and c.institution.rdhsArea is null ";
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (pdhs != null) {
@@ -1002,7 +1135,24 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -1058,7 +1208,27 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+
+            default:
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -1341,7 +1511,25 @@ public class LabController implements Serializable {
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and c.resultConfirmedAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         j += " and c.pcrTestType=:tt ";
@@ -1362,7 +1550,25 @@ public class LabController implements Serializable {
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         j += " and c.pcrTestType=:tt ";
@@ -1396,7 +1602,26 @@ public class LabController implements Serializable {
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         j += " and c.pcrTestType=:tt ";
@@ -1525,7 +1750,7 @@ public class LabController implements Serializable {
         JsfUtil.addSuccessMessage("Removed");
         encounterFacade.edit(deleting);
     }
-    
+
     public String toEditTestSingle() {
         if (test == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
@@ -2485,7 +2710,24 @@ public class LabController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
 
         //c.client.person.mohArea = :moh
-        j += " and c.createdAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -3624,6 +3866,18 @@ public class LabController implements Serializable {
 
     public void setSearchingTestNo(String searchingTestNo) {
         this.searchingTestNo = searchingTestNo;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public List<Item> getInvestigationFilters() {
+        return itemApplicationController.getInvestigationFilters();
     }
 
 }

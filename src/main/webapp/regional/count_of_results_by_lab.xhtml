@@ -20,12 +20,18 @@
 
                     <h:form >
                         <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
+                                <f:selectItems value="#{regionalController.investigationFilters}"
+                                              var="c" itemLabel="#{c.name}"
+                                              itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:calendar>
 
                             <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
