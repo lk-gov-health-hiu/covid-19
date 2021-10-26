@@ -119,6 +119,14 @@
                             <p:column headerText="Sex" width="80" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}"  filterMatchMode="contains" >
                                 <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
                             </p:column>
+                            <p:column headerText="NIC"  style="width: 10rem;"
+                                      sortBy="#{c.client.person.nic}"
+                                      filterBy="#{c.client.person.nic}" filterMatchMode="contains" >
+                                <h:outputText value="#{c.client.person.nic}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Phone"  style="width: 10rem;"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains" >
+                                <h:outputText value="#{c.client.person.phone1}" ></h:outputText>
+                            </p:column>
                             <p:column headerText="MOH/Hospital"  sortBy="#{c.institution.name}" filterBy="#{c.institution.name}" >
                                 <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
