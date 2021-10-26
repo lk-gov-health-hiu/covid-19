@@ -1721,6 +1721,20 @@ public class ClientController implements Serializable {
         selectedToReceive = null;
         return toLabReceiveAll();
     }
+    
+    
+    public String divertSamplesFromLab() {
+        if(divertingLab==null){
+            JsfUtil.addErrorMessage("Select a Lab to divert");
+            return "";
+        }
+        for (Encounter e : selectedToReceive) {
+            e.setReferalInstitution(divertingLab);
+            encounterFacade.edit(e);
+        }
+        selectedToReceive = null;
+        return toLabReceiveAll();
+    }
 
     public String markSampleMissing() {
         for (Encounter e : selectedToReceive) {

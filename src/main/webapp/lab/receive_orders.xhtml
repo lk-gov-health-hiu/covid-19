@@ -73,6 +73,19 @@
                                                  onclick="if (!confirm('Are you sure you want to reject?'))
                                                              return false"
                                                  action="#{clientController.markSelectedAsRejectAtReceive()}" ></p:commandButton>
+
+                                <h:panelGroup >
+                                    <p:commandButton value="Divert Samples to " ajax="false" 
+                                                     onclick="if (!confirm('Are you sure you want to divert samples?'))
+                                                                 return false"
+                                                                 action="#{clientController.divertSamplesFromLab()}" ></p:commandButton>
+                                    <p:autoComplete id="acLab" inputStyleClass="autocomplete"
+                                                    value="#{clientController.divertingLab}" forceSelection="true"
+                                                    completeMethod="#{hospitalController.completeLab}" var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                                    </p:autoComplete>
+
+                                </h:panelGroup>
+
                                 <p:commandButton value="Mark as NOT EXPECTED" ajax="false" 
                                                  onclick="if (!confirm('Are you sure you want to mark as NOT expected?'))
                                                              return false"
