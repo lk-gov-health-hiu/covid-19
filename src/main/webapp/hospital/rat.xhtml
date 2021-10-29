@@ -135,7 +135,7 @@
                                     <h:message class="text-danger small" for="nic"></h:message>
                                     <h:panelGroup id="nicExists">
                                         <h:commandLink rendered="#{hospitalController.nicExistsForRat}" immediate="true"
-                                                       action="#{hospitalController.toAddNewRatWithExistingNic(2)}"
+                                                       action="#{hospitalController.toAddNewRatWithExistingNic()}"
                                                        value="NIC Exists. Click here to Load Patient" class="btn btn-sm btn-secondary">
                                         </h:commandLink>
                                     </h:panelGroup>
