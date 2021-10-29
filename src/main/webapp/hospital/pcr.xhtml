@@ -157,7 +157,7 @@
                             <div class="row mb-4">
                                 <div class="col-md-3">
                                     <label for="symptomatic" class="form-label fw-bold">Symptomatic status</label>
-                                    <h:selectOneMenu tabindex="106" id="symptomatic" value="#{hospitalController.pcr.symptomatic}" class="form-select">
+                                    <h:selectOneMenu tabindex="106" id="symptomatic" value="#{hospitalController.pcr.symptomaticStatus}" class="form-select">
                                         <f:selectItem itemLabel="Please select"></f:selectItem>
                                         <f:selectItems value="#{itemApplicationController.symptomaticStatuses}" var="symptomaticStatus"
                                                        itemLabel="#{symptomaticStatus.name}" itemValue="#{symptomaticStatus}"></f:selectItems>
