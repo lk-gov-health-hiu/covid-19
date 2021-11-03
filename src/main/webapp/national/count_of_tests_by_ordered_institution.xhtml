@@ -65,7 +65,7 @@
                                 </h:selectOneMenu>
 
                                 <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="count_of_texts_by_#{nationalController.getInstitutionTypeName()}" ></p:dataExporter>
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="count_of_texts_by_ordered_institution" ></p:dataExporter>
                                 </h:commandButton>
                                 <h:commandButton value="Process"
                                                  action="#{nationalController.toCountOfTestsByOrderedInstitution()}" class="btn btn-warning w-100" ></h:commandButton>

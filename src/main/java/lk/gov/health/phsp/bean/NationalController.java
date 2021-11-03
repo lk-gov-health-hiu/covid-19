@@ -1309,7 +1309,7 @@ public class NationalController implements Serializable {
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
-                j += " and c.credatdAt between :fd and :td ";
+                j += " and c.createdAt between :fd and :td ";
                 break;
             case "SAMPLEDAT":
                 j += " and c.sampledAt between :fd and :td ";
