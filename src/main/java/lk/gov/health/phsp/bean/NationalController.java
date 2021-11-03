@@ -1241,7 +1241,7 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        if (this.filter == "null") {
+        if (this.filter == null) {
             this.filter = "createdat";
         }
 
@@ -1303,7 +1303,7 @@ public class NationalController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        if (this.filter == "null") {
+        if (this.filter == null) {
             this.filter = "createdat";
         }
 
