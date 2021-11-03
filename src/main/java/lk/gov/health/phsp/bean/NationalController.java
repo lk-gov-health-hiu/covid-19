@@ -1247,7 +1247,7 @@ public class NationalController implements Serializable {
 
         switch (this.filter.toUpperCase()) {
             case "CREATEDAT":
-                j += " and (c.createdAt > :fd and c.creatdAt <:td) ";
+                j += " and (c.createdAt > :fd and c.createdAt <:td) ";
                 break;
             case "SAMPLEDAT":
                 j += " and (c.sampledAt > :fd and c.sampledAt <:td) ";
