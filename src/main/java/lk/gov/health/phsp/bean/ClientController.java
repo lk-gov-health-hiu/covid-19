@@ -3093,7 +3093,11 @@ public class ClientController implements Serializable {
                 if (resultColInt != null) {
                     strResult = cellValue(row.getCell(resultColInt));
                     if (strResult != null) {
-                        if (strResult.toLowerCase().contains("invalid")) {
+                        if(strResult.equalsIgnoreCase("p")){
+                            result = itemApplicationController.getPcrPositive();
+                        }else if(strResult.equalsIgnoreCase("n")){
+                            result = itemApplicationController.getPcrNegative();
+                        } else if (strResult.toLowerCase().contains("invalid")) {
                             result = itemApplicationController.getPcrInvalid();
                         } else if (strResult.toLowerCase().contains("inconclusive")) {
                             result = itemApplicationController.getPcrInconclusive();

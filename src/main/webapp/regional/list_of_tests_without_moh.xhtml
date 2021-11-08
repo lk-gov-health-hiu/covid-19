@@ -87,11 +87,12 @@
                                         <h:panelGrid columns="3" class="shadow-lg p-3 bg-white rounded">
                                             <h:outputLabel class="fs-6 fw-bold" value="Assigning MOH Area" ></h:outputLabel>
                                             <h:selectOneMenu class="form-select" value="#{regionalController.mohArea}"
-                                                             style="width: 10em;">
+                                                             style="width: 10em;" >
+                                                
                                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                                <f:selectItems value="#{webUserController.loggableMohAreas}" var="c"
-                                                               itemValue="#{c}"
-                                                               itemLabel="#{c.name}"
+                                                <f:selectItems value="#{webUserController.loggableMohAreas}" var="mc"
+                                                               itemValue="#{mc}"
+                                                               itemLabel="#{mc.name}"
                                                                >
                                                 </f:selectItems>
                                             </h:selectOneMenu>

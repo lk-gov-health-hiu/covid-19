@@ -82,8 +82,18 @@
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                                      rows="10"
                                      >
+                            <p:column headerText="Sampelled On" sortBy="#{c.sampledAt}">
+                                <p:outputLabel value="#{c.sampledAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
                             <p:column headerText="Ordered On" sortBy="#{c.createdAt}">
                                 <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Result On" sortBy="#{c.resultConfirmedAt}">
+                                <p:outputLabel value="#{c.resultConfirmedAt}" >
                                     <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
