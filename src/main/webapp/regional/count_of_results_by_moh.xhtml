@@ -26,7 +26,7 @@
                             <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:datePicker value="#{regionalController.fromDate}"
                                           pattern="dd MMMM yyyy hh:mm" class="fs-6" showTime="true">
-                            </p:datePicker><!-- comment -->
+                            </p:datePicker>
 
                             <p:outputLabel value="To" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:datePicker value="#{regionalController.toDate}" showTime="true"
@@ -58,7 +58,13 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-
+                            <p:outputLabel value="Vaccination Status" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:selectOneMenu value="#{regionalController.vaccinationStatus}" class="form-control form-control-sm w-100">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
+                                    itemLabel="#{statuses.name}" itemValue="#{statuses}">
+                                </f:selectItems>
+                            </p:selectOneMenu>
 
                             <h:commandButton value="Generate Excel" class="w-100 btn btn-success my-2">
                                 <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>

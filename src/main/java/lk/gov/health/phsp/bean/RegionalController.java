@@ -164,6 +164,8 @@ public class RegionalController implements Serializable {
     private List<InstitutionCount> labSummariesConfirmed;
     private List<InstitutionCount> labSummariesPositive;
 
+    private Item vaccinationStatus;
+
     private Area district;
     private Area mohArea;
     private Area rdhs;
@@ -1050,6 +1052,12 @@ public class RegionalController implements Serializable {
 
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
+        if (this.vaccinationStatus != null) {
+            j += " and c.vaccinationStatus=:vaccinationStatus";
+            m.put("vaccinationStatus", this.vaccinationStatus);
+        }
+
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -1198,7 +1206,7 @@ public class RegionalController implements Serializable {
 
         return "/regional/count_of_results_by_gn";
     }
-    
+
     public String toCountOfResultsByMoh() {
         Map m = new HashMap();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.mohArea, count(c))   "
@@ -1228,8 +1236,16 @@ public class RegionalController implements Serializable {
                 j += " and c.resultConfirmedAt between :fd and :td ";
                 break;
         }
+
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
+        if (this.vaccinationStatus != null) {
+            j += " and c.vaccinationStatus=:vaccinationStatus";
+            m.put("vaccinationStatus", this.vaccinationStatus);
+        }
+
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -2330,6 +2346,14 @@ public class RegionalController implements Serializable {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    public Item getVaccinationStatus() {
+        return this.vaccinationStatus;
+    }
+
+    public void setVaccinationStatus(Item vStatus) {
+        this.vaccinationStatus = vStatus;
     }
 
 }
