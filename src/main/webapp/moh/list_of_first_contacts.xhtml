@@ -40,6 +40,11 @@
                         </div>
 
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                                
+                            <p:commandButton id="toggler" class="btn btn-sm btn-secondary"
+                                type="button" value="Filter columns" icon="pi pi-align-justify"/>
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                            
                         <p:dataTable id="tbl" value="#{mohController.cecItems}" rendered="true"
                                      rowIndexVar="n"
                                      var="c" 
