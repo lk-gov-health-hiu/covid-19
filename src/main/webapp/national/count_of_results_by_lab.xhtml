@@ -50,18 +50,17 @@
                                     <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
                                                 itemValue="#{c}" ></f:selectItems>
                                 </h:selectOneMenu>
-                                <f:facet>
+                                <f:facet name="footer">
                                     <p:row>
-                                        <p:column colspan="2">
-                                            <h:commandButton value="Generate Excel" class="btn btn-success mr-2">
+                                            <h:commandButton value="Generate Excel" class="btn btn-success w-25">
                                                 <p:dataExporter target="tbl" type="xlsx" fileName="results by lab" ></p:dataExporter>
                                             </h:commandButton>
-                                            <h:commandButton value="Generate PDF" class="btn btn-danger mr-2">
+                                            <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 w-25">
                                                 <p:dataExporter type="pdf" target="tbl" fileName="results by lab"/>
                                             </h:commandButton>
-                                            <h:commandButton value="Process" class="btn btn-warning"
-                                                             action="#{nationalController.toCountOfResultsByLab()}" ></h:commandButton>
-                                        </p:column>
+                                            <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                             action="#{nationalController.toCountOfResultsByLab()}" >
+                                            </h:commandButton>
                                     </p:row>
                                 </f:facet>
                             </h:panelGrid>
