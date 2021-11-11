@@ -72,7 +72,6 @@
                             <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Columns" />
                             <p:columnToggler datasource="tbl" trigger="toggler"/>
                             <p:dataTable reflow="true" id="tbl" value="#{nationalController.tests}" rendered="true"
-                                         lazy="true"
                                          rowIndexVar="n"
                                          var="c"
                                          rowKey="#{c.id}"
