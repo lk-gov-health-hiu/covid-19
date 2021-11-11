@@ -3,6 +3,11 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
+    <h:head>
+  <ui:define name="title">
+    Regional Reports Index
+  </ui:define>
+</h:head>
     <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="content">
@@ -15,8 +20,8 @@
                     <div class="row">
                         <div class="col-3">
 
-                            <div class="card my-3 border border-success">
-                                <div class="card-header bg-success text-white fs-5 fw-bold">
+                            <div class="card">
+                                <div class="card-header">
                                     <h:outputLabel value="Actions"></h:outputLabel>
                                 </div>
                                 <div class="card-body container-fluid">
@@ -24,7 +29,7 @@
                                         <div class="col-12 p-2">
                                             <h:form>
                                                 <h:commandLink value="List of Tests without MOH"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                               class="btn btn-outline-primary btn-block w-100"
                                                                action="#{regionalController.toListOfTestsWithoutMoh()}">
                                                 </h:commandLink>
                                             </h:form>
@@ -33,7 +38,7 @@
                                     <div class="row">
                                         <div class="col-12 p-2">
                                             <h:form>
-                                                <h:commandLink class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                <h:commandLink class="btn btn-outline-primary btn-block w-100"
                                                                value="List of First Contacts without MOH"
                                                                action="#{regionalController.toListOfFirstContactsWithoutMohForRegionalLevel()}">
                                                 </h:commandLink>
@@ -43,8 +48,8 @@
                                 </div>
                             </div>
 
-                            <div class="card my-3 border border-success">
-                                <div class="card-header bg-success text-white fs-5 fw-bold">
+                            <div class="card">
+                                <div class="card-header">
                                     <h:outputLabel value="Counts"></h:outputLabel>
                                 </div>
                                 <div class="card-body container-fluid">
@@ -53,7 +58,7 @@
                                             <h:form>
                                                 <h:commandLink value="Request Counts by Ordered Institution"
                                                                action="#{regionalController.toCountOfTestsByOrderedInstitution()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -63,7 +68,7 @@
                                             <h:form>
                                                 <h:commandLink value="Result Counts by Ordered Institution"
                                                                action="#{regionalController.toCountOfResultsByOrderedInstitution()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -73,7 +78,7 @@
                                             <h:form>
                                                 <h:commandLink value="Request Counts by MOH Area"
                                                                action="#{regionalController.toCountOfTestsByMohArea()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                               class="btn btn-outline-primary btn-block w-100"
                                                                >
                                                 </h:commandLink>
                                             </h:form>
@@ -82,7 +87,7 @@
                                             <h:form>
                                                 <h:commandLink value="Positivity Rate by MOH Area"
                                                                action="#{regionalController.toTestPositivtyRateByMoh()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                               class="btn btn-outline-primary btn-block w-100"
                                                                ></h:commandLink>
                                             </h:form>
                                         </div>
@@ -90,7 +95,7 @@
                                             <h:form>
                                                 <h:commandLink value="Result Counts by MOH Area"
                                                                action="#{regionalController.toCountOfResultsByMoh()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -101,7 +106,7 @@
                                             <h:form>
                                                 <h:commandLink value="Result Counts by GN Area"
                                                                action="#{regionalController.toCountOfResultsByGnArea()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                               class="btn btn-outline-primary btn-block w-100"
                                                                >
                                                 </h:commandLink>
                                             </h:form>
@@ -111,7 +116,7 @@
                                         <div class="col-12 p-2">
                                             <h:form>
                                                 <h:commandLink value="Result Counts by Lab" action="#{regionalController.toCountOfResultsByLab()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -119,8 +124,8 @@
                                 </div>
                             </div>
 
-                            <div class="card border border-success">
-                                <div class="card-header bg-success text-white fs-5 fw-bold">
+                            <div class="card">
+                                <div class="card-header">
                                     <h:outputLabel value="Lists"></h:outputLabel>
                                 </div>
                                 <div class="card-body container-fluid">
@@ -128,7 +133,7 @@
                                         <div class="col-12 p-2">
                                             <h:form>
                                                 <h:commandLink value="Requests List" action="#{regionalController.toListOfTests()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -137,7 +142,7 @@
                                         <div class="col-12 p-2">
                                             <h:form>
                                                 <h:commandLink value="Result List" action="#{regionalController.toListResults()}"
-                                                               class="btn btn-outline-primary btn-lg btn-block w-100">
+                                                               class="btn btn-outline-primary btn-block w-100">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>
@@ -145,7 +150,7 @@
                                     <div class="row">
                                         <div class="col-12 p-2">
                                             <h:form>
-                                                <h:commandLink class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                <h:commandLink class="btn btn-outline-primary btn-block w-100"
                                                                value="List of First Contacts"
                                                                action="#{regionalController.toListOfFirstContactsForRegionalLevel()}">
                                                 </h:commandLink>
@@ -155,7 +160,7 @@
                                     <div class="row">
                                         <div class="col-12 p-2">
                                             <h:form>
-                                                <h:commandLink class="btn btn-outline-primary btn-lg btn-block w-100"
+                                                <h:commandLink class="btn btn-outline-primary  btn-block w-100"
                                                                value="List by Management Plan"
                                                                action="#{mohController.toListCasesByManagementForRegionalLevel()}">
                                                 </h:commandLink>
@@ -183,7 +188,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
-                                    <p:commandButton ajax="false" class="btn btn-outline-primary btn-lg btn-block w-100"
+                                    <p:commandButton ajax="false" class="btn btn-outline-primary btn-block w-100"
                                                      value="Cases by Management Plan" action="#{mohController.toListCasesByManagementForRegionalLevel()}">
                                     </p:commandButton>
                                 </div>
