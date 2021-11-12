@@ -51,11 +51,17 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
 
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
+                            <f:facet name="footer">
+                            <h:commandButton value="Generate Excel" class="btn btn-success w-25">
                                 <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
                             </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{regionalController.toTestPositivtyRateByMoh()}" ></h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="counts by rdhs"/>
+                                    </h:commandButton>
+                            <h:commandButton value="Process" class="btn btn-warning w-25"
+                                             action="#{regionalController.toTestPositivtyRateByMoh()}" >
+                            </h:commandButton>
+                                </f:facet>
 
 
                         </h:panelGrid>
@@ -72,7 +78,7 @@
                                      >
                             <p:column headerText="MOH Area" sortBy="#{c.area.name}"
                                       filterBy="#{c.area.name}" filterMatchMode="contains">
-                                <h:commandLink value="#{c.area.name}" ajax="false" action="#{nationalController.toCountOfTestsFromRdhsToMoh()}">
+                                <h:commandLink value="#{c.area.name}" action="#{nationalController.toCountOfTestsFromRdhsToMoh()}">
                                     <f:setPropertyActionListener value="#{c.area}" target="#{nationalController.rdhs}" ></f:setPropertyActionListener>
                                 </h:commandLink>
                             </p:column>

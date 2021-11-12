@@ -23,8 +23,8 @@
                             <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
                             <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
                                 <f:selectItems value="#{regionalController.investigationFilters}"
-                                              var="c" itemLabel="#{c.name}"
-                                              itemValue="#{c.code}" ></f:selectItems>
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
                             </h:selectOneMenu>
                             <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
@@ -60,19 +60,20 @@
                             </h:selectOneMenu>
 
 
-
-                            <h:commandButton class="btn btn-success" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_lab" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton  value="Process"
-                                              class="btn btn-warning w-100"
-                                             action="#{regionalController.toCountOfResultsByLab()}" >
-                            </h:commandButton>
-
+                            <f:facet name="footer">
+                                <h:commandButton class="btn btn-success w-25" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_lab" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by lab"/>
+                                </h:commandButton>
+                                <h:commandButton  value="Process"
+                                                  class="btn btn-warning w-25"
+                                                  action="#{regionalController.toCountOfResultsByLab()}" >
+                                </h:commandButton>
+                            </f:facet>
 
                         </h:panelGrid>
-
-
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
                                      var="c"
