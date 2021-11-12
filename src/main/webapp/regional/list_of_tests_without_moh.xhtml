@@ -11,7 +11,7 @@
         <ui:composition template="/regional/reports_index.xhtml">
 
             <ui:define name="title">
-                List of test without MOH(RDHS)
+                RDHS | Reports - List of test without MOH
             </ui:define>
 
             <ui:define name="reports">
@@ -131,7 +131,7 @@
 
 
                     <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
-                                     value="Columns" />
+                                     value="Filter Columns" />
                     <p:columnToggler datasource="tbl" trigger="toggler" />
 
                     <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}" rendered="true"

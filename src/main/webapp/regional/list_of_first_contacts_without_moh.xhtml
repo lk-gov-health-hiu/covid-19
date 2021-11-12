@@ -8,6 +8,9 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
+            <ui:define name="title">
+                RDHS | Reports - List of first contacts without MOH
+            </ui:define>
             <ui:define name="reports" class="bg-white">
                 <!--<p:panelGrid columns="1" styleClass="alignTop border border-light w-100 bg-white" >
                     <f:facet name="header" >
@@ -17,7 +20,7 @@
                 <h:form >
                     <div class="row" >
                         <div class="col-12 text-center mt-4 mb-2" >
-                            <h4 class="fw-bold"><h:outputLabel  value="List of first contacts wihout MOH" ></h:outputLabel></h4>
+                            <h4 class="fw-bold"><h:outputLabel  value="List of first contacts without MOH" ></h:outputLabel></h4>
                         </div>
                     </div>
                     <div class="row">

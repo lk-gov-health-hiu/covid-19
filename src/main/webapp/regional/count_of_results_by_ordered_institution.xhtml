@@ -8,9 +8,8 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
-
             <ui:define name="title">
-                Result Counts by Ordered Institution_RDHS
+                RDHS | Reports - Result Counts by Ordered Institution
             </ui:define>
 
             <ui:define name="reports">
@@ -25,8 +24,8 @@
                             <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
                             <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
                                 <f:selectItems value="#{regionalController.investigationFilters}"
-                                              var="c" itemLabel="#{c.name}"
-                                              itemValue="#{c.code}" ></f:selectItems>
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
                             </h:selectOneMenu>
                             <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
@@ -42,7 +41,7 @@
                                 <f:selectItems value="#{regionalController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}">
-                                               </f:selectItems>
+                                </f:selectItems>
                             </h:selectOneMenu>
 
                             <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
@@ -73,23 +72,23 @@
                             <p:selectOneMenu value="#{regionalController.vaccinationStatus}" class="form-control form-control-sm w-100">
                                 <f:selectItem itemLabel="All"></f:selectItem>
                                 <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
-                                    itemLabel="#{statuses.name}" itemValue="#{statuses}">
+                                               itemLabel="#{statuses.name}" itemValue="#{statuses}">
                                 </f:selectItems>
                             </p:selectOneMenu>
 
                             <f:facet name="footer">
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success w-25">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_results_by_institution" ></p:dataExporter>
-                            </h:commandButton>
+                                <h:commandButton value="Generate Excel"
+                                                 class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_results_by_institution" ></p:dataExporter>
+                                </h:commandButton>
                                 <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
-                                        <p:dataExporter type="pdf" target="tbl" fileName="test results by institution"/>
-                                    </h:commandButton>
-                            <h:commandButton  value="Process"
-                                              class="btn btn-warning w-25"
-                                             action="#{regionalController.toCountOfResultsByOrderedInstitution()}" >
-                            </h:commandButton>
-                                </f:facet>
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test results by institution"/>
+                                </h:commandButton>
+                                <h:commandButton  value="Process"
+                                                  class="btn btn-warning w-25"
+                                                  action="#{regionalController.toCountOfResultsByOrderedInstitution()}" >
+                                </h:commandButton>
+                            </f:facet>
 
 
                         </h:panelGrid>

@@ -9,9 +9,11 @@
 
     <h:body>
         <ui:composition template="/moh/reports_index.xhtml">
+            <ui:define name="title">
+                MOH | List of Results For Orders From Other MOH
+            </ui:define>
             <ui:define name="reports">
                 <h:outputStylesheet library="css" name="tem1.css"/>
-
 
 
                 <h:form >
@@ -61,12 +63,17 @@
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="results" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton  value="Process" class="btn btn-warning w-100"
-                                              action="#{mohController.toListOfResultsForOrdersFromOtherInstitutes()}" ></h:commandButton>
-
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="results" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="results"/>
+                                </h:commandButton>
+                                <h:commandButton  value="Process" class="btn btn-warning w-25"
+                                                  action="#{mohController.toListOfResultsForOrdersFromOtherInstitutes()}" >
+                                </h:commandButton>
+                            </f:facet>
 
                         </h:panelGrid>
 
@@ -76,12 +83,12 @@
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable id="tbl" value="#{mohController.tests}"
                                      var="c" rowKey="#{c.id}"
-                                     
+
                                      resizeMode="expand"
                                      reflow="true"
-                                     
+
                                      resizableColumns="true"
-                                     
+
                                      rows="10"
                                      paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -97,12 +104,12 @@
                             <p:column headerText="Name"  style="width: 18rem;" sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains" >
                                 <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
                             </p:column>
-                             <p:column headerText="Age"  sortBy="#{c.client.person.age}"  style="width: 8rem;"
-                                       filterBy="#{c.client.person.age}" filterMatchMode="contains" >
+                            <p:column headerText="Age"  sortBy="#{c.client.person.age}"  style="width: 8rem;"
+                                      filterBy="#{c.client.person.age}" filterMatchMode="contains" >
                                 <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Sex"  sortBy="#{c.client.person.sex.name}"  style="width: 8rem;"
-                                       filterBy="#{c.client.person.sex.name}" filterMatchMode="contains" >
+                                      filterBy="#{c.client.person.sex.name}" filterMatchMode="contains" >
                                 <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Phone"   style="width: 10rem;"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains" >
@@ -141,12 +148,12 @@
                                 <h:outputLabel id="txtComments" value="#{c.comments}" style="width: 98%;" >
                                 </h:outputLabel>
                             </p:column>
-                             <p:column headerText="Sampled Date"  sortBy="#{c.sampledAt}"
+                            <p:column headerText="Sampled Date"  sortBy="#{c.sampledAt}"
                                       filterBy="#{c.sampledAt}"  style="width: 8rem;">
                                 <p:outputLabel value="#{c.sampledAt}" ></p:outputLabel>
                             </p:column>
                         </p:dataTable>
-                        
+
                     </h:panelGrid>
                 </h:form>
 
