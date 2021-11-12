@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:body>
-       <ui:composition template="/national/reports_index.xhtml">
+        <ui:composition template="/national/reports_index.xhtml">
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" styleClass="alignTop" >
@@ -17,84 +17,88 @@
 
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
-                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
-                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
-                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
-                                <f:selectItems value="#{nationalController.investigationFilters}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c.code}" ></f:selectItems>
-                            </h:selectOneMenu>
-                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
-                            <p:calendar value="#{nationalController.fromDate}"
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar>
+                            <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
+                                <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                    <f:selectItems value="#{nationalController.investigationFilters}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c.code}" ></f:selectItems>
+                                </h:selectOneMenu>
+                                <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.fromDate}"
+                                            pattern="dd MMMM yyyy hh:mm a">
+                                </p:calendar>
 
-                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
-                            <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+                                <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
-                            <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
+                                <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{nationalController.covidTestOrderingCategories}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
 
-                            <h:outputLabel class="h6 fw-bold" value="Lab"></h:outputLabel>
-                            <p:autoComplete
-                                            inputStyleClass="autocomplete"
-                                            value="#{nationalController.lab}"
-                                            forceSelection="true" tabindex="100"
-                                            completeMethod="#{nationalController.completeLab}"
-                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
-                            </p:autoComplete>
+                                <h:outputLabel class="h6 fw-bold" value="Lab"></h:outputLabel>
+                                <p:autoComplete
+                                    inputStyleClass="autocomplete"
+                                    value="#{nationalController.lab}"
+                                    forceSelection="true" tabindex="100"
+                                    completeMethod="#{nationalController.completeLab}"
+                                    var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                                </p:autoComplete>
 
-                            <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
-                            <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
+                                <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
 
-                            <h:outputLabel class="h6 fw-bold" value="PDHS" ></h:outputLabel>
-                            <h:selectOneMenu value="#{nationalController.pdhs}" class="form-select" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{areaApplicationController.allPdhsAreas}"
-                                               var="p" itemLabel="#{p.name}"
-                                               itemValue="#{p}" ></f:selectItems>
-                            </h:selectOneMenu>
+                                <h:outputLabel class="h6 fw-bold" value="PDHS" ></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.pdhs}" class="form-select" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{areaApplicationController.allPdhsAreas}"
+                                                   var="p" itemLabel="#{p.name}"
+                                                   itemValue="#{p}" ></f:selectItems>
+                                </h:selectOneMenu>
 
-
-
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{nationalController.toCountOfTestsByRdhs()}" ></h:commandButton>
-
-
-                        </h:panelGrid>
+                                <f:facet name="footer">
+                                    <p:row>
+                                        <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                            <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
+                                        </h:commandButton>
+                                        <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                            <p:dataExporter type="pdf" target="tbl" fileName="counts by rdhs"/>
+                                        </h:commandButton>
+                                        <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                         action="#{nationalController.toCountOfTestsByRdhs()}" >
+                                        </h:commandButton>
+                                    </p:row>
+                                </f:facet>
+                            </h:panelGrid>
                         </div>
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                             <p:dataTable reflow="true" id="tbl" value="#{nationalController.institutionCounts}" rendered="true"
-                                     rowIndexVar="n"
-                                     var="c"
-                                     paginator="true"
-                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
-                                     rows="10"
-                                     >
-                            <p:column headerText="RDHS" sortBy="#{c.area.name}"
-                                      filterBy="#{c.area.name}" filterMatchMode="contains">
-                                <h:commandLink value="#{c.area.name}" action="#{nationalController.toCountOfTestsFromRdhsToInstitution()}">
-                                    <f:setPropertyActionListener value="#{c.area}" target="#{nationalController.rdhs}" ></f:setPropertyActionListener>
-                                </h:commandLink>
-                            </p:column>
-                            <p:column headerText="Count"  sortBy="#{c.count}">
-                                <h:outputLabel value="#{c.count}" ></h:outputLabel>
-                            </p:column>
-                        </p:dataTable>
+                                         rowIndexVar="n"
+                                         var="c"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                         rows="10"
+                                         >
+                                <p:column headerText="RDHS" sortBy="#{c.area.name}"
+                                          filterBy="#{c.area.name}" filterMatchMode="contains">
+                                    <h:commandLink value="#{c.area.name}" action="#{nationalController.toCountOfTestsFromRdhsToInstitution()}">
+                                        <f:setPropertyActionListener value="#{c.area}" target="#{nationalController.rdhs}" ></f:setPropertyActionListener>
+                                    </h:commandLink>
+                                </p:column>
+                                <p:column headerText="Count"  sortBy="#{c.count}">
+                                    <h:outputLabel value="#{c.count}" ></h:outputLabel>
+                                </p:column>
+                            </p:dataTable>
                         </h:panelGrid>
                     </h:form>
                 </h:panelGrid>

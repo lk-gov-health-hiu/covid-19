@@ -58,18 +58,23 @@
                                 </h:selectOneMenu>
 
 
-
-                                <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton value="Process" class="btn btn-warning w-100"
-                                                 action="#{nationalController.toListOfTests()}" ></h:commandButton>
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                     action="#{nationalController.toListOfTests()}" >
+                                    </h:commandButton>
+                                </f:facet>
 
 
                             </h:panelGrid>
                         </div>
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
-                            <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Columns" />
+                            <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Filter Columns" />
                             <p:columnToggler datasource="tbl" trigger="toggler"/>
                             <p:dataTable reflow="true" id="tbl" value="#{nationalController.tests}" rendered="true"
                                          rowIndexVar="n"

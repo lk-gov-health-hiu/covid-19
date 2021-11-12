@@ -9,38 +9,41 @@
     <h:body>
 
         <ui:composition template="/provincial/reports_index.xhtml">
+            <ui:define name="title">
+                provincial | Reports - Test List
+            </ui:define>
             <ui:define name="reports">
 
-                <p:panelGrid columns="1" styleClass="alignTop" >
+                <p:panelGrid columns="1" styleClass="border border-light bg-white">
                     <f:facet name="header" >
                         <p:outputLabel value="Test List" ></p:outputLabel>
                     </f:facet>
 
                     <h:form >
-                        <p:panelGrid columns="2" >
+                        <p:panelGrid columns="2" styleClass="border border-light bg-white">
                             <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
-                            <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
+                            <h:selectOneMenu class="form-control w-100" value="#{provincialController.filter}">
                                 <f:selectItems value="#{provincialController.investigationFilters}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c.code}" ></f:selectItems>
                             </h:selectOneMenu>
-                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:outputLabel class="h6 fw-bold" value="From" ></p:outputLabel>
                             <p:calendar value="#{provincialController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                            </p:calendar>
 
-                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:outputLabel class="h6 fw-bold" value="To" ></p:outputLabel>
                             <p:calendar value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
-                            <p:outputLabel value="Ordering Category" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.orderingCategory}" >
+                            <p:outputLabel class="h6 fw-bold" value="Ordering Category" ></p:outputLabel>
+                            <p:selectOneMenu class="form-control w-100" value="#{provincialController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{provincialController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel  value="Lab"></p:outputLabel>
+                            <p:outputLabel class="h6 fw-bold" value="Lab"></p:outputLabel>
                             <p:autoComplete style="width: 100%;"
                                             inputStyleClass="autocomplete"
                                             value="#{provincialController.lab}"
@@ -49,21 +52,24 @@
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
-                            <p:outputLabel value="Test" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.testType}" >
+                            <p:outputLabel class="h6 fw-bold" value="Test" ></p:outputLabel>
+                            <p:selectOneMenu class="form-control w-100" value="#{provincialController.testType}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{provincialController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-
-
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process"
-                                             action="#{provincialController.toListOfTests()}" ></p:commandButton>
-
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 w-25">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                 action="#{provincialController.toListOfTests()}" >
+                                </h:commandButton>
+                            </f:facet>
 
                         </p:panelGrid>
 
@@ -83,7 +89,7 @@
                                 <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
 
-                             <p:column headerText="Ordering Category"  sortBy="#{c.pcrOrderingCategory.name}"
+                            <p:column headerText="Ordering Category"  sortBy="#{c.pcrOrderingCategory.name}"
                                       filterBy="#{c.pcrOrderingCategory.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.pcrOrderingCategory.name}" ></p:outputLabel>
                             </p:column>

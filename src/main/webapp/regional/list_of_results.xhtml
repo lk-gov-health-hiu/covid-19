@@ -10,8 +10,8 @@
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
 
-         <ui:define name="title">
-             List of Results-RDHS
+            <ui:define name="title">
+                RDHS | Reports - List of Results
             </ui:define>
 
             <ui:define name="reports">
@@ -71,24 +71,26 @@
                                                 var="l" itemLabel="#{l.name}" itemValue="#{l}">
                                 </p:autoComplete>
 
-                                <h:commandButton value="Generate Excel" class="btn btn-success" >
-
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton value="Process"
-                                                 class="btn btn-warning w-100"
-                                                 action="#{regionalController.toListResults()}" >
-                                </h:commandButton>
-
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="btn btn-success w-25" >
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                     action="#{regionalController.toListResults()}" >
+                                    </h:commandButton>
+                                </f:facet>
 
                             </h:panelGrid>
 
                         </h:panelGrid>
 
 
-                         <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
-                value="Columns" />
-              <p:columnToggler datasource="tbl" trigger="toggler" />
+                        <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                                         value="Filter Columns" />
+                        <p:columnToggler datasource="tbl" trigger="toggler" />
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}"
                                      var="c" rowKey="#{c.id}"
                                      rows="10"
@@ -114,9 +116,9 @@
                                       filterBy="#{c.client.person.age}" filterMatchMode="contains" >
                                 <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
                             </p:column>
-                             <p:column headerText="Sex"  sortBy="#{c.client.person.sex.name}"
+                            <p:column headerText="Sex"  sortBy="#{c.client.person.sex.name}"
                                       filterBy="#{c.client.person.sex.name}" filterMatchMode="contains" >
-                                 <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+                                <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="NIC"  style="width: 10rem;"
                                       sortBy="#{c.client.person.nic}"

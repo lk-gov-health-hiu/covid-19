@@ -7,39 +7,48 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
-
         <ui:composition template="/moh/reports_index.xhtml">
+            <ui:define name="title">
+                MOH | List of First Contacts
+            </ui:define>
             <ui:define name="reports">
                 <!--<p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
                         <p:outputLabel value="First Contacts List" ></p:outputLabel>
                     </f:facet>-->
 
-                    <h:form >
-                        <div class="row" >
-                            <div class="col-12 text-center mt-4 mb-2" >
-                                <h4 class="fw-bold"><h:outputLabel  value="First Contacts List" ></h:outputLabel></h4>
-                            </div>
+                <h:form >
+                    <div class="row" >
+                        <div class="col-12 text-center mt-4 mb-2" >
+                            <h4 class="fw-bold"><h:outputLabel  value="First Contacts List" ></h:outputLabel></h4>
                         </div>
-                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
-                            <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+                    </div>
+                    <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
+                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
                             <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:datePicker value="#{provincialController.fromDate}" 
-                                        pattern="dd MMMM yyyy hh:mm">
+                                          pattern="dd MMMM yyyy hh:mm">
                             </p:datePicker><!-- comment -->
 
                             <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:datePicker value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:datePicker>
 
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="list_of_first_contacts" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{mohController.toListOfFirstContacts()}" ></h:commandButton>
-                            </h:panelGrid>
-                        </div>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="list_of_first_contacts" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="list of first contacts"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning px-4"
+                                                 action="#{mohController.toListOfFirstContacts()}" >
+                                </h:commandButton>
+                            </f:facet>
 
-                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                        </h:panelGrid>
+                    </div>
+
+                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable id="tbl" value="#{mohController.cecItems}" rendered="true"
                                      rowIndexVar="n"
                                      var="c" 
@@ -80,8 +89,8 @@
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
-                        </h:panelGrid>
-                    </h:form>
+                    </h:panelGrid>
+                </h:form>
 
 
 

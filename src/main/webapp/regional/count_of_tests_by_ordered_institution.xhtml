@@ -8,6 +8,9 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
+            <ui:define name="title">
+                RDHS | Reports - Test Counts by Ordered Institution
+            </ui:define>
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" styleClass="alignTop bg-white border border-light w-100" >
@@ -41,11 +44,11 @@
 
                             <p:outputLabel  value="Lab" class="fs-6 fw-bold"></p:outputLabel>
                             <p:autoComplete
-                                            inputStyleClass="autocomplete"
-                                            value="#{regionalController.lab}"
-                                            forceSelection="true" tabindex="100"
-                                            completeMethod="#{regionalController.completeLab}"
-                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                                inputStyleClass="autocomplete"
+                                value="#{regionalController.lab}"
+                                forceSelection="true" tabindex="100"
+                                completeMethod="#{regionalController.completeLab}"
+                                var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
                             <p:outputLabel value="Test" class="fs-6 fw-bold"></p:outputLabel>
@@ -56,12 +59,17 @@
                             </p:selectOneMenu>
 
 
-
-                            <h:commandButton value="Generate Excel" class="w-100 btn btn-success my-2">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_institution" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="w-100 btn btn-warning my-2"
-                                             action="#{regionalController.toCountOfTestsByOrderedInstitution()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="w-25 btn btn-success my-2">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_institution" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by institution"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="w-25 btn btn-warning my-2"
+                                                 action="#{regionalController.toCountOfTestsByOrderedInstitution()}" >
+                                </h:commandButton>
+                            </f:facet>
 
 
                         </p:panelGrid>

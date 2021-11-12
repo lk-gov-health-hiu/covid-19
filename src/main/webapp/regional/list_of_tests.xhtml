@@ -10,7 +10,7 @@
 
         <ui:composition template="/regional/reports_index.xhtml">
             <ui:define name="title">
-                Test List-RDHS
+                RDHS | Reports - Test List
             </ui:define>
             <ui:define name="reports">
 
@@ -54,17 +54,21 @@
                             </h:selectOneMenu>
 
 
-
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process"
-                                             class="btn btn-warning w-100"
-                                             action="#{regionalController.toListOfTests()}" ></h:commandButton>
-                                             <h:commandButton value="Change Test"
-                                             class="btn btn-warning w-100"
-                                             action="/regional/list_of_tests_to_change_pcrrat" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                 action="#{regionalController.toListOfTests()}" >
+                                </h:commandButton>
+                                <h:commandButton value="Change Test"
+                                                 class="btn btn-warning px-4 mx-2"
+                                                 action="/regional/list_of_tests_to_change_pcrrat" >
+                                </h:commandButton>
+                            </f:facet>
 
 
                         </h:panelGrid>
