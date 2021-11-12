@@ -72,6 +72,11 @@
 
                     </div>
 
+                    <div>
+                        <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" 
+                                         id="toggler" type="button" value="Filter Columns" />
+                        <p:columnToggler datasource="tbl" trigger="toggler"/>
+                    </div>
 
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable id="tbl" value="#{mohController.tests}"
