@@ -10,7 +10,7 @@
 
         <ui:composition template="/regional/reports_index.xhtml">
             <ui:define name="title">
-                List of First Contacts
+                RDHS | Reports - List of First Contacts
             </ui:define>
             <ui:define name="reports">
                 <h:panelGrid columns="1" styleClass="alignTop" >
@@ -19,25 +19,30 @@
                     </f:facet>
 
                     <h:form >
-                        
+
                         <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white" >
                             <h:panelGrid columns="2"  >
                                 <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
-                            <p:calendar   value="#{regionalController.fromDate}" 
-                                        pattern="dd MM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                                <p:calendar   value="#{regionalController.fromDate}" 
+                                              pattern="dd MM yyyy hh:mm a">
+                                </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
-                            <p:calendar value="#{regionalController.toDate}" pattern="dd MM yyyy hh:mm a"></p:calendar>
+                                <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
+                                <p:calendar value="#{regionalController.toDate}" pattern="dd MM yyyy hh:mm a"></p:calendar>
 
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success">                                            
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" 
-                                             class="btn btn-warning w-100"
-                                             action="#{regionalController.toListOfFirstContactsForRegionalLevel()}" >
-                            </h:commandButton>
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="btn btn-success w-50">                                            
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 px-5">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process" 
+                                                     class="btn btn-warning w-100 my-2"
+                                                     action="#{regionalController.toListOfFirstContactsForRegionalLevel()}" >
+                                    </h:commandButton>
+                                </f:facet>
+
                             </h:panelGrid>
                         </h:panelGrid>
 

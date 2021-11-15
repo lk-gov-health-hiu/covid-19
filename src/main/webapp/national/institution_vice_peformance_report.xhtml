@@ -41,12 +41,17 @@
                                     </f:selectItems>
                                 </p:selectOneMenu>
 
-                                <h:commandButton class="btn btn-success w-100" value="Generate Excel">
+                                <f:facet name="footer">
+                                <h:commandButton class="btn btn-success w-25" value="Generate Excel">
                                     <p:dataExporter target="tbl" type="xlsx" fileName="institution vice peformance report" ></p:dataExporter>
                                 </h:commandButton>
-                                <h:commandButton class="btn btn-warning w-100" value="Process" 
-                                                 action="#{nationalController.processInstitutionVicePeformanceReport()}" ></h:commandButton>
-
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2 w-25">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="institution vice peformance report"/>
+                                    </h:commandButton>
+                                <h:commandButton class="btn btn-warning w-25" value="Process" 
+                                                 action="#{nationalController.processInstitutionVicePeformanceReport()}" >
+                                </h:commandButton>
+</f:facet>
 
                             </p:panelGrid>
                         </div>

@@ -11,7 +11,7 @@
         <ui:composition template="/regional/reports_index.xhtml">
 
             <ui:define name="title">
-                List of test without MOH(RDHS)
+                RDHS | Reports - List of test without MOH
             </ui:define>
 
             <ui:define name="reports">
@@ -71,16 +71,21 @@
                                                 var="l" itemLabel="#{l.name}" itemValue="#{l}">
                                 </p:autoComplete>
 
-                                <h:commandButton value="Generate Excel" class="w-100 btn btn-success my-2">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton value="Process" class="w-100 btn btn-warning my-2"
-                                                 action="#{regionalController.toListOfTestsWithoutMoh()}" ></h:commandButton>
-
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="w-25 btn btn-success">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process" class="w-25 btn btn-warning my-2"
+                                                     action="#{regionalController.toListOfTestsWithoutMoh()}" >
+                                    </h:commandButton>
+                                </f:facet>
 
                             </h:panelGrid>
                         </div>
-                         <div class="col-6 d-flex mb-3 justify-content-center" >
+                        <div class="col-6 d-flex mb-3 justify-content-center" >
                             <div class="container-fluid w-100" >
                                 <div class="row" >
                                     <div class="col-12 " >
@@ -88,7 +93,7 @@
                                             <h:outputLabel class="fs-6 fw-bold" value="Assigning MOH Area" ></h:outputLabel>
                                             <h:selectOneMenu class="form-select" value="#{regionalController.mohArea}"
                                                              style="width: 10em;" >
-                                                
+
                                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                                 <f:selectItems value="#{webUserController.loggableMohAreas}" var="mc"
                                                                itemValue="#{mc}"
@@ -125,9 +130,9 @@
 
 
 
-                     <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
-                value="Columns" />
-              <p:columnToggler datasource="tbl" trigger="toggler" />
+                    <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                                     value="Filter Columns" />
+                    <p:columnToggler datasource="tbl" trigger="toggler" />
 
                     <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}" rendered="true"
                                  rowIndexVar="n"

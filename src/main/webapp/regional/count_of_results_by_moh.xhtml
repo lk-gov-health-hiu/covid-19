@@ -8,6 +8,9 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
+            <ui:define name="title">
+                RDHS | Reports - Results Count By MOH Area
+            </ui:define>
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" styleClass="alignTop bg-white border border-light w-100"  >
@@ -20,8 +23,8 @@
                             <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
                             <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
                                 <f:selectItems value="#{provincialController.investigationFilters}"
-                                              var="c" itemLabel="#{c.name}"
-                                              itemValue="#{c.code}" ></f:selectItems>
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
                             </h:selectOneMenu>
                             <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:datePicker value="#{regionalController.fromDate}"
@@ -62,15 +65,21 @@
                             <p:selectOneMenu value="#{regionalController.vaccinationStatus}" class="form-control form-control-sm w-100">
                                 <f:selectItem itemLabel="All"></f:selectItem>
                                 <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
-                                    itemLabel="#{statuses.name}" itemValue="#{statuses}">
+                                               itemLabel="#{statuses.name}" itemValue="#{statuses}">
                                 </f:selectItems>
                             </p:selectOneMenu>
 
-                            <h:commandButton value="Generate Excel" class="w-100 btn btn-success my-2">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="w-100 btn btn-warning my-2"
-                                             action="#{regionalController.toCountOfResultsByMoh()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="w-25 btn btn-success my-2">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by moh"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="w-25 btn btn-warning my-2"
+                                                 action="#{regionalController.toCountOfResultsByMoh()}" >
+                                </h:commandButton>
+                            </f:facet>
 
 
                         </p:panelGrid>
