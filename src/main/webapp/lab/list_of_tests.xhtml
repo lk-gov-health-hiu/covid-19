@@ -22,24 +22,22 @@
 
                     <h:form >
                         <p:panelGrid columns="2"  class="border border-light">
-                            <h:outputLabel class="fs-6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:selectOneMenu value="#{labController.filter}" class="form-select">
+                                <f:selectItems value="#{labController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="fs-6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar class="fs-6" value="#{labController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="fs-6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar class="fs-6" value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
-                            <h:outputLabel class="fs-6 fw-bold" value="Ordering Category" ></h:outputLabel>
-                            <h:selectOneMenu class="form-select" value="#{labController.orderingCategory}" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestOrderingCategories}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
 
-                            <h:outputLabel value="Institution" class="form-label"></h:outputLabel>
-                            <p:autoComplete class="w-100"
+                            <h:outputLabel value="Institution" class="fs-6 fw-bold" ></h:outputLabel>
+                            <p:autoComplete class="fs-6"
                                             id="acIns"
                                             value="#{labController.institution}"
                                             forceSelection="true" tabindex="100"
@@ -48,8 +46,8 @@
                                 <p:ajax process="acIns" event="blur" ></p:ajax>
                             </p:autoComplete>
 
-                            <p:outputLabel value="Test" ></p:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}" >
+                            <p:outputLabel  class="fs-6 fw-bold"  value="Test" ></p:outputLabel>
+                            <h:selectOneMenu value="#{labController.testType}" class="fs-6">
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
@@ -66,10 +64,16 @@
 
                         </p:panelGrid>
 
+                        <div>
+                            <p:commandButton class="btn btn-sm btn-secondary" id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                        </div>
 
                         <p:dataTable id="tbl" value="#{labController.tests}" rendered="true"
                                      rowIndexVar="n"
                                      var="c"
+                                     reflow="true"
+                                     resizableColumns="true"
                                      rowKey="#{c.id}"
                                      paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -77,7 +81,7 @@
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                                      rows="10"
                                      >
-                            <p:column headerText="Tube No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">

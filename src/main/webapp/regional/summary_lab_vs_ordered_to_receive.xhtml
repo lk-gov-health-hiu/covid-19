@@ -20,10 +20,10 @@
                     <h:form >
                         <h:panelGrid columns="2" >
                             <h:outputLabel value="From" ></h:outputLabel>
-                            <p:calendar value="#{clientController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+                            <p:calendar value="#{regionalController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
 
                             <h:outputLabel value="To" ></h:outputLabel>
-                            <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+                            <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
 
                             <h:outputLabel value="Test" ></h:outputLabel>
                             <h:selectOneMenu class="form-select" value="#{regionalController.testType}" >
@@ -34,7 +34,7 @@
 
                             <h:commandButton value="Process"
                                              class="btn btn-success"
-                                             action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
+                                             action="#{regionalController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
                             <h:commandButton value="Generate Excel"
                                              class="btn btn-warning">
                                 <p:dataExporter type="xlsx" fileName="Samples to Receive Summery" target="tbl" ></p:dataExporter>
@@ -44,7 +44,7 @@
 
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl"
-                                     value="#{clientController.labSummariesToReceive}"
+                                     value="#{regionalController.labSummariesToReceive}"
                                      rowIndexVar="n"
                                      var="c" rowKey="#{c.id}"
 
@@ -68,10 +68,10 @@
                                 <h:outputLabel value="#{c.count}" ></h:outputLabel>
                             </p:column>
                             <p:column headerText="Actions" exportable="false"  >
-                                <h:commandButton value="To Divert" class="btn btn-success"  action="#{clientController.toDivertSamples()}" >
-                                    <f:setPropertyActionListener value="#{c.institution}" target="#{clientController.institution}" >
+                                <h:commandButton value="To Divert" class="btn btn-success"  action="#{regionalController.toDivertSamples()}" >
+                                    <f:setPropertyActionListener value="#{c.institution}" target="#{regionalController.institution}" >
                                     </f:setPropertyActionListener>
-                                    <f:setPropertyActionListener value="#{c.referralInstitution}" target="#{clientController.referingInstitution}" >
+                                    <f:setPropertyActionListener value="#{c.referralInstitution}" target="#{regionalController.referingInstitution}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
                             </p:column>

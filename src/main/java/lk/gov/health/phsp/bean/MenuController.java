@@ -63,15 +63,15 @@ public class MenuController implements Serializable {
      */
     public MenuController() {
     }
-    
+
     public String toViewRequest() {
         return "/common/request_view";
     }
-    
+
     public String toViewPatient() {
         return "/common/client_view";
     }
-    
+
     public String toViewResult() {
         return "/common/result_view";
     }
@@ -98,6 +98,41 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
+
+
+    public String toUploadResults(){
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Hospital:
+                return "/hospital/upload_results";
+            case Lab:
+                return "/lab/upload_results";
+            case Regional:
+            case National:
+            case National_Lab:
+            case Moh:
+            case Provincial:
+            default:
+                return "";
+        }
+    }
+
+
+    public String toUploadOrders(){
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Hospital:
+                return "/hospital/upload_orders";
+            case Lab:
+                return "/lab/upload_orders";
+            case Regional:
+            case National:
+            case National_Lab:
+            case Moh:
+            case Provincial:
+            default:
+                return "";
+        }
+    }
+
 
     public String toDispatchSummary() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
@@ -141,7 +176,7 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
-    
+
     public String toReceivedAtLabSummary() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Regional:
@@ -185,7 +220,6 @@ public class MenuController implements Serializable {
         }
     }
 
-    
     public String toSearch() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Regional:
@@ -207,8 +241,6 @@ public class MenuController implements Serializable {
         }
     }
 
-    
-    
     public String toAdministrationIndex() {
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
@@ -312,7 +344,7 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
-    
+
     public String toAddNewInstitution() {
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
@@ -388,8 +420,8 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
-    
- 
+
+
     public String toListInstitutions() {
         boolean privileged = false;
         boolean national=false;
@@ -428,7 +460,7 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
-    
+
     public String toListInstitutionsWithUsers() {
         boolean privileged = false;
         boolean national=false;
@@ -466,7 +498,7 @@ public class MenuController implements Serializable {
         }
     }
 
-    
+
     public String toPrivileges() {
         boolean privileged = false;
         boolean national=false;
@@ -510,7 +542,7 @@ public class MenuController implements Serializable {
         }
     }
 
-    
+
     public String toEditUser() {
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
@@ -545,7 +577,7 @@ public class MenuController implements Serializable {
         }
     }
 
-    
+
     public String toEditInstitution() {
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
@@ -580,7 +612,7 @@ public class MenuController implements Serializable {
         }
     }
 
-    
+
     public String toEditPassword() {
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {

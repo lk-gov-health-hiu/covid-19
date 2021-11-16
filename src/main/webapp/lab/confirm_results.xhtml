@@ -42,9 +42,9 @@
                                 <h:commandButton value="Process" class="btn btn-warning w-100"
                                                  action="#{clientController.toConfirmResults()}" ></h:commandButton>
                                 <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="result list" ></p:dataExporter>
                                 </h:commandButton>
-                                <h:commandButton value="Conform selected" class="btn btn-success w-100"
+                                <h:commandButton value="Approve selected" class="btn btn-success w-100"
                                                  action="#{clientController.confirmSelectedResults()}" ></h:commandButton>
                             </h:panelGrid>
                         </div></div>
@@ -75,22 +75,26 @@
                             <p:column width="50" >
                                 <h:outputLabel value="#{n+1}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Unit/Ward"  sortBy="#{c.unitWard}" filterBy="#{c.unitWard}" filterMatchMode="contains">
+                            <p:column headerText="Unit/Ward"  
+                                      rendered="#{clientController.institution.institutionType ne 'MOH_Office'}"
+                                      sortBy="#{c.unitWard}" filterBy="#{c.unitWard}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.unitWard}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="BHT/OPD No/Clinic No"  sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
+                            <p:column headerText="BHT/OPD No/Clinic No"  
+                                      rendered="#{clientController.institution.institutionType ne 'MOH_Office'}"
+                                      sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.bht}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Tube No" sortBy="#{c.encounterNumber}" 
+                            <p:column headerText="Test No" sortBy="#{c.encounterNumber}" 
                                       filterBy="#{c.encounterNumber}" filterMatchMode="contains">
-                                <h:inputText value="#{c.encounterNumber}" id="txtTubeNo" >
+                                <h:inputText value="#{c.encounterNumber}" id="txtTubeNo" class="form-control w-100" >
                                     <p:ajax event="blur" process="txtTubeNo" 
                                             listener="#{clientController.saveLabNo(c)}" >
                                     </p:ajax>
                                 </h:inputText>
                             </p:column>`
                             <p:column id="txtLabNo" headerText="Lab No" sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
-                                <h:inputText value="#{c.labNumber}" >
+                                <h:inputText value="#{c.labNumber}"  class="form-control w-100" >
                                     <p:ajax event="blur" process="txtLabNo" 
                                             listener="#{clientController.saveLabNo(c)}" >
                                     </p:ajax>
@@ -111,24 +115,25 @@
                             <p:column headerText="Address" sortBy="#{c.client.person.address}" filterBy="#{c.client.person.address}"  filterMatchMode="contains">
                                 <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Phone" rendered="false" >
+                            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}"  filterMatchMode="contains">
                                 <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
                             </p:column>
                             <p:column  headerText="CT 1" width="100"  sortBy="#{c.ctValue}"
                                        filterBy="#{c.ctValue}" filterMatchMode="contains" >
-                                <p:inputText id="txtCt1" value="#{c.ctValue}" style="width: 98px;" >
+                                <p:inputText id="txtCt1" value="#{c.ctValue}"   class="form-control w-100"  >
                                     <p:ajax event="keyup" process="txtCt1" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
                             <p:column headerText="CT 2" width="100"  sortBy="#{c.ctValue2}"
                                       filterBy="#{c.ctValue2}" filterMatchMode="contains" >
-                                <p:inputText id="txtCt2" value="#{c.ctValue2}" style="width: 98px;" >
+                                <p:inputText id="txtCt2" value="#{c.ctValue2}"   class="form-control w-100"  >
                                     <p:ajax event="keyup" process="txtCt2" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
-                            <p:column headerText="Result" >
+                            <p:column headerText="Result" width="300"  sortBy="#{c.pcrResult.name}"
+                                      filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
                                 <p:selectOneMenu id="cmbResult" value="#{c.pcrResult}"  >
                                     <f:selectItem itemLabel="Select Result" ></f:selectItem>
                                     <f:selectItems value="#{itemApplicationController.pcrResults}"
@@ -137,6 +142,28 @@
                                     </p:ajax>
                                 </p:selectOneMenu>
                             </p:column>
+
+                            <p:column headerText="Actions" >
+
+                                <h:commandButton class="w-100" 
+                                                 value="Delete"  
+                                                 action="#{labController.deleteTest()}"
+                                                 >
+                                    <f:setPropertyActionListener value="#{c}" target="#{labController.deleting}" >
+                                    </f:setPropertyActionListener>
+                                </h:commandButton>
+
+                                <h:commandButton disabled="true" class="w-100" value="Delete"  action="#{labController.deleteTest()}"
+                                                 onclick="if (!confirm('Are you sure you want to delete?'))
+                                                         return false" >
+                                    <f:setPropertyActionListener value="#{c}" target="#{labController.deleting}" >
+                                    </f:setPropertyActionListener>
+                                </h:commandButton>
+
+                            </p:column>
+
+
+
                         </p:dataTable>
                     </h:panelGrid>
                 </h:form>

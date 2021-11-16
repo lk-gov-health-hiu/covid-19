@@ -70,6 +70,7 @@
                                      
                                      
                                      
+                                     
                                      rowKey="#{c.id}"
                                      paginator="true" 
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -79,8 +80,20 @@
                             <f:facet name="header" >
                                 <h3 class="m-0 my-3 fs-5 fw-bold text-secondary">Institution : #{webUserController.loggedInstitution.name}</h3>
                             </f:facet>
-                            <p:column headerText="Tube No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" style="width:10em;">
-                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" style="width:10em;">
+                                <p:inputText value="#{c.encounterNumber}" 
+                                             id="txtTubeNo" style="width: 98%;" >
+                                    <p:ajax event="blur" process="txtTubeNo"
+                                            listener="#{clientController.saveLabNo(c)}" >
+                                    </p:ajax>
+                                </p:inputText>
+                            </p:column>
+                            <p:column headerText="Enter Time"
+                                      sortBy="#{c.createdAt}"
+                                      style="width:10em;">
+                                <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMM yy hh:mm" ></f:convertDateTime>
+                                </p:outputLabel>
                             </p:column>
                             <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains"  style="width:4em;">
                                 <p:outputLabel value="#{c.pcrTestType.name}" ></p:outputLabel>

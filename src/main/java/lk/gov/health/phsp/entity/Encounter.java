@@ -183,12 +183,13 @@ public class Encounter implements Serializable {
     @ManyToOne
     private Item pcrOrderingCategory;
     @ManyToOne
-    @Deprecated
+   
     private Item vaccinationStatus;
     
     @ManyToOne
     private Item symptomaticStatus;
     private String pcrOrderingCategoryOther;
+     @Deprecated
     private Boolean symptomatic;
 
     private String labNumber;
@@ -276,7 +277,7 @@ public class Encounter implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" + id + "";
+        return id + "";
     }
 
     public Client getClient() {

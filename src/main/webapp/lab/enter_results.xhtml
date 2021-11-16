@@ -4,12 +4,14 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
         <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                Lab | Enter Results
+            </ui:define>
             <ui:define name="content">
                 <h:outputStylesheet library="css" name="tem1.css"/>
                 <!--<p:panelGrid columns="1" styleClass="alignTop bg-white w-100 border border-light" >-->
@@ -17,25 +19,25 @@
                     <h:outputLabel class="fs-5 fw-bold" value="Enter Test Results" ></h:outputLabel>
                 </f:facet>-->
 
-                <h:form enctype="multipart/form-data" >
+                <h:form  >
 
                     <p:growl></p:growl>
                     <h:messages ></h:messages>
                     <div class="row" >
                         <div class="col-12 text-center mt-4 mb-2" >
-                            <h4 class="fw-bold"><h:outputLabel  value="Enter Test Results" ></h:outputLabel></h4>
+                            <h4 class="fw-bold"><h:outputLabel  value="Enter PCR Results" ></h:outputLabel></h4>
                         </div>
                     </div>
-                    <div class="container bg-none mb-4 w-100 d-flex justify-content-around align-items-center" >
+                    <div class="container mb-4 w-100 d-flex justify-content-around align-items-center" >
 
                         <div class="row">
                             <div class="col-sm-12 col-md-12 col-lg-6 d-flex justify-content-center">
                                 <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white">
                                     <h:outputLabel class="fs-6 fw-bold" value="From Date" ></h:outputLabel>
-                                    <p:calendar class="fs-6" value="#{clientController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+                                    <p:datePicker class="fs-6" value="#{clientController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true"></p:datePicker><!-- comment -->
 
                                     <h:outputLabel class="fs-6 fw-bold" value="To Date" ></h:outputLabel>
-                                    <p:calendar class="fs-6" value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+                                    <p:datePicker class="fs-6" value="#{clientController.toDate}" pattern="dd MMMM yyyy  hh:mm" showTime="true"></p:datePicker>
 
                                     <h:outputLabel class="fs-6 fw-bold" value="From Institution" ></h:outputLabel>
                                     <p:autoComplete value="#{clientController.institution}"
@@ -64,6 +66,9 @@
 
 
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                        <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                                         value="Filter Columns" />
+                        <p:columnToggler datasource="tbl" trigger="toggler" />
 
                         <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToEnterResults}"  rendered="true"
                                      var="c"
@@ -96,7 +101,7 @@
                                 <p:outputLabel value="#{c.bht}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column headerText="Tube No"  style="width: 8rem;" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
+                            <p:column headerText="Test No"  style="width: 8rem;" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
                                 <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
                             </p:column>
                             <p:column  headerText="Lab No"  style="width: 8rem;"  sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains" >
@@ -131,21 +136,21 @@
                                     <f:selectItem itemLabel="Select Result"  ></f:selectItem>
                                     <f:selectItems value="#{itemApplicationController.pcrResults}"
                                                    var="i" itemLabel="#{i.name}" itemValue="#{i}" ></f:selectItems>
-                                    <p:ajax event="change" process="cmbResult" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="cmbResult" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:selectOneMenu>
                             </p:column>
                             <p:column  headerText="CT 1" width="60"  sortBy="#{c.ctValue}"
                                        filterBy="#{c.ctValue}" filterMatchMode="contains" >
                                 <p:inputText id="txtCt1" value="#{c.ctValue}" style="width: 98%;" >
-                                    <p:ajax event="keyup" process="txtCt1" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="txtCt1" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
                             <p:column headerText="CT 2" width="60"  sortBy="#{c.ctValue2}"
                                       filterBy="#{c.ctValue2}" filterMatchMode="contains" >
                                 <p:inputText id="txtCt2" value="#{c.ctValue2}" style="width: 98%;" >
-                                    <p:ajax event="keyup" process="txtCt2" listener="#{clientController.saveEncounterResults(c)}" >
+                                    <p:ajax event="blur" process="txtCt2" listener="#{clientController.saveEncounterResults(c)}" >
                                     </p:ajax>
                                 </p:inputText>
                             </p:column>
@@ -158,10 +163,12 @@
                                 </p:inputText>
                             </p:column>
 
-                            <p:column headerText="Actions" width="60" exportable="false">
+                            <p:column rendered="false" headerText="Actions" width="60" exportable="false">
                                 <h:commandButton value="Reject" action="#{clientController.markSelectedAsRejectedAtDataEntry(c)}" >
                                 </h:commandButton>
                             </p:column>
+                            
+                            
                         </p:dataTable>
 
                     </h:panelGrid>

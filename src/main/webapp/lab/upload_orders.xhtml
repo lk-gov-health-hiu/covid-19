@@ -7,175 +7,177 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
-        <ui:define name="title">
-            Upload Orders
-        </ui:define>
+        
     </h:head>
 
     <h:body>
         <ui:composition template="/template1.xhtml">
+            
+            <ui:define name="title">
+                Upload Orders
+            </ui:define>
+            
             <ui:define name="content">
-                <h:form enctype="multipart/form-data" >                    
-                    <p:panelGrid columns="2"  >
-                        <p:outputLabel value="Institution" ></p:outputLabel>
-                        <p:autoComplete  id="parent" value="#{clientController.institution}"  
-                                         maxResults="15" minQueryLength="4"
-                                         completeMethod="#{institutionController.completeInstitutions}"
-                                         var="i" itemLabel="#{i.name}" itemValue="#{i}">
-                        </p:autoComplete >
+                <h:form enctype="multipart/form-data" >  
+                    <h:messages ></h:messages>
+                     <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center">
+                    <h:panelGrid columns="1"  >
+                        <f:facet name="header" >
+                        <h:outputLabel value="Upload Orders" class="h5" ></h:outputLabel>
+                    </f:facet>
+                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center">
+                        <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white"  >
+                            <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
+                            <h:selectOneMenu required="true" 
+                                             class="form-select"
+                                             requiredMessage="Please select PCR or RAT" 
+                                             value="#{clientController.lastTestPcrOrRat}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{itemApplicationController.covidTestTypes}" var="t" itemValue="#{t}" itemLabel="#{t.name}" >
+                                </f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <p:autoComplete value="#{clientController.institution}" completeMethod="#{institutionController.completeInstitutions}"
+                                            var="ins" itemLabel="#{ins.name}" itemValue="#{ins}" >
+                            </p:autoComplete>
+
+
+                            <h:outputLabel class="h6 fw-bold" value="Lab" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.referingInstitution}" required="true"
+                                             requiredMessage="Need to select a lab"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}" var="l"
+                                               itemLabel="#{l.name}" itemValue="#{l}" >
+                                </f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.orderingCategory}" 
+                                             class="form-select">
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{hospitalController.covidTestOrderingCategories}" 
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Sampled at" ></h:outputLabel>
+                            <p:datePicker value="#{clientController.fromDate}" pattern="dd MMMM yyyy hh:mm" >
+                            </p:datePicker>
+
+                            <h:outputLabel class="h6 fw-bold" value="Result at" ></h:outputLabel>
+                            <p:datePicker value="#{clientController.toDate}" pattern="dd MMMM yyyy hh:mm" >
+                            </p:datePicker>
+
+                            <h:outputLabel class="h6 fw-bold" value="Start Row" ></h:outputLabel>
+                            <h:inputText value="#{clientController.startRow}" class="form-control" ></h:inputText>
+
+                        </h:panelGrid>
+                        </div>
                         
-                        <h:outputLabel value="Test" ></h:outputLabel>
-                        <p:selectOneMenu value="#{clientController.lastTestPcrOrRat}" >
-                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                            <f:selectItems value="#{itemApplicationController.covidTestTypes}" var="t" itemValue="#{t}" itemLabel="#{t.name}" >
-                            </f:selectItems>
-                        </p:selectOneMenu>
+                        <h:panelGrid columns="8" rendered="true" styleClass="border border-light bg-white"  >
+
+                            <h:outputLabel class="h6 fw-bold" value="Test No Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.testNoCol}" 
+                                             class="form-select" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <h:outputLabel class="h6 fw-bold" value="Name Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.nameCol}"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Age in years column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.ageColumn}"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <h:outputLabel class="h6 fw-bold" value="Sex Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.sexCol}" class="form-select" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <h:outputLabel class="h6 fw-bold" value="NIC Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.nicCol}"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Phone Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.phoneCol}"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+
+                            <h:outputLabel class="h6 fw-bold" value="Address Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.addressCol}" 
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <h:outputLabel class="h6 fw-bold" value="MOH Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.mohCol}" 
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+
+                            <h:outputLabel class="h6 fw-bold" value="District Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.districtCol}"
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <p:spacer ></p:spacer>
+                            <h:outputLabel class="h6 fw-bold" value="Ward Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.wardCol}" 
+                                             class="form-select">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+
+                            <h:outputLabel class="h6 fw-bold" value="BHT/Clinic/OPD Number Column" ></h:outputLabel>
+                            <h:selectOneMenu value="#{clientController.bhtCol}" class="form-select" >
+                                            
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            
+                        </h:panelGrid>
                         
-                        <p:outputLabel value="Sampled at" ></p:outputLabel>
-                        <p:calendar value="#{clientController.fromDate}" pattern="dd MMMM yyyy hh:mm" >
-                        </p:calendar>
-                        
-                        <p:outputLabel value="Dispatched at" ></p:outputLabel>
-                        <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy hh:mm" >
-                        </p:calendar>
-                        
-                        <p:outputLabel value="Start Row" ></p:outputLabel><!-- comment -->
-                        <p:inputText value="#{clientController.startRow}" ></p:inputText>
-                        
-                        <p:outputLabel value="Tube No Column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.testNoCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="Name Column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.nameCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="Age in years column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.ageColumn}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="Sex Column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.sexCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-                        
-                         <p:outputLabel value="NIC Column" ></p:outputLabel>
-                         <p:selectOneMenu value="#{clientController.nicCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    </div>
 
 
-                        <p:outputLabel value="Phone Column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.phoneCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="Address Column" ></p:outputLabel>
-                        <p:selectOneMenu value="#{clientController.addressCol}" >
-                            <f:selectItem itemLabel="A" itemValue="A"></f:selectItem>
-                            <f:selectItem itemLabel="B" itemValue="B"></f:selectItem>
-                            <f:selectItem itemLabel="C" itemValue="C"></f:selectItem>
-                            <f:selectItem itemLabel="D" itemValue="D"></f:selectItem>
-                            <f:selectItem itemLabel="E" itemValue="E"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="F" itemValue="F"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="G" itemValue="G"></f:selectItem>
-                            <f:selectItem itemLabel="H" itemValue="H"></f:selectItem>
-                            <f:selectItem itemLabel="I" itemValue="I"></f:selectItem>
-                            <f:selectItem itemLabel="J" itemValue="J"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="K" itemValue="K"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="L" itemValue="L"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="M" itemValue="M"></f:selectItem><!-- comment -->
-                            <f:selectItem itemLabel="N" itemValue="N"></f:selectItem><!-- comment -->
-                        </p:selectOneMenu>
-
-                        <h:panelGroup >
-                            <p:fileUpload value="#{clientController.file}" mode="simple"/>
-                            <p:commandButton ajax="false" value="Upload Requests from Excel" 
-                                             action="#{clientController.importOrdersFromExcel()}"  ></p:commandButton>
-                        </h:panelGroup>
-
-                    </p:panelGrid>
+                    <h:panelGroup >
+                        <p:fileUpload  value="#{clientController.file}" mode="simple"/>                                
+                        <h:commandButton  value="Upload Orders from Excel" 
+                                         action="#{clientController.importOrdersFromExcel()}"
+                                         class="btn btn-success">
+                        </h:commandButton>
+                    </h:panelGroup>
 
                 </h:form>
             </ui:define>

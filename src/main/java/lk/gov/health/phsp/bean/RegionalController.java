@@ -25,10 +25,13 @@ package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.io.Serializable;
+import java.text.DecimalFormat;
+
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +108,8 @@ public class RegionalController implements Serializable {
     @Inject
     private UserTransactionController userTransactionController;
     @Inject
+    private DashboardApplicationController dashboardApplicationController;
+    @Inject
     private PreferenceController preferenceController;
     @Inject
     MenuController menuController;
@@ -159,8 +164,13 @@ public class RegionalController implements Serializable {
     private List<InstitutionCount> labSummariesConfirmed;
     private List<InstitutionCount> labSummariesPositive;
 
+    private Item vaccinationStatus;
+
     private Area district;
     private Area mohArea;
+    private Area rdhs;
+
+    private String filter;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -169,8 +179,8 @@ public class RegionalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
+
+
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -196,10 +206,10 @@ public class RegionalController implements Serializable {
                 labSummariesToReceive.add((InstitutionCount) o);
             }
         }
-        return "/regional/summary_received_at_lab";
+        return "/regional/summary_lab_vs_ordered_to_receive";
     }
-    
-    
+
+
     public void processSummaryReceivedAtLab() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -225,8 +235,8 @@ public class RegionalController implements Serializable {
 
         j += " group by c.institution, c.referalInstitution";
         institutionCounts = new ArrayList<>();
-        
-        
+
+
         List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
         Long c=1l;
         for (Object o : obs) {
@@ -238,7 +248,7 @@ public class RegionalController implements Serializable {
             }
         }
     }
-    
+
     public String toSummaryByOrderedInstitutionVsLabToReceive1() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -480,8 +490,145 @@ public class RegionalController implements Serializable {
         return toListOfTestsWithoutMoh();
     }
 
-    
-    
+    // Get positivity rate by MOH area
+    // Rukshan
+    public String toTestPositivtyRateByMoh() {
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        Map m = new HashMap();
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        j += " and c.institution.rdhsArea=:rd ";
+        m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
+
+
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        j += " group by c.institution.mohArea "
+                + " order by count(c) desc ";
+
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+
+        m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+
+                j += " and (c.createdAt > :fd and c.createdAt < :td) ";
+                break;
+            case "SAMPLEDAT":
+                j += " and (c.sampledAt > :fd and c.sampledAt < :td) ";
+                break;
+            case "RESULTSAT":
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+            default:
+                j += " and (c.resultConfirmedAt > :fd and c.resultConfirmedAt < :td) ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+
+        j += " and c.institution.rdhsArea=:rd";
+        m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
+
+
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+
+
+        j += " and c.pcrResult=:result ";
+        m.put("result", itemApplicationController.getPcrPositive());
+
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        j += " group by c.institution.mohArea "
+                + " order by count(c) desc ";
+
+
+        List<Object> objPositives = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        institutionCounts = new ArrayList<>();
+
+
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/regional/positivity_rate_by_moh";
+        }
+
+        for (int index = 0; index <= objPositives.size()-1; index++) {
+            InstitutionCount incPositive = (InstitutionCount) objPositives.get(index);
+            InstitutionCount incCounts = (InstitutionCount) objCounts.get(index);
+            double tempPositiveRate = ((double) incPositive.getCount()/incCounts.getCount()*100);
+            String tempRate = df.format(tempPositiveRate) + "%";
+            InstitutionCount rateCount = new InstitutionCount();
+            rateCount.setArea(incPositive.getArea());
+            rateCount.setPositiveRate(tempRate);
+            rateCount.setCount(incCounts.getCount());
+            institutionCounts.add(rateCount);
+            System.out.println(tempRate);
+        }
+
+        return "/regional/positivity_rate_by_moh";
+    }
+
     public String toMohAreaResultList() {
         Map m = new HashMap();
         String j = "select c "
@@ -701,7 +848,26 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -725,6 +891,65 @@ public class RegionalController implements Serializable {
         return "/regional/list_of_tests";
     }
 
+    // This function will return the request counts by MOH area fora given RE
+    public String toCountOfTestsByMohArea() {
+        Map m = new HashMap();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.client.person.district=:district) ";
+        m.put("district", webUserController.getLoggedInstitution().getDistrict());
+
+        if (this.filter == null) {
+            this.filter = "createdat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        j += " group by c.client.person.mohArea "
+                + " order by count(c) desc";
+        institutionCounts = new ArrayList<>();
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/regional/count_of_requests_by_moh_area";
+        }
+        for (Object o : objCounts) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+            }
+        }
+
+        return "/regional/count_of_requests_by_moh_area";
+    }
+
     public String toCountOfTestsByOrderedInstitution() {
         Map m = new HashMap();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c))   "
@@ -736,7 +961,29 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -783,9 +1030,34 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district ) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
+        if (this.vaccinationStatus != null) {
+            j += " and c.vaccinationStatus=:vaccinationStatus";
+            m.put("vaccinationStatus", this.vaccinationStatus);
+        }
+
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -832,7 +1104,26 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -866,6 +1157,56 @@ public class RegionalController implements Serializable {
         return "/regional/count_of_results_by_lab";
     }
 
+    public String toCountOfResultsByGnArea() {
+        Map m = new HashMap();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.gnArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and (c.client.person.district=:dis) ";
+        m.put("dis", webUserController.getLoggedInstitution().getDistrict());
+
+        j += " and c.resultConfirmedAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        } else {
+            j += " and c.pcrResult in :results ";
+            m.put("results", itemApplicationController.getPcrResults());
+        }
+        j += " group by c.client.person.gnArea, c.institution"
+                + " order by count(c) desc ";
+
+        institutionCounts = new ArrayList<>();
+
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/regional/count_of_results_by_gn";
+        }
+        for (Object o : objCounts) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+            }
+        }
+
+        return "/regional/count_of_results_by_gn";
+    }
+
     public String toCountOfResultsByMoh() {
         Map m = new HashMap();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.mohArea, count(c))   "
@@ -876,9 +1217,35 @@ public class RegionalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
         j += " and (c.client.person.district=:district) ";
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter = "createdAt") {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
+        if (this.vaccinationStatus != null) {
+            j += " and c.vaccinationStatus=:vaccinationStatus";
+            m.put("vaccinationStatus", this.vaccinationStatus);
+        }
+
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -919,7 +1286,26 @@ public class RegionalController implements Serializable {
         j += " and c.client.person.mohArea is null ";
         j += " and c.client.person.district=:district ";
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.createdAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1215,7 +1601,25 @@ public class RegionalController implements Serializable {
         j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1728,6 +2132,14 @@ public class RegionalController implements Serializable {
         this.district = district;
     }
 
+    public Area getRdhs() {
+        return this.rdhs;
+    }
+
+    public void setRdhs(Area rhds) {
+        this.rdhs = rhds;
+    }
+
     public WebUser getAssignee() {
         return assignee;
     }
@@ -1904,6 +2316,10 @@ public class RegionalController implements Serializable {
         return awaitingDispatch;
     }
 
+    public List<Item> getInvestigationFilters() {
+        return itemApplicationController.getInvestigationFilters();
+    }
+
     public void setAwaitingDispatch(List<InstitutionCount> awaitingDispatch) {
         this.awaitingDispatch = awaitingDispatch;
     }
@@ -1922,6 +2338,22 @@ public class RegionalController implements Serializable {
 
     public void setAwaitingResults(List<InstitutionCount> awaitingResults) {
         this.awaitingResults = awaitingResults;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public Item getVaccinationStatus() {
+        return this.vaccinationStatus;
+    }
+
+    public void setVaccinationStatus(Item vStatus) {
+        this.vaccinationStatus = vStatus;
     }
 
 }

@@ -8,6 +8,9 @@
 
     <h:body>
         <ui:composition template="/lab/reports_index.xhtml">
+            <ui:define name="title">
+                LAB | Reports - Count of Results by Ordered Institution
+            </ui:define>
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" styleClass="alignTop" >
@@ -17,83 +20,104 @@
 
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
-                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
-                            <h:outputLabel class="h6 fw-bold" value="Result Confirmed From" ></h:outputLabel>
-                            <p:calendar value="#{labController.fromDate}"
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+                            <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
+                                 <h:outputLabel class="h6 fw-bold" value="Filter output" ></h:outputLabel>
+                                <h:selectOneMenu value="#{labController.filter}" class="form-select">
+                                    <f:selectItems value="#{labController.investigationFilters}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c.code}" ></f:selectItems>
+                                </h:selectOneMenu>
+                                 
+                                <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                                <p:calendar value="#{labController.fromDate}"
+                                            pattern="dd MMMM yyyy hh:mm a">
+                                </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="Result Confirmed Up To" ></h:outputLabel>
-                            <p:calendar value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+                                <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
+                                <p:calendar value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
-                            <h:selectOneMenu value="#{labController.orderingCategory}" class="form-select" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestOrderingCategories}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
+                                <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
+                                <h:selectOneMenu value="#{labController.orderingCategory}" class="form-select" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{labController.covidTestOrderingCategories}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
 
-                            <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}" class="form-select">
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
-
-
-                            <h:outputLabel class="h6 fw-bold" value="Result" ></h:outputLabel>
-                            <h:selectOneMenu value="#{labController.result}" class="form-select">
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.resultTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
-
-                            <h:commandButton class="btn btn-success w-100" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_results_by_institution" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton class="btn btn-warning w-100" value="Process"
-                                             action="#{labController.toCountOfResultsByOrderedInstitution()}" ></h:commandButton>
+                                <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
+                                <h:selectOneMenu value="#{labController.testType}" class="form-select">
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
 
 
-                        </h:panelGrid>
+                                <h:outputLabel class="h6 fw-bold" value="Result" ></h:outputLabel>
+                                <h:selectOneMenu value="#{labController.result}" class="form-select">
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{labController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <f:facet name="footer">
+                                    <h:commandButton class="btn btn-success w-25" value="Generate Excel">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="test_results_by_institution" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="test results by institution"/>
+                                    </h:commandButton>
+                                    <h:commandButton class="btn btn-warning w-25" value="Process"
+                                                     action="#{labController.toCountOfResultsByOrderedInstitution()}" >
+                                    </h:commandButton>
+                                </f:facet>
+
+                            </h:panelGrid>
                         </div>
-                        <div>
-                            <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Toggle Columns" icon="pi pi-align-justify"/>
-                            <p:columnToggler datasource="tbl" trigger="toggler"/>
-                        </div>
+                        
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
-                        <p:dataTable id="tbl" value="#{labController.institutionCounts}" rendered="true"
-                                     rowIndexVar="n"
-                                     var="c"
-                                     reflow="true"
-                                     resizableColumns="true"
-                                     paginator="true"
-                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
-                                     rows="10"
-                                     >
-                            <p:column headerText="PDHS" sortBy="#{c.institution.pdhsArea.name}"
-                                      filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.institution.pdhsArea.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="RDHS" sortBy="#{c.institution.rdhsArea.name}"
-                                      filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.institution.rdhsArea.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Institution" sortBy="#{c.institution.name}"
-                                      filterBy="#{c.institution.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
-                                      filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.institution.institutionType.label}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Count"  sortBy="#{c.count}">
-                                <h:outputLabel value="#{c.count}" ></h:outputLabel>
-                            </p:column>
-                        </p:dataTable>
+                            <p:dataTable id="tbl" value="#{labController.institutionCounts}" rendered="true"
+                                         rowIndexVar="n"
+                                         var="c"
+                                         reflow="true"
+                                         resizableColumns="true"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                         rows="10"
+                                         >
+                                 <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="5" headerText="#{webUserController.loggedUser.institution.name} - Result Count By Institutions - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
+                                </p:row>
+                                <p:row>
+                                <p:column headerText="PDHS" sortBy="#{c.institution.pdhsArea.name}"
+                                          filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.pdhsArea.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="RDHS" sortBy="#{c.institution.rdhsArea.name}"
+                                          filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.rdhsArea.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution" sortBy="#{c.institution.name}"
+                                          filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
+                                          filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.institutionType.label}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Count"  sortBy="#{c.count}">
+                                    <h:outputLabel value="#{c.count}" ></h:outputLabel>
+                                </p:column>
+                                </p:row>
+                                 </p:columnGroup>
+                                <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="5" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                                </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
                         </h:panelGrid>
                     </h:form>
 

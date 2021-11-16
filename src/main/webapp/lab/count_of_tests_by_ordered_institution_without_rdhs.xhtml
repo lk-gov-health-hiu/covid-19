@@ -17,18 +17,24 @@
 
                     <h:form >
                         <p:panelGrid columns="2" >
-                            <p:outputLabel value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{labController.fromDate}" 
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{labController.filter}" class="form-select">
+                                <f:selectItems value="#{labController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{labController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
-                            <p:outputLabel value="Ordered To" ></p:outputLabel>
+                            <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
 
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu value="#{labController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{labController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
@@ -45,7 +51,7 @@
                             <p:commandButton ajax="false" value="Generate Excel">
                                 <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
+                            <p:commandButton ajax="false" value="Process"
                                              action="#{labController.toCountOfTestsByOrderedInstitution()}" ></p:commandButton>
 
 
@@ -54,8 +60,8 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{labController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

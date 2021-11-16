@@ -146,6 +146,50 @@ public class HospitalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    
+    public String toAddNewPcrResultWithNewClient() {
+        pcr = new Encounter();
+        nicExistsForPcr = null;
+        Date d = new Date();
+        Client c = new Client();
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+
+        pcr.setClient(c);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(lab);
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+
+        if (sessionController.getLastWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkPlace(sessionController.getLastWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkplaceContact(sessionController.getLastContactOfWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplaceDetails() != null) {
+            pcr.getClient().getPerson().setWorkplaceContactDetails(sessionController.getLastContactOfWorkplaceDetails());
+        }
+
+        return "/hospital/pcr_with_result";
+    }
+
+    
+    
     public String toDispatchSamplesByMohOrHospital() {
         String j = "select c "
                 + " from Encounter c "
@@ -1055,6 +1099,52 @@ public class HospitalController implements Serializable {
         pcr.setSampledBy(webUserController.getLoggedUser());
         pcr.setCreatedAt(new Date());
         return "/hospital/pcr";
+    }
+
+    
+    
+    public String toAddNewPcrResultWithExistingNic() {
+        if (pcr == null) {
+            return "";
+        }
+        if (pcr.getClient() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson().getNic() == null || pcr.getClient().getPerson().getNic().trim().equals("")) {
+            return "";
+        }
+        Client nicClient = lastClientWithNic(pcr.getClient().getPerson().getNic(), pcr.getClient());
+        if (nicClient == null) {
+            return "";
+        }
+        nicExistsForPcr = null;
+        Encounter tmpEnc = pcr;
+        pcr = new Encounter();
+        pcr.setEncounterNumber(tmpEnc.getEncounterNumber());
+        Date d = new Date();
+        Client c = nicClient;
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+        pcr.setClient(c);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(lab);
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+        return "/hospital/pcr_with_result";
     }
 
     public String toAddNewRatOrderWithExistingNic() {

@@ -34,6 +34,7 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.InvestigationFilterType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
 
@@ -56,6 +57,8 @@ public class ItemApplicationController {
     private List<Item> strengthUnits;
     private List<Item> issueUnits;
 
+    private List<Item> investigationFilters;
+
     private List<Item> pcrResults;
 
     private List<Item> managementTypes;
@@ -63,7 +66,7 @@ public class ItemApplicationController {
     private List<Item> citizenships;
 
     private List<Item> sexes;
-    
+
     private List<Item> vaccinationStatuses;
     private List<Item> symptomaticStatuses;
 
@@ -284,6 +287,19 @@ public class ItemApplicationController {
             }
         }
         if (counter > 1) {
+        }
+        return item;
+    }
+
+    public Item findItemById(Long code) {
+        Item item = null;
+        if (code == null) {
+            return item;
+        }
+        for (Item ti : getItems()) {
+            if (ti.getId().equals(code)) {
+                item = ti;
+            }
         }
         return item;
     }
@@ -522,6 +538,24 @@ public class ItemApplicationController {
         this.rat = rat;
     }
 
+    public List<Item> getInvestigationFilters() {
+       List<Item> output = new ArrayList<>();
+       for (InvestigationFilterType filter: InvestigationFilterType.values()) {
+            String code = filter.getCode();
+            String label = filter.getLabel();
+            Item item = new Item();
+            item.setCode(code);
+            item.setName(label);
+            output.add(item);
+       }
+       this.investigationFilters = output;
+       return this.investigationFilters;
+    }
+
+    public void setInvestigationFilters(List<Item> investigationFilters) {
+        this.investigationFilters = investigationFilters;
+    }
+
     public List<Item> getCovidTestOrderingCategories() {
         if (covidTestOrderingCategories == null) {
             covidTestOrderingCategories = findChildDictionaryItems("patients_covid_19_test_ordering_context_category");
@@ -559,8 +593,8 @@ public class ItemApplicationController {
     }
 
     public List<Item> getVaccinationStatuses() {
-        if(vaccinationStatuses==null){
-            vaccinationStatuses=findChildDictionaryItems("vaccinations_statuses");
+        if (vaccinationStatuses == null) {
+            vaccinationStatuses = findChildDictionaryItems("vaccinations_statuses");
         }
         return vaccinationStatuses;
     }
@@ -570,7 +604,7 @@ public class ItemApplicationController {
     }
 
     public List<Item> getSymptomaticStatuses() {
-        if(symptomaticStatuses==null){
+        if (symptomaticStatuses == null) {
             symptomaticStatuses = findChildDictionaryItems("symptomatic_statuses");
         }
         return symptomaticStatuses;
@@ -579,7 +613,5 @@ public class ItemApplicationController {
     public void setSymptomaticStatuses(List<Item> symptomaticStatuses) {
         this.symptomaticStatuses = symptomaticStatuses;
     }
-    
-    
 
 }

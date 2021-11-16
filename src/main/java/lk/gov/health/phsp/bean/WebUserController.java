@@ -16,6 +16,7 @@ import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -230,6 +231,11 @@ public class WebUserController implements Serializable {
             ipAddress = request.getRemoteAddr();
         }
 
+    }
+
+    public String parseDate(Date complexDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(complexDate);
     }
 
     public String displayUsers(Institution ins) {
@@ -712,18 +718,29 @@ public class WebUserController implements Serializable {
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
     }
 
-    public String toOpdModule() {
-        userTransactionController.recordTransaction("To Opd Module");
-        return "/opd/index_opd";
-    }
 
     public String toChangeMyDetails() {
         if (loggedUser == null) {
             return "";
         }
         current = loggedUser;
-        userTransactionController.recordTransaction("To Change My Details");
         return "/change_my_details";
+    }
+
+    public String toChangeMyInstitutionDetails() {
+        if (loggedUser == null) {
+            return "";
+        }
+        current = loggedUser;
+        return "/change_my_institution_details";
+    }
+
+    public String toChangeMyUsername() {
+        if (loggedUser == null) {
+            return "";
+        }
+        current = loggedUser;
+        return "/change_my_username";
     }
 
     public String toChangeMyPassword() {
@@ -733,7 +750,6 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         current = loggedUser;
-        userTransactionController.recordTransaction("To Change My Password");
         return "/change_my_password";
     }
 
@@ -867,6 +883,7 @@ public class WebUserController implements Serializable {
     }
 
     public String loginNew() {
+        System.out.println("loginNew - " + new Date());
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
@@ -885,14 +902,18 @@ public class WebUserController implements Serializable {
             userTransactionController.recordTransaction("Failed Login Attempt", userName);
             return "";
         }
+        System.out.println("Check User Login New Completed - " + new Date());
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         if (loggedUser != null) {
             loggedInstitution = loggedUser.getInstitution();
         }
-
+        System.out.println("loged Institution completed - " + new Date());
         executeSuccessfulLoginActions();
+        System.out.println("Executed Successful Login Actions - " + new Date());
         fillUsersForMyInstitute();
+        System.out.println("Filled Users for my institutions - " + new Date());
         fillAreasForMe();
+        System.out.println("Filled Areas for Me - " + new Date());
         return "/index";
     }
 
@@ -1894,7 +1915,7 @@ public class WebUserController implements Serializable {
                 personController.save(newPerson);
 
                 WebUser newUser = new WebUser();
-                newUser.setName("sa" + CommonController.prepareAsCode(line).toLowerCase());
+                newUser.setName("sa_" + CommonController.prepareAsCode(line).toLowerCase());
                 newUser.setPerson(newPerson);
                 newUser.setInstitution(newIns);
                 newUser.setArea(institution.getRdhsArea());
@@ -2071,7 +2092,30 @@ public class WebUserController implements Serializable {
         try {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Your details Updated."));
-            userTransactionController.recordTransaction("update My Details");
+            userTransactionController.recordTransaction("Updated My Details");
+            return "/index";
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, e.getMessage());
+            return null;
+        }
+    }
+
+    public String updateMyUserName() {
+        try {
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage(("Your details Updated."));
+            userTransactionController.recordTransaction("Updated My Details");
+            return "/index";
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage("Username already exists. Please select another.");
+            return "";
+        }
+    }
+
+    public String updateMyInstitutionDetails() {
+        try {
+            getInstitutionFacade().edit(current.getInstitution());
+            userTransactionController.recordTransaction("Update My Institution Details");
             return "/index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
@@ -2214,6 +2258,23 @@ public class WebUserController implements Serializable {
         WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
         return rs;
     }
+
+
+    public WebUserRole[] getWebUserRolesForMoh() {
+        List<WebUserRole> urs = new ArrayList<>();
+        urs.add(WebUserRole.Moh);
+        urs.add(WebUserRole.Amoh);
+        urs.add(WebUserRole.Sphi);
+        urs.add(WebUserRole.Phns);
+        urs.add(WebUserRole.Sphm);
+        urs.add(WebUserRole.Phi);
+        urs.add(WebUserRole.Phm);
+        urs.add(WebUserRole.MohStaff);
+        WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
+        return rs;
+    }
+
+
 
     public WebUserRole[] getWebUserRolesForLabAdmin() {
         List<WebUserRole> urs = new ArrayList<>();

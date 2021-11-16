@@ -8,6 +8,9 @@
 
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
+            <ui:define name="title">
+                RDHS | Reports - Results Count By MOH Area
+            </ui:define>
             <ui:define name="reports">
 
                 <h:panelGrid columns="1" styleClass="alignTop bg-white border border-light w-100"  >
@@ -17,13 +20,21 @@
 
                     <h:form >
                         <p:panelGrid columns="2" class="border border-light" >
-                            <p:outputLabel value="Ordered From" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:calendar value="#{regionalController.fromDate}"
-                                        pattern="dd MMMM yyyy hh:mm" class="fs-6">
-                            </p:calendar><!-- comment -->
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
+                                <f:selectItems value="#{provincialController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:datePicker value="#{regionalController.fromDate}"
+                                          pattern="dd MMMM yyyy hh:mm" class="fs-6" showTime="true">
+                            </p:datePicker>
 
-                            <p:outputLabel value="Ordered To" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm" class="fs-6"></p:calendar>
+                            <p:outputLabel value="To" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:datePicker value="#{regionalController.toDate}" showTime="true"
+                                          pattern="dd MMMM yyyy hh:mm" class="fs-6">
+                            </p:datePicker>
 
                             <p:outputLabel value="Ordering Category" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:selectOneMenu value="#{regionalController.orderingCategory}" class="form-control form-control-sm w-100" >
@@ -50,13 +61,25 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
+                            <p:outputLabel value="Vaccination Status" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:selectOneMenu value="#{regionalController.vaccinationStatus}" class="form-control form-control-sm w-100">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
+                                               itemLabel="#{statuses.name}" itemValue="#{statuses}">
+                                </f:selectItems>
+                            </p:selectOneMenu>
 
-
-                            <h:commandButton value="Generate Excel" class="w-100 btn btn-success my-2">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="w-100 btn btn-warning my-2"
-                                             action="#{regionalController.toCountOfResultsByMoh()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="w-25 btn btn-success my-2">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by moh"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="w-25 btn btn-warning my-2"
+                                                 action="#{regionalController.toCountOfResultsByMoh()}" >
+                                </h:commandButton>
+                            </f:facet>
 
 
                         </p:panelGrid>

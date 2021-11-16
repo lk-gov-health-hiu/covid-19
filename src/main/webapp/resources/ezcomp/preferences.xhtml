@@ -32,21 +32,21 @@
                             <p:outputLabel value="Lab Number Generation" class="fs-6 fw-bold" ></p:outputLabel>
                             <p:selectOneMenu value="#{preferenceController.labNumberGeneration}" class="form-control w-100">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItem  itemLabel="Ordered Institution Code + Lab Code + Date + Count"  
+                                <f:selectItem  itemLabel="Ordered Institution Code + Lab Code + Date + Count"
                                                itemValue="InsLabDateCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Ordered Institution Code + Date + Count"  
+                                <f:selectItem  itemLabel="Ordered Institution Code + Date + Count"
                                                itemValue="InsDateCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Date + Count"  
+                                <f:selectItem  itemLabel="Date + Count"
                                                itemValue="DateCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Lab Code + Date + Count"  
+                                <f:selectItem  itemLabel="Lab Code + Date + Count"
                                                itemValue="LabDateCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Month + Count"  
+                                <f:selectItem  itemLabel="Month + Count"
                                                itemValue="MonthCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Year + Count"  
+                                <f:selectItem  itemLabel="Year + Count"
                                                itemValue="YearCount" ></f:selectItem>
-                                <f:selectItem  itemLabel="Count"  
+                                <f:selectItem  itemLabel="Count"
                                                itemValue="Count" ></f:selectItem>
-                                <f:selectItem  itemLabel="Custom count"  
+                                <f:selectItem  itemLabel="Custom count"
                                                itemValue="CustomCount" ></f:selectItem>
                             </p:selectOneMenu>
 
@@ -89,6 +89,12 @@
                             <p:outputLabel value="CT2 Term" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
                             <p:inputText value="#{preferenceController.ct2Term}" class="form-control w-100"></p:inputText>
 
+                            <p:outputLabel value="PCT Test Term" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:inputText class="form-control" value="#{preferenceController.pcrTestTerm}"></p:inputText>
+
+                            <p:outputLabel value="RAT Test Term" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:inputText class="form-control" value="#{preferenceController.ratTestTerm}"></p:inputText>
+
                         </p:panelGrid>
 
                     </p:tab>
@@ -98,56 +104,49 @@
                             <h:panelGroup >
                                 <p:outputLabel value="Lab Report HTML" class="fw-bold"></p:outputLabel>
                                 {name}
-                                {age}
-                                {sex}
-                                {address}
-                                {phone1}
-                                {phone2}
-                                {lab_no}
-                                {ref_no}
-                                {gn}
-                                {phi}
-                                {institute}
-                                {institute_name}
-                                {institute_address}
-                                {institute_phone}
-                                {institute_fax}
-                                {institute_email}
-                                {lab}
-                                {lab_name}
-                                {lab_address}
-                                {lab_phone}
-                                {lab_fax}
-                                {lab_email}
-                                {requested_date}
-                                {sampled_date}
-                                {dispatched_date}
-                                {received_date}
-                                {entered_date}
-                                {confirmed_date}
-                                {sampled_date}
-                                {entered_by}
-                                {approved_by}
-                                {reviewed_by}
-                                {reviewed_date}
-                                {test}
-                                {pcr_result}
-                                {pcr_ct1}
-                                {pcr_ct2}
-                                {pcr_ct2}
-                                {pcr_comments}
-                                {unit_or_ward}
-                                {bht}
-                                {pcr_result_string}
-                                {pcr_comment_string}
+                                        {nic}
+                                        {age}
+                                        {sex}
+                                        {address}
+                                        {phone1}
+                                        {phone2}
+                                        <br/>
+                                        {unit_or_ward}
+                                        {bht}
+                                        <br/>
+                                        {lab_no}
+                                        {ref_no}
+                                        <br/>
+                                        {gn}
+                                        {phi}
+                                        {institute}
+                                        {ref_institute_name}
+                                        {ref_institute_address}
+                                        {ref_institute_phone}
+                                        {ref_institute_fax}
+                                        {ref_institute_email}
+                                        {ref_institute_email}
+                                        <br/>
+                                        {received_date}
+                                        {entered_date}
+                                        {sampled_date}
+                                        {confirmed_date}
+                                        <br/>
+                                        {created_by}
+                                        {sampled_by}
+                                        {entered_by}
+                                        {reviewed_by}
+                                        {approved_by}
+                                        <br/>
+                                        {test}
+                                        {pcr_result}
+                                        {pcr_result_string}
+                                        {pcr_ct1}
+                                        {pcr_ct2}
+                                        {pcr_comments}
+                                        {pcr_comment_string}
                             </h:panelGroup>
-
-
-
-
                             <p:inputTextarea style="width: 100%; min-width: 800px; height: 90vh; min-height: 100px;" value="#{preferenceController.labReportHtml}" ></p:inputTextarea>
-
-
                         </p:panelGrid>
                     </p:tab>
 
@@ -167,33 +166,24 @@
                             </h:panelGroup>
 
                             <p:textEditor id="editorB"
-                                          allowFormatting="true" 
+                                          allowFormatting="true"
                                           allowBlocks="true"
                                           allowImages="true"
                                           allowLinks="true"
                                           allowStyles="true"
                                           height="800"
                                           secure="false"
-
                                           value="#{preferenceController.labReportBulkHtml}">
                             </p:textEditor>
-
-
                         </p:panelGrid>
                     </p:tab>
-
                 </p:tabView>
 
                 <f:facet name="footer" >
-                    <h:commandButton class="btn btn-success text-white w-25" action="#{preferenceController.savePreferencesInstitution()}" 
+                    <h:commandButton class="btn btn-success text-white w-25" action="#{preferenceController.savePreferencesInstitution()}"
                                      value="SAVE" style="float: left;"></h:commandButton>
 
                 </f:facet>
-
-
-
-
-
             </p:panelGrid>
 
         </h:form>
