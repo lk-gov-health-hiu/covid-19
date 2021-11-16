@@ -80,6 +80,8 @@
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                             rowsPerPageTemplate="10,50,100,{ShowAll|'All'}" rowStyleClass="#{c.resultCssClass}">
+                           
+                                
                             <p:columnGroup>
                                 <p:row>
                                     <p:column headerText="Sampelled On" sortBy="#{c.sampledAt}"></p:column>
@@ -193,7 +195,8 @@
                                     <f:convertDateTime pattern="dd MMMM yyyy mm:hh a"></f:convertDateTime>
                                 </h:outputLabel>
                             </p:column>
-
+                                
+                               
                         </p:dataTable>
                     </h:panelGrid>
                 </h:form>
