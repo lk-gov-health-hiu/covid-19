@@ -107,13 +107,15 @@
                             <div class="col-md-8">
                                 <h:selectOneMenu class="form-select" id="webUserRole" value="#{webUserController.selected.webUserRole}" required="false" requiredMessage="The Role field is required">
                                     <f:selectItem itemLabel="Please Select"></f:selectItem>
-<!--                                    <f:selectItems value=""
-                                                   var="webUserRoles"
-                                                   itemLabel=""
-                                                   itemValue="" >
-                                    </f:selectItems>-->
-                                </h:selectOneMenu><!--
-                                <h:message class="text-danger small" for="webUserRole"></h:message>-->
+                                   <f:selectItems
+                                        value="#{applicationController.webUserRoles}"
+                                            var="webUserRoles"
+                                            itemLabel="#{webUserRoles.label}"
+                                            itemValue="#{webUserRoles}"
+                                   >
+                                    </f:selectItems>
+                                </h:selectOneMenu>
+                                <h:message class="text-danger small" for="webUserRole"></h:message>
                             </div>
                         </div>
                         <div class="row mb-3">
