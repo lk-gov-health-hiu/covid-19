@@ -221,7 +221,6 @@ public class ClientController implements Serializable {
 
     private Encounter selectedEncounterToMarkTest;
     private Encounter selectedEncounter;
-    private Encounter testToPrint;
 
     private Boolean nicExists;
     private Boolean phnExists;
@@ -1786,18 +1785,6 @@ public class ClientController implements Serializable {
         }
 //        selectedToPrint = null;
         return "/lab/print_preview";
-    }
-
-    public String hospitalPrintSingleReport() {
-        System.out.println(this.testToPrint);
-        this.testToPrint.setResultPrinted(true);
-        this.testToPrint.setResultPrintedAt(new Date());
-        this.testToPrint.setResultPrintedBy(webUserController.getLoggedUser());
-        this.testToPrint.setResultPrintHtml(generateLabReport(this.testToPrint));
-        encounterFacade.edit(this.testToPrint);
-        this.selectedToPrint = null;
-        this.selectedToPrint.add(this.testToPrint);
-        return "hospital/print_preview";
     }
 
     public String toHospitalPrintSelected() {
@@ -6955,14 +6942,6 @@ public class ClientController implements Serializable {
 
     public void setOrderingCategory(Item orderingCategory) {
         this.orderingCategory = orderingCategory;
-    }
-
-    public void setTestToPrint(Encounter encounter) {
-        this.testToPrint= encounter;
-    }
-
-    public Encounter getTestToPrint() {
-        return this.testToPrint;
     }
 
     /**
