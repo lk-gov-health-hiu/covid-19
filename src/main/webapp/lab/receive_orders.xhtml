@@ -41,7 +41,7 @@
                                 <p:commandButton ajax="false" value="Process" class="btn btn-success"
                                                  action="#{clientController.toLabReceiveSelected()}" ></p:commandButton>
                                 <p:commandButton ajax="false" value="Generate Excel" class="btn btn-secondary">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="samples_to_receive" ></p:dataExporter>
+                                    <p:dataExporter selectionOnly="true" target="tbl" type="xlsx" fileName="samples_to_receive" ></p:dataExporter>
                                 </p:commandButton>
 
                             </p:panelGrid>
@@ -69,13 +69,13 @@
                                 <f:facet name="header" >
                                     <h:outputLabel value="Other Actions" ></h:outputLabel>
                                 </f:facet>
-                                <p:commandButton value="Mark as REJECTED" ajax="false" 
+                                <p:commandButton value="Mark as REJECTED" ajax="false"
                                                  onclick="if (!confirm('Are you sure you want to reject?'))
                                                              return false"
                                                  action="#{clientController.markSelectedAsRejectAtReceive()}" ></p:commandButton>
 
                                 <h:panelGroup >
-                                    <p:commandButton value="Divert Samples to " ajax="false" 
+                                    <p:commandButton value="Divert Samples to " ajax="false"
                                                      onclick="if (!confirm('Are you sure you want to divert samples?'))
                                                                  return false"
                                                                  action="#{clientController.divertSamplesFromLab()}" ></p:commandButton>
@@ -86,11 +86,11 @@
 
                                 </h:panelGroup>
 
-                                <p:commandButton value="Mark as NOT EXPECTED" ajax="false" 
+                                <p:commandButton value="Mark as NOT EXPECTED" ajax="false"
                                                  onclick="if (!confirm('Are you sure you want to mark as NOT expected?'))
                                                              return false"
                                                  action="#{clientController.markUnassigned()}" ></p:commandButton>
-                                <p:commandButton value="Mark as SAMPLE IS MISSING" ajax="false" 
+                                <p:commandButton value="Mark as SAMPLE IS MISSING" ajax="false"
                                                  onclick="if (!confirm('Are you sure you want to mark as NOT expected?'))
                                                              return false"
                                                  action="#{clientController.markSampleMissing()}" ></p:commandButton>
@@ -99,7 +99,7 @@
                         </p:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToReceive}" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToReceive}"
                                      var="c"
                                      selection="#{clientController.selectedToReceive}"
                                      rowKey="#{c.id}"
@@ -113,7 +113,7 @@
                                      >
                             <p:column selectionMode="multiple" width="40" ></p:column>
                             <p:column headerText="Test No" width="90" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" >
-                                <p:inputText value="#{c.encounterNumber}" 
+                                <p:inputText value="#{c.encounterNumber}"
                                              id="txtTubeNo" style="width: 98%;" >
                                     <p:ajax event="blur" process="txtTubeNo"
                                             listener="#{clientController.saveLabNo(c)}" >

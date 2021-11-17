@@ -107,7 +107,7 @@
                                     <h:inputText id="nic" autocomplete="off" value="#{hospitalController.pcr.client.person.nic}" title="NIC"
                                                  validatorMessage="Please check the NIC number" class="form-control" tabindex="5">
                                         <f:ajax event="blur" execute="@this" render="nicExists year month sex"
-                                                listener="#{mohController.checkNicExistsForPcr()}"></f:ajax>
+                                                listener="#{hospitalController.checkNicExistsForPcr()}"></f:ajax>
                                     </h:inputText>
                                     <h:message class="text-danger small" for="nic"></h:message>
                                     <h:panelGroup id="nicExists">
