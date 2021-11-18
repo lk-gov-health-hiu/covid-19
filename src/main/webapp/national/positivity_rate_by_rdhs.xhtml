@@ -59,13 +59,17 @@
                                                itemValue="#{p}" ></f:selectItems>
                             </h:selectOneMenu>
 
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success ">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger ">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="counts by rdhs" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning "
+                                                 action="#{nationalController.toTestPositiveRateByRdhs()}" ></h:commandButton>
 
-
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{nationalController.toTestPositiveRateByRdhs()}" ></h:commandButton>
+                            </f:facet>
 
 
                         </h:panelGrid>
