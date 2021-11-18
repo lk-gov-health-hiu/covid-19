@@ -14,7 +14,6 @@
                 Regional Summery - Received at Lab(RDHS)
             </ui:define>
             <ui:define name="content">
-                <h:outputStylesheet library="css" name="tem1.css"/>
                 <h:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
                         <h:outputLabel value="Regional Summery - Received at Lab" ></h:outputLabel>
@@ -35,27 +34,34 @@
                                 <f:selectItems value="#{regionalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
-                            
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success">
-                                <p:dataExporter type="xlsx" fileName="Samples to Receive Summery" target="tbl" ></p:dataExporter>
-                            </h:commandButton>
 
-                            <h:commandButton value="Process"
-                                             class="btn btn-warning w-100"
-                                             action="#{regionalController.processSummaryReceivedAtLab()}" >
-                            </h:commandButton>
-                            
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel"
+                                                 class="btn btn-success">
+                                    <p:dataExporter type="xlsx" fileName="Samples to Receive Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF"
+                                                 class="btn btn-danger">
+                                    <p:dataExporter type="pdf" fileName="Samples to Receive Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+
+                                <h:commandButton value="Process"
+                                                 class="btn btn-warning w-100"
+                                                 action="#{regionalController.processSummaryReceivedAtLab()}" >
+                                </h:commandButton>
+
+                            </f:facet>
+
 
                         </h:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" 
-                                     value="#{regionalController.institutionCounts}" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl"
+                                     value="#{regionalController.institutionCounts}"
                                      rowIndexVar="n"
-                                     var="c" rowKey="#{c.id}" 
+                                     var="c" rowKey="#{c.id}"
 
-                                     paginator="true" 
+                                     paginator="true"
                                      rows="10"
 
 
