@@ -555,12 +555,13 @@ public class ClientController implements Serializable {
                 + " and c.sentToLab is not null "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
@@ -591,12 +592,13 @@ public class ClientController implements Serializable {
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution=:rins "
                 + " and c.sentToLab is not null "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("rl", false);
         m.put("rins", referingInstitution);
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
@@ -976,12 +978,13 @@ public class ClientController implements Serializable {
                 + " and c.sentToLab is not null "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " order by c.encounterNumber";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("rej", false);
         m.put("sm", false);
+        m.put("rl", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("ins", institution);
