@@ -49,6 +49,13 @@
                                                    itemValue="#{c}" ></f:selectItems>
                                 </h:selectOneMenu>
 
+                                <h:outputLabel class="h6 fw-bold" value="Result" ></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.result}" class="form-select">
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
+
 
                                 <f:facet name="footer">
                                     <h:commandButton value="Generate Excel" class="btn btn-success w-25">

@@ -12,7 +12,7 @@
 
                 <h:panelGrid columns="1" styleClass="alignTop" >
                     <f:facet name="header" >
-                        <p:outputLabel value="Test Counts by Provincial Departments" ></p:outputLabel>
+                        <p:outputLabel value="Counts by Provincial Departments" ></p:outputLabel>
                     </f:facet>
 
                     <h:form >
@@ -54,6 +54,13 @@
                                 <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
                                     <f:selectItem itemLabel="All" ></f:selectItem>
                                     <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel class="h6 fw-bold" value="Result" ></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.result}" class="form-select">
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
                                                    itemValue="#{c}" ></f:selectItems>
                                 </h:selectOneMenu>
 

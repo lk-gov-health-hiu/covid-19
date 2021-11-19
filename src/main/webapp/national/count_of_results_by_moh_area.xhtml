@@ -9,17 +9,25 @@
     <h:body>
         <ui:composition template="/national/reports_index.xhtml">
             <ui:define name="title">
-                National | Reports - Result Count By MOH Areas
+                National | Reports - Result Count By Resident MOH Areas
             </ui:define>
             <ui:define name="reports">
                 <h:panelGrid columns="1" styleClass="alignTop" >
                     <f:facet name="header" >
-                        <p:outputLabel value="Result Counts by MOH Area" ></p:outputLabel>
+                        <p:outputLabel value="Result Counts by Resident MOH Area" ></p:outputLabel>
                     </f:facet>
 
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                             <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
+                                
+                                <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                    <f:selectItems value="#{nationalController.investigationFilters}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c.code}" ></f:selectItems>
+                                </h:selectOneMenu>
+                                
                                 <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
                                 <p:calendar value="#{nationalController.fromDate}"
                                             pattern="dd MMMM yyyy hh:mm">

@@ -324,7 +324,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -397,7 +397,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -603,7 +603,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -667,7 +667,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -727,7 +727,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -792,7 +792,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -859,7 +859,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -997,7 +997,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -1071,7 +1071,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -1137,7 +1137,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -1242,7 +1242,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -1304,7 +1304,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
@@ -1744,7 +1744,7 @@ public class NationalController implements Serializable {
         m.put("etype", EncounterType.Test_Enrollment);
 
         if (this.filter == null) {
-            this.filter = "createdat";
+            this.filter = "RESULTSAT";
         }
 
         switch (this.filter.toUpperCase()) {
