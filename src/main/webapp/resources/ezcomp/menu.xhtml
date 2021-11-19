@@ -69,9 +69,10 @@
                     <p:menuitem ajax="false" value="Approve Results" action="#{clientController.toConfirmResults}"
                                 rendered="#{webUserController.hasPrivilege('Confirm_Results')}"/>
                     <p:menuitem ajax="false" value="Print Results" action="#{clientController.toLabToSelectForPrinting()}"
-                                rendered="#{webUserController.hasPrivilege('Print_Results')}"/>
-                    <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{hospitalController.toHospitalSelectForPrinting()}"
-                                rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital'}"/>
+                                rendered="#{webUserController.hasPrivilege('Print_Results') }"/>
+                </p:submenu>
+                <p:submenu class="submenu mx-2" label="Hospital" rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital'}">
+                    <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{clientController.toHospitalSelectForPrinting()}"/>
                 </p:submenu>
                 <p:submenu class="submenu mx-2" label="Requests from Lab" rendered="#{webUserController.hasPrivilege('Lab_Management')}">
                     <p:menuitem ajax="false" value="New RAT Request" rendered="false" action="#{labController.toAddNewRatOrderWithNewClient()}"  />
