@@ -8,64 +8,77 @@
 
     <h:body>
         <ui:composition template="/provincial/reports_index.xhtml">
+            <ui:define name="title">
+                provincial | Reports - Result Counts by Lab
+            </ui:define>
             <ui:define name="reports">
 
-                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                <p:panelGrid columns="1" styleClass="border border-light bg-white">
                     <f:facet name="header" >
                         <p:outputLabel value="Result Counts by Lab" ></p:outputLabel>
                     </f:facet>
 
                     <h:form >
-                        <p:panelGrid columns="2" >
-                            <p:outputLabel value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{provincialController.fromDate}" 
+                        <p:panelGrid columns="2" styleClass="border border-light bg-white">
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu class="form-control w-100" value="#{provincialController.filter}">
+                                <f:selectItems value="#{provincialController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <p:outputLabel class="h6 fw-bold" value="From" ></p:outputLabel>
+                            <p:calendar value="#{provincialController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm">
-                            </p:calendar><!-- comment -->
+                            </p:calendar>
 
-                            <p:outputLabel value="Ordered To" ></p:outputLabel>
+                            <p:outputLabel class="h6 fw-bold" value="To" ></p:outputLabel>
                             <p:calendar value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:calendar>
 
-                            <p:outputLabel value="Ordering Category" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.orderingCategory}" >
+                            <p:outputLabel class="h6 fw-bold" value="Ordering Category" ></p:outputLabel>
+                            <p:selectOneMenu class="form-control w-100" value="#{provincialController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            
 
-                            <p:outputLabel value="Test" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.testType}" >
+
+                            <p:outputLabel class="h6 fw-bold" value="Test" ></p:outputLabel>
+                            <p:selectOneMenu class="form-control w-100" value="#{provincialController.testType}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{provincialController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
 
-                            <p:outputLabel value="Result" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.result}" >
+                            <p:outputLabel class="h6 fw-bold" value="Result" ></p:outputLabel>
+                            <p:selectOneMenu class="form-control w-100" value="#{provincialController.result}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{provincialController.resultTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                           
 
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{provincialController.toCountOfResultsByLab()}" ></p:commandButton>
-
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 w-25">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                 action="#{provincialController.toCountOfResultsByLab()}" >
+                                </h:commandButton>
+                            </f:facet>
 
                         </p:panelGrid>
 
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{provincialController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

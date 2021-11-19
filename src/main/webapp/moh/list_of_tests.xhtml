@@ -23,7 +23,7 @@
                     <h:form >
                         <p:panelGrid columns="2" class="bg-white border border-light">
                             <p:outputLabel class="fs-6 fw-bold" value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{mohController.fromDate}" 
+                            <p:calendar value="#{mohController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar>
 
@@ -33,7 +33,7 @@
                             <p:outputLabel class="fs-6 fw-bold" value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu class="form-control w-100" value="#{mohController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{mohController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{mohController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
@@ -51,27 +51,30 @@
                                             var="m" itemLabel="#{m.name}" itemValue="#{m}" >
                             </p:autoComplete>
 
-                            <h:commandButton class="btn btn-success w-100 mt-2" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton class="btn btn-warning w-100" value="Process" 
-                                             action="#{mohController.toTestList()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton class="btn btn-success" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton class="btn btn-danger" value="Generate PDF">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton class="btn btn-warning" value="Process"
+                                                 action="#{mohController.toTestList()}" ></h:commandButton>
+
+                            </f:facet>
                         </p:panelGrid>
 
                         <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Filter Columns" />
                         <p:columnToggler datasource="tbl" trigger="toggler"/>
-                        
-                        <p:dataTable resizableColumns="true" multiViewState="true" id="tbl" 
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" id="tbl"
                                      value="#{mohController.tests}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
+                                     var="c"
                                      reflow="true"
                                      resizeMode="expand"
-                                     
-                                     
-                                     
                                      rowKey="#{c.id}"
-                                     paginator="true" 
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
@@ -80,7 +83,19 @@
                                 <h3 class="m-0 my-3 fs-5 fw-bold text-secondary">Institution : #{webUserController.loggedInstitution.name}</h3>
                             </f:facet>
                             <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains" style="width:10em;">
-                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                                <p:inputText value="#{c.encounterNumber}"
+                                             id="txtTubeNo" style="width: 98%;" >
+                                    <p:ajax event="blur" process="txtTubeNo"
+                                            listener="#{clientController.saveLabNo(c)}" >
+                                    </p:ajax>
+                                </p:inputText>
+                            </p:column>
+                            <p:column headerText="Enter Time"
+                                      sortBy="#{c.createdAt}"
+                                      style="width:10em;">
+                                <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMM yy hh:mm" ></f:convertDateTime>
+                                </p:outputLabel>
                             </p:column>
                             <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains"  style="width:4em;">
                                 <p:outputLabel value="#{c.pcrTestType.name}" ></p:outputLabel>
@@ -126,7 +141,7 @@
                                 <h:commandButton value="Edit Order" action="#{mohController.toEditTest()}" class="btn btn-success mx-2"   >
                                     <f:setPropertyActionListener value="#{c}" target="#{mohController.test}" ></f:setPropertyActionListener>
                                 </h:commandButton>
-                                <h:commandButton  value="Delete"  action="#{mohController.deleteTest()}"   class="btn btn-warning" 
+                                <h:commandButton  value="Delete"  action="#{mohController.deleteTest()}"   class="btn btn-warning"
                                                  onclick="if (!confirm('Are you sure you want to delete?'))
                                                              return false" >
                                     <f:setPropertyActionListener value="#{c}" target="#{mohController.deleting}" >

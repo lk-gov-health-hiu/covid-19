@@ -124,7 +124,7 @@
                                     <h:message class="text-danger small" for="nic"></h:message>
                                     <h:panelGroup id="nicExists">
                                         <h:commandLink rendered="#{hospitalController.nicExistsForPcr}" immediate="true"
-                                                       action='#{hospitalController.toAddNewPcrWithExistingNic(2)}'
+                                                       action='#{hospitalController.toAddNewPcrWithExistingNic()}'
                                                        value="NIC exists. Click here to load the patient" class="btn btn-secondary btn-sm"></h:commandLink>
                                     </h:panelGroup>
                                 </div>

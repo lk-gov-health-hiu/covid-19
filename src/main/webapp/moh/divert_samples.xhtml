@@ -45,11 +45,16 @@
                                                 var="m" itemLabel="#{m.name}" itemValue="#{m}" >
                                 </p:autoComplete>
 
-                                <h:commandButton class="btn btn-success w-100 my-2" value="Generate Excel">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton class="btn btn-warning w-100 my-2" value="Process" 
-                                                 action="#{clientController.toDivertSamples()}" ></h:commandButton>
+                                <f:facet name="footer">
+                                    <h:commandButton class="btn btn-success" value="Generate Excel">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton class="btn btn-danger" value="Generate PDF">
+                                        <p:dataExporter target="tbl" type="pdf" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton class="btn btn-warning" value="Process"
+                                                     action="#{clientController.toDivertSamples()}" ></h:commandButton>
+                                </f:facet>
 
 
                             </p:panelGrid>
@@ -65,7 +70,7 @@
                                 </p:autoComplete>
 
 
-                                <h:commandButton class="btn btn-warning w-100 my-2" value="Divert" 
+                                <h:commandButton class="btn btn-warning w-100 my-2" value="Divert"
                                                  action="#{clientController.divertSelectedSamples()}" ></h:commandButton>
                             </p:panelGrid>
 
@@ -73,7 +78,7 @@
                         <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary my-3" id="toggler" type="button"
                                          value="Filter Columns" />
                         <p:columnToggler datasource="tbl" trigger="toggler" />
-                        <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToDivert}" 
+                        <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToDivert}"
                                      var="c" paginator="true" rowKey="#{c.id}" rows="1000"
 
 

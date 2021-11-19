@@ -170,19 +170,19 @@
                                 <h:commandButton  rendered="#{c.referenceCase eq null}"
                                                   value="Investigate"
                                                   action="#{clientController.toNewCaseInvestigationFromTest()}"
-                                                  class="btn btn-warning small btn-sm w-100">
+                                                  class="btn btn-warning small btn-sm">
                                     <f:setPropertyActionListener value="#{c}" target="#{clientController.selectedEncounter}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
                                 <h:commandButton  value="Print Results" 
                                                    onclick="form.target='_blank'"
-                                                   action="/print_preview" class="btn btn-success  small btn-sm w-100">
+                                                   action="/print_preview" class="btn btn-success  small btn-sm">
                                     <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
                                 </h:commandButton>
                                 <h:commandButton rendered="#{c.referenceCase ne null}"
                                                  value="View Details"
                                                  action="#{clientController.toViewOrEditCaseEnrollmentFromEncounter()}"
-                                                 class="btn btn-success btn-sm small w-100" >
+                                                 class="btn btn-success btn-sm small" >
                                     <f:setPropertyActionListener value="#{c.referenceCase}" target="#{clientController.selectedEncounter}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>

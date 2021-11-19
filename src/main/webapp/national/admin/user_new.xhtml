@@ -44,7 +44,7 @@
                         <div class="row mb-3">
                             <label class="col-form-label fw-bold col-md-4" for="password">Password <small>(Required)</small></label>
                             <div class="col-md-8">
-                                <h:inputSecret type="password" id="password" value="#{webUserController.password}" title="Password" class="form-control" required="true" requiredMessage="Password is required." />
+                                <h:inputSecret id="password" value="#{webUserController.password}" title="Password" class="form-control" required="true" requiredMessage="Password is required." />
                                 <h:message class="text-danger small" for="password"></h:message>
                             </div>
                         </div>
@@ -105,12 +105,14 @@
                         <div class="row mb-3">
                             <label for="webUserRole" class="col-form-label fw-bold col-md-4">User Role <small>(Required)</small></label>
                             <div class="col-md-8">
-                                <h:selectOneMenu class="form-select" id="webUserRole" value="#{webUserController.selected.webUserRole}" required="true" requiredMessage="The Role field is required">
+                                <h:selectOneMenu class="form-select" id="webUserRole" value="#{webUserController.selected.webUserRole}" required="false" requiredMessage="The Role field is required">
                                     <f:selectItem itemLabel="Please Select"></f:selectItem>
-                                    <f:selectItems value="#{applicationController.webUserRoles}"
-                                                   var="webUserRoles"
-                                                   itemLabel="#{webUserRoles.label}"
-                                                   itemValue="#{webUserRoles}" >
+                                   <f:selectItems
+                                        value="#{applicationController.webUserRoles}"
+                                            var="webUserRoles"
+                                            itemLabel="#{webUserRoles.label}"
+                                            itemValue="#{webUserRoles}"
+                                   >
                                     </f:selectItems>
                                 </h:selectOneMenu>
                                 <h:message class="text-danger small" for="webUserRole"></h:message>

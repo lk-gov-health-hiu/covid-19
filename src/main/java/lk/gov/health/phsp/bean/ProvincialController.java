@@ -642,6 +642,120 @@ public class ProvincialController implements Serializable {
         return "/provincial/count_of_tests_by_ordered_institution";
     }
 
+    
+    public String toCountOfResultsByGnArea() {
+        Map m = new HashMap();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.gnArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and (c.client.person.district.province=:pro) ";
+        m.put("pro", webUserController.getLoggedInstitution().getProvince());
+
+        j += " and c.resultConfirmedAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        } else {
+            j += " and c.pcrResult in :results ";
+            m.put("results", itemApplicationController.getPcrResults());
+        }
+        j += " group by c.client.person.gnArea, c.institution"
+                + " order by count(c) desc ";
+
+        institutionCounts = new ArrayList<>();
+
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/provincial/count_of_results_by_gn";
+        }
+        for (Object o : objCounts) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+            }
+        }
+
+        return "/provincial/count_of_results_by_gn";
+    }
+    
+    
+    // This will return the count of results by an moh area in a province
+    public String toCountOfResultsByMoh() {
+        Map m = new HashMap();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.client.person.mohArea, count(c))   "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province) ";
+        m.put("province", webUserController.getLoggedInstitution().getProvince());
+        m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
+
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter = "createdAt") {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        j += " group by c.client.person.mohArea "
+                + " order by count(c) desc";
+        institutionCounts = new ArrayList<>();
+        List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objCounts == null || objCounts.isEmpty()) {
+            return "/provincial/count_of_results_by_moh";
+        }
+        for (Object o : objCounts) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+            }
+        }
+
+        return "/provincial/count_of_results_by_moh";
+    }
+
     public String toCountOfResultsByOrderedInstitution() {
         Map m = new HashMap();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c))   "
@@ -653,7 +767,25 @@ public class ProvincialController implements Serializable {
         j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province ) ";
         m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
         m.put("province", webUserController.getLoggedInstitution().getProvince());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -702,7 +834,25 @@ public class ProvincialController implements Serializable {
         j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province ) ";
         m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
         m.put("province", webUserController.getLoggedInstitution().getProvince());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -1071,7 +1221,28 @@ public class ProvincialController implements Serializable {
         j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province ) ";
         m.put("pdhs", webUserController.getLoggedInstitution().getPdhsArea());
         m.put("province", webUserController.getLoggedInstitution().getProvince());
-        j += " and c.resultConfirmedAt between :fd and :td ";
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {

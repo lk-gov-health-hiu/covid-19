@@ -8,37 +8,46 @@
 
     <h:body>
 
-       <ui:composition template="/regional/reports_index.xhtml">
+        <ui:composition template="/regional/reports_index.xhtml">
+            <ui:define name="title">
+                provincial | Reports - First Contacts
+            </ui:define>
             <ui:define name="reports">
-                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                <p:panelGrid columns="1" styleClass="border border-light bg-white">
                     <f:facet name="header" >
                         <p:outputLabel value="First Contacts" ></p:outputLabel>
                     </f:facet>
 
                     <h:form >
-                        
-                        <p:panelGrid columns="2" >
-                            <p:panelGrid columns="2" >
-                            <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{provincialController.fromDate}" 
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
 
-                            <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
-                            
-                            <p:outputLabel value="Plan of Management" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.managementType}" >
-                                <f:selectItem itemLabel="Any" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.managementTypes}" var="m" itemLabel="#{m.name}"
-                                               itemValue="#{m}" ></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:panelGrid columns="2" styleClass="border border-light bg-white">
+                            <p:panelGrid columns="2" styleClass="border border-light bg-white">
+                                <p:outputLabel class="h6 fw-bold" value="From" ></p:outputLabel>
+                                <p:calendar value="#{provincialController.fromDate}" 
+                                            pattern="dd MMMM yyyy hh:mm a">
+                                </p:calendar>
 
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{provincialController.toListCasesByManagement()}" ></p:commandButton>
+                                <p:outputLabel class="h6 fw-bold" value="To" ></p:outputLabel>
+                                <p:calendar value="#{provincialController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                                <p:outputLabel class="h6 fw-bold" value="Plan of Management" ></p:outputLabel>
+                                <p:selectOneMenu  class="form-control w-100" value="#{provincialController.managementType}" >
+                                    <f:selectItem itemLabel="Any" ></f:selectItem>
+                                    <f:selectItems value="#{provincialController.managementTypes}" var="m" itemLabel="#{m.name}"
+                                                   itemValue="#{m}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 W-25">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="tests"/>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process"  class="btn btn-warning W-25"
+                                                     action="#{provincialController.toListCasesByManagement()}" >
+                                    </h:commandButton>
+                                </f:facet>
                             </p:panelGrid>
                         </p:panelGrid>
 
@@ -70,7 +79,7 @@
                                       filterBy="#{c.areaValue2.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.areaValue2.name}" ></p:outputLabel>
                             </p:column>
-                           
+
                             <p:column headerText="Actions" exportable="false" rendered="false" >
                                 <p:commandLink value="Order PCR" action="#{provincialController.toViewTest()}" ajax="false" >
                                     <f:setPropertyActionListener value="#{c}" target="#{provincialController.test}" ></f:setPropertyActionListener>

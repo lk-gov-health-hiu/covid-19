@@ -53,11 +53,17 @@
                                             var="m" itemLabel="#{m.name}" itemValue="#{m}" >
                             </p:autoComplete>
 
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100" >
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton  value="Process" class="btn btn-warning w-100"
-                                             action="#{mohController.toTestListWithoutResults()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success" >
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger" >
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton  value="Process" class="btn btn-warning"
+                                                 action="#{mohController.toTestListWithoutResults()}" ></h:commandButton>
+
+                            </f:facet>
 
 
                         </h:panelGrid>

@@ -29,11 +29,17 @@
                             <p:outputLabel value="Result Confirmed To" ></p:outputLabel>
                             <p:datePicker  hourFormat="12"  value="#{mohController.toDate}" ></p:datePicker>
 
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{mohController.toPcrPositiveByLab()}" ></p:commandButton>
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton class="btn btn-danger" ajax="false" value="Generate PDF">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                                 action="#{mohController.toPcrPositiveByLab()}" ></p:commandButton>
+
+                            </f:facet>
 
 
                         </p:panelGrid>
@@ -41,9 +47,9 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     rowKey="#{c.id}" 
-                                     paginator="true" 
+                                     var="c"
+                                     rowKey="#{c.id}"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
@@ -56,7 +62,7 @@
                             <p:column headerText="Count" sortBy="#{c.count}" >
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>
-                            
+
                         </p:dataTable>
                     </h:form>
 

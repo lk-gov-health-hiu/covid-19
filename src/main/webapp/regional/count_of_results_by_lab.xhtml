@@ -9,7 +9,7 @@
     <h:body>
         <ui:composition template="/regional/reports_index.xhtml">
             <ui:define name="title">
-                Result Counts by Lab-RDHS
+                RDHS | Reports - Result Counts by Lab
             </ui:define>
             <ui:define name="reports">
 
@@ -20,12 +20,18 @@
 
                     <h:form >
                         <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white" >
-                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{regionalController.filter}" class="form-select">
+                                <f:selectItems value="#{regionalController.investigationFilters}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c.code}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
                             <p:calendar value="#{regionalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm">
                             </p:calendar><!-- comment -->
 
-                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:calendar>
 
                             <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
@@ -54,19 +60,20 @@
                             </h:selectOneMenu>
 
 
-
-                            <h:commandButton class="btn btn-success" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_lab" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton  value="Process"
-                                              class="btn btn-warning w-100"
-                                             action="#{regionalController.toCountOfResultsByLab()}" >
-                            </h:commandButton>
-
+                            <f:facet name="footer">
+                                <h:commandButton class="btn btn-success w-25" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_lab" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by lab"/>
+                                </h:commandButton>
+                                <h:commandButton  value="Process"
+                                                  class="btn btn-warning w-25"
+                                                  action="#{regionalController.toCountOfResultsByLab()}" >
+                                </h:commandButton>
+                            </f:facet>
 
                         </h:panelGrid>
-
-
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
                                      var="c"
@@ -76,6 +83,11 @@
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                                      rows="10"
                                      >
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="2" headerText="#{webUserController.loggedUser.institution.name} - Count of Results by LAB - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
+                                </p:row>
+                                <p:row>
                             <p:column headerText="Lab" sortBy="#{c.institution.name}"
                                       filterBy="#{c.institution.name}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
@@ -83,6 +95,13 @@
                             <p:column headerText="Count"  sortBy="#{c.count}">
                                 <h:outputLabel value="#{c.count}" ></h:outputLabel>
                             </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="2" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                                </p:row>
+                            </p:columnGroup>
                         </p:dataTable>
                     </h:form>
 
