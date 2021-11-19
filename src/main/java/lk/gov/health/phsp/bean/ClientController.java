@@ -55,13 +55,10 @@ import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.ReportHolder;
 import lk.gov.health.phsp.pojcs.SlNic;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.runners.Parameterized;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
@@ -1359,6 +1356,37 @@ public class ClientController implements Serializable {
         return toLabToSelectForPrinting();
     }
 
+    public String toHospitalSelectForPrinting() {
+        referingInstitution = webUserController.getLoggedInstitution();
+        String j = "select c "
+                + " from Encounter c "
+                + " where c.retired=:ret "
+                + " and c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td "
+                + " and c.resultConfirmed is not null "
+                + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("rej", false);
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        // m.put("rins", referingInstitution);
+
+        if (institution != null) {
+            m.put("ins", institution);
+            j += " and c.institution=:ins ";
+        }
+        if (plateNo != null && !plateNo.trim().equals("")) {
+            m.put("pn", plateNo);
+            j += " and c.plateNumber=:pn ";
+        }
+        j += " order by c.encounterNumber";
+        listedToPrint = getEncounterFacade().findByJpql(j, m, TemporalType.DATE);
+        return "/hospital/print_results";
+    }
+
     public String toLabToSelectForPrinting() {
         referingInstitution = webUserController.getLoggedInstitution();
         String j = "select c "
@@ -1724,8 +1752,8 @@ public class ClientController implements Serializable {
         selectedToReceive = null;
         return toLabReceiveAll();
     }
-    
-    
+
+
     public String divertSamplesFromLab() {
         if(divertingLab==null){
             JsfUtil.addErrorMessage("Select a Lab to divert");
@@ -1762,6 +1790,17 @@ public class ClientController implements Serializable {
         return "/lab/print_preview";
     }
 
+    public String toHospitalPrintSelected() {
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            e.setResultPrintHtml(generateLabReport(e));
+            encounterFacade.edit(e);
+        }
+        return "/hospital/print_preview";
+    }
+
     public String toLabSendSmsForSelected() {
         int count = 0;
         for (Encounter e : selectedToPrint) {
@@ -1793,6 +1832,18 @@ public class ClientController implements Serializable {
         return "";
     }
 
+    public String toMohPrintSelectedBulk() {
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            encounterFacade.edit(e);
+        }
+        bulkPrintReport = generateLabReportsBulk(selectedToPrint);
+        selectedToPrint = null;
+        return "/moh/printing_results_bulk";
+    }
+
     public String toLabPrintSelectedBulk() {
         for (Encounter e : selectedToPrint) {
             e.setResultPrinted(true);
@@ -1803,6 +1854,18 @@ public class ClientController implements Serializable {
         bulkPrintReport = generateLabReportsBulk(selectedToPrint);
         selectedToPrint = null;
         return "/lab/printing_results_bulk";
+    }
+
+    public String toHospitalPrintSelectedBulk() {
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            encounterFacade.edit(e);
+        }
+        bulkPrintReport = generateLabReportsBulk(selectedToPrint);
+        selectedToPrint = null;
+        return "/hospital/printing_results_bulk";
     }
 
     public String toSelectedToEnterResults() {
@@ -2021,7 +2084,7 @@ public class ClientController implements Serializable {
             html = html.replace("{confirmed_date}", "");
             html = html.replace("{confirmed_time}", "");
         }
-        
+
          if (e.getCreatedBy()!= null) {
             html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
         } else {
@@ -2874,7 +2937,7 @@ public class ClientController implements Serializable {
     }
 
 //    This function will search for a test under the test tube number
-// Moved to Lab Controller    
+// Moved to Lab Controller
     @Deprecated
     public String searchByLabNo() {
         if (this.searchingLabNo == null || this.searchingLabNo.trim().length() == 0) {
@@ -2924,7 +2987,7 @@ public class ClientController implements Serializable {
         return "/hospital/upload_results";
     }
 
-// This is a common search patient by name. It will list clients, not encounters. 
+// This is a common search patient by name. It will list clients, not encounters.
     public String searchByName() {
         if (searchingName == null && searchingName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a name to search");

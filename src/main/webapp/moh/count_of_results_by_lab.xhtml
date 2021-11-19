@@ -10,7 +10,7 @@
         <ui:composition template="/moh/reports_index.xhtml">
             <ui:define name="reports">
 
-                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                <p:panelGrid columns="1">
                     <f:facet name="header" >
                         <p:outputLabel value="Result Counts by Lab" ></p:outputLabel>
                     </f:facet>
@@ -18,7 +18,7 @@
                     <h:form >
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{provincialController.fromDate}" 
+                            <p:calendar value="#{provincialController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm">
                             </p:calendar><!-- comment -->
 
@@ -28,12 +28,12 @@
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu value="#{provincialController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            
+
 
                             <p:outputLabel value="Test" ></p:outputLabel>
                             <p:selectOneMenu value="#{provincialController.testType}" >
@@ -50,13 +50,18 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                           
 
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{provincialController.toCountOfResultsByLab()}" ></p:commandButton>
+                            <f:facet name="footer">
+                                <p:commandButton class="btn btn-success" ajax="false" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton class="btn btn-danger" ajax="false" value="Generate PDF">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton class="btn btn-warning" ajax="false" value="Process"
+                                                 action="#{provincialController.toCountOfResultsByLab()}" ></p:commandButton>
+
+                            </f:facet>
 
 
                         </p:panelGrid>
@@ -64,8 +69,8 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{provincialController.institutionCounts}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

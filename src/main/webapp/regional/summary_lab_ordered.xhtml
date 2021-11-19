@@ -27,9 +27,9 @@
 
                             <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar value="#{regionalController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
-                            
-                            
-                            
+
+
+
                             <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
                             <h:selectOneMenu value="#{regionalController.testType}"
                                              class="form-select" >
@@ -38,27 +38,34 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
 
-                            <h:commandButton  value="Process"
-                                              class="btn btn-success"
-                                             action="#{regionalController.processSummaryReceivedAtLab()}" ></h:commandButton>
-                            <h:commandButton value="Generate Excel"
-                                              class="btn btn-warning w-100">
-                                <p:dataExporter type="xlsx" fileName="Orders Summery" target="tbl" ></p:dataExporter>
-                            </h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel"
+                                                  class="btn btn-success">
+                                    <p:dataExporter type="xlsx" fileName="Orders Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF"
+                                                  class="btn btn-danger ">
+                                    <p:dataExporter type="pdf" fileName="Orders Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton  value="Process"
+                                                  class="btn btn-warning"
+                                                 action="#{regionalController.processSummaryReceivedAtLab()}" ></h:commandButton>
+
+                            </f:facet>
 
                         </h:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" 
-                                     id="tbl" 
-                                     value="#{regionalController.institutionCounts}" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand"
+                                     id="tbl"
+                                     value="#{regionalController.institutionCounts}"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     rowKey="#{c.id}" 
-                                     
+                                     var="c"
+                                     rowKey="#{c.id}"
+
                                      rows="10"
-                                     paginator="true" 
-                                     
+                                     paginator="true"
+
                                      >
                             <p:column headerText="No" width="50" >
                                 <h:outputLabel value="#{n+1}" ></h:outputLabel>

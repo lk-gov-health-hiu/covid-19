@@ -39,14 +39,21 @@
                                                 var="m" itemLabel="#{m.name}" itemValue="#{m}" >
                                 </p:autoComplete>
 
-                                <h:commandButton value="Generate Excel"
-                                                 class="btn btn-success">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton value="Process" 
-                                                 class="btn btn-warning w-100"
-                                                 action="#{regionalController.toDispatchSamples()}" >
-                                </h:commandButton>
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel"
+                                                     class="btn btn-success">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF"
+                                                     class="btn btn-danger">
+                                        <p:dataExporter target="tbl" type="pdf" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process"
+                                                     class="btn btn-warning"
+                                                     action="#{regionalController.toDispatchSamples()}" >
+                                    </h:commandButton>
+
+                                </f:facet>
 
 
                             </h:panelGrid>
@@ -74,17 +81,17 @@
                             </h:panelGrid>
 
                         </h:panelGrid>
-                        
+
                         <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
                 value="Columns" />
               <p:columnToggler datasource="tbl" trigger="toggler" />
-                        
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" 
-                                     resizeMode="expand" 
-                                     id="tbl" 
-                                     value="#{regionalController.listedToDispatch}" 
-                                     var="c" rowKey="#{c.id}" 
+
+                        <p:dataTable resizableColumns="true" multiViewState="true"
+                                     resizeMode="expand"
+                                     id="tbl"
+                                     value="#{regionalController.listedToDispatch}"
+                                     var="c" rowKey="#{c.id}"
                                      rowIndexVar="n"
 
                                      selection="#{regionalController.selectedToDispatch}"
@@ -106,7 +113,7 @@
                             <p:column headerText="Test No"  sortBy="#{c.encounterNumber}"
                                       filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <h:inputText id="txtTubeNo" value="#{c.encounterNumber}" style="width: 95%;" >
-                                    <p:ajax event="blur" process="txtTubeNo" 
+                                    <p:ajax event="blur" process="txtTubeNo"
                                             listener="#{clientController.saveLabNo(c)}" >
                                     </p:ajax>
                                 </h:inputText>
@@ -126,25 +133,25 @@
                             <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" 
-                                      filterBy="#{c.pcrTestType.name}" 
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}"
+                                      filterBy="#{c.pcrTestType.name}"
                                       filterMatchMode="contains">
                                 <h:outputLabel value="#{c.pcrTestType.name}"></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Entered at" sortBy="#{c.createdAt}" 
+                            <p:column headerText="Entered at" sortBy="#{c.createdAt}"
                                       filterMatchMode="contains">
                                 <h:outputLabel value="#{c.createdAt}">
                                 </h:outputLabel>
                             </p:column>
 
-                            <p:column headerText="Current Lab" 
-                                      sortBy="#{c.referalInstitution.name}" 
-                                      filterBy="#{c.referalInstitution.name}" 
+                            <p:column headerText="Current Lab"
+                                      sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}"
                                       filterMatchMode="contains">
                                 <h:outputLabel value="#{c.referalInstitution.name}" ></h:outputLabel>
                             </p:column>
 
-                            
+
 
                         </p:dataTable>
                     </h:form>
