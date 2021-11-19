@@ -37,13 +37,17 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
 
-                            <h:commandButton  value="Generate Excel" class="btn btn-success">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{mohController.toDispatchSamples()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton  value="Generate Excel" class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton  value="Generate PDF" class="btn btn-danger">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="test_to_mark_results" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-100"
+                                                 action="#{mohController.toDispatchSamples()}" ></h:commandButton>
 
-
+                            </f:facet>
                         </h:panelGrid>
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
                             <f:facet name="header" >
@@ -65,7 +69,7 @@
                     </div>
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable id="tbl" value="#{mohController.listedToDispatch}" class="table"
-                                     var="c" rowKey="#{c.id}" 
+                                     var="c" rowKey="#{c.id}"
                                      selection="#{mohController.selectedToDispatch}"
 
                                      rows="10"
@@ -78,7 +82,7 @@
                                      resizeMode="expand"
                                      >
                             <p:column selectionMode="multiple"  style="width:3em;"></p:column>
-                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}" 
+                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}"
                                       filterBy="#{c.encounterNumber}" filterMatchMode="contains"  style="width:10em;">
                                 <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
                             </p:column>
@@ -87,7 +91,7 @@
                                       filterMatchMode="contains"  style="width:4em;">
                                 <h:outputLabel value="#{c.pcrTestType.name}"></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" 
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}"
                                       filterBy="#{c.client.person.name}" filterMatchMode="contains"  style="width:15em;">
                                 <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
                             </p:column>
@@ -97,12 +101,12 @@
                             <p:column headerText="Sex"  style="width:5em;" >
                                 <h:outputLabel value="#{c.client.person.sex.name}"  style="width:5em;"></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" 
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}"
                                       filterBy="#{c.client.person.address}" filterMatchMode="contains"
                                       style="width:15em;">
                                 <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" 
+                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}"
                                       filterBy="#{c.client.person.phone1}" filterMatchMode="contains"
                                        style="width:10em;">
                                 <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
@@ -121,7 +125,7 @@
                                       filterBy="#{c.referalInstitution.name}"
                                       filterMatchMode="contains"
                                        style="width:10em;">
-                                <h:outputLabel value="#{c.referalInstitution.name}" 
+                                <h:outputLabel value="#{c.referalInstitution.name}"
                                                ></h:outputLabel>
                             </p:column>
                         </p:dataTable>

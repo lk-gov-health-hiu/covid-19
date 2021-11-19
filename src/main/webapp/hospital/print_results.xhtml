@@ -13,7 +13,7 @@
               <h:form >
                     <div class="row" >
                         <div class="col-12 text-center mt-4 mb-2" >
-                            <h4 class="fw-bold"><h:outputLabel  value="Print Results" ></h:outputLabel></h4>
+                            <h4 class="fw-bold">Print Results</h4>
                         </div>
 
                     </div>
@@ -71,7 +71,7 @@
                                                 <p:dataExporter selectionOnly="true" target="tbl" type="pdf" fileName="test_enrollments" ></p:dataExporter>
                                             </h:commandButton>
                                             <h:commandButton class="btn btn-warning" value="Process"
-                                                             action="#{hospitalController.toHospitalSelectForPrinting()}"></h:commandButton>
+                                                             action="#{clientController.toHospitalSelectForPrinting()}"></h:commandButton>
                                         </p:column>
                                     </p:row>
                                 </f:facet>
@@ -93,7 +93,7 @@
                                 <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Columns" icon="pi pi-align-justify"/>
                                 <p:columnToggler datasource="tbl" trigger="toggler"/>
                             </div>
-                            <p:dataTable id="tbl" value="#{hospitalController.listedToPrint}"
+                            <p:dataTable id="tbl" value="#{clientController.listedToPrint}"
                                          rowIndexVar="n"
                                          var="c"
                                          rowKey="#{c.id}"
