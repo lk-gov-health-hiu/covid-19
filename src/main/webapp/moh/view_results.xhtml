@@ -55,11 +55,19 @@
                                             completeMethod="#{mohController.completeLab}"
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
-                            <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="moh_area_results" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton class="btn btn-warning w-100" ajax="false" value="Process"
-                                             action="#{mohController.toViewResults()}" ></p:commandButton>
+                            <f:facet name="footer">
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
+                                            <p:dataExporter target="tbl" type="xlsx" fileName="moh_area_results" ></p:dataExporter>
+                                        </p:commandButton>
+                                        <p:commandButton ajax="false" value="Generate PDF" class="btn btn-danger">
+                                            <p:dataExporter target="tbl" type="pdf" fileName="moh_area_results" ></p:dataExporter>
+                                        <p:commandButton class="btn btn-warning" ajax="false" value="Process"
+                                                         action="#{mohController.toViewResults()}" ></p:commandButton>
+                                    </p:column>
+                                </p:row>
+                            </f:facet>
                         </h:panelGrid>
                     </div>
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
@@ -78,22 +86,22 @@
                             rowsPerPageTemplate="10,50,100,{ShowAll|'All'}"
                             rowStyleClass="#{c.resultCssClass}">
 
-                            <p:column headerText="Test No." 
-                                      sortBy="#{c.encounterNumber}" 
-                                      filterBy="#{c.encounterNumber}" 
+                            <p:column headerText="Test No."
+                                      sortBy="#{c.encounterNumber}"
+                                      filterBy="#{c.encounterNumber}"
                                       filterMatchMode="contains"
                                       style="width: 8em;">
                                 <h:outputLabel value="#{c.encounterNumber}" class="form-label" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Lab No." 
-                                      sortBy="#{c.labNumber}" 
-                                      filterBy="#{c.labNumber}" 
+                            <p:column headerText="Lab No."
+                                      sortBy="#{c.labNumber}"
+                                      filterBy="#{c.labNumber}"
                                       filterMatchMode="contains"
                                       style="width: 8em;"
                                       >
                                 <h:outputLabel value="#{c.labNumber}" class="form-label" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" 
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}"
                                       filterBy="#{c.pcrTestType.name}" filterMatchMode="contains"
                                       style="width: 5em;">
                                 <h:outputLabel value="#{c.pcrTestType.name}" class="form-label"></h:outputLabel>
@@ -174,7 +182,7 @@
                                     <f:setPropertyActionListener value="#{c}" target="#{clientController.selectedEncounter}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>
-                                <h:commandButton  value="Print Results" 
+                                <h:commandButton  value="Print Results"
                                                    onclick="form.target='_blank'"
                                                    action="/print_preview" class="btn btn-success  small btn-sm">
                                     <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
