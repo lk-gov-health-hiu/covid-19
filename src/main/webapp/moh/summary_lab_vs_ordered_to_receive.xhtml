@@ -10,11 +10,11 @@
     <body>
 
         <ui:composition template="/template1.xhtml">
-            
+
             <ui:define name="title">
                 Orders To Receive(RDHS)
             </ui:define>
-            
+
             <ui:define name="content">
                 <h:outputStylesheet library="css" name="tem1.css"/>
                 <h:panelGrid columns="1" styleClass="alignTop" >
@@ -30,15 +30,20 @@
                             <h:outputLabel value="To" ></h:outputLabel>
                             <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
 
-                            
-                            <h:commandButton value="Generate Excel" class="btn btn-success" >
-                                <p:dataExporter type="xlsx" fileName="Lab Order Summery" target="tbl" ></p:dataExporter>
-                            </h:commandButton>
-                            
-                            <h:commandButton value="Process"
-                                             class="btn btn-warning w-100"
-                                             
-                                             action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success" >
+                                    <p:dataExporter type="xlsx" fileName="Lab Order Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+
+                                <h:commandButton value="Generate PDF" class="btn btn-danger" >
+                                    <p:dataExporter type="pdf" fileName="Lab Order Summery" target="tbl" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process"
+                                                 class="btn btn-warning"
+
+                                                 action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
+
+                            </f:facet>
 
                         </h:panelGrid>
 

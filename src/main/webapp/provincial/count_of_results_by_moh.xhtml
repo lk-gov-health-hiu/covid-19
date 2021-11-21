@@ -1,100 +1,115 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <h:body>
-        <ui:composition template="/regional/reports_index.xhtml">
-            <ui:define name="title">
-                provincial | Reports - Results Count By MOH Area
-            </ui:define>
-            <ui:define name="reports">
+<h:body>
+    <ui:composition template="/regional/reports_index.xhtml">
+        <ui:define name="title">
+            provincial | Reports - Results Count By MOH Area
+        </ui:define>
+        <ui:define name="reports">
 
-                <h:panelGrid columns="1" styleClass="alignTop bg-white border border-light w-100"  >
-                    <f:facet name="header" >
-                        <p:outputLabel class="fs-6 fw-bold my-1" value="Results Count By MOH Area" ></p:outputLabel>
-                    </f:facet>
+            <h:panelGrid columns="1" styleClass="alignTop bg-white border border-light w-100">
+                <f:facet name="header">
+                    <p:outputLabel class="fs-6 fw-bold my-1" value="Results Count By MOH Area"></p:outputLabel>
+                </f:facet>
 
-                    <h:form >
-                        <p:panelGrid columns="2" class="border border-light" >
-                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
-                            <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
-                                <f:selectItems value="#{provincialController.investigationFilters}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c.code}" ></f:selectItems>
-                            </h:selectOneMenu>
-                            <p:outputLabel value="From" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:datePicker value="#{provincialController.fromDate}"
-                                          pattern="dd MMMM yyyy hh:mm" class="fs-6" showTime="true">
-                            </p:datePicker><!-- comment -->
+                <h:form>
+                    <p:panelGrid columns="2" class="border border-light">
+                        <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                        <h:selectOneMenu value="#{provincialController.filter}" class="form-select">
+                            <f:selectItems value="#{provincialController.investigationFilters}" var="c"
+                                itemLabel="#{c.name}" itemValue="#{c.code}"></f:selectItems>
+                        </h:selectOneMenu>
+                        <p:outputLabel value="From" class="fs-6 fw-bold"></p:outputLabel>
+                        <p:datePicker value="#{provincialController.fromDate}" pattern="dd MMMM yyyy hh:mm" class="fs-6"
+                            showTime="true">
+                        </p:datePicker><!-- comment -->
 
-                            <p:outputLabel value="To" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:datePicker value="#{provincialController.toDate}" showTime="true"
-                                          pattern="dd MMMM yyyy hh:mm" class="fs-6">
-                            </p:datePicker>
+                        <p:outputLabel value="To" class="fs-6 fw-bold"></p:outputLabel>
+                        <p:datePicker value="#{provincialController.toDate}" showTime="true"
+                            pattern="dd MMMM yyyy hh:mm" class="fs-6">
+                        </p:datePicker>
 
-                            <p:outputLabel value="Ordering Category" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.orderingCategory}" class="form-control form-control-sm w-100" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.covidTestOrderingCategories}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:outputLabel value="Ordering Category" class="fs-6 fw-bold"></p:outputLabel>
+                        <p:selectOneMenu value="#{provincialController.orderingCategory}"
+                            class="form-control form-control-sm w-100">
+                            <f:selectItem itemLabel="All"></f:selectItem>
+                            <f:selectItems value="#{provincialController.covidTestOrderingCategories}" var="c"
+                                itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                        </p:selectOneMenu>
 
-                            <p:outputLabel value="Test" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.testType}" class="form-control form-control-sm w-100" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:outputLabel value="Test" class="fs-6 fw-bold"></p:outputLabel>
+                        <p:selectOneMenu value="#{provincialController.testType}"
+                            class="form-control form-control-sm w-100">
+                            <f:selectItem itemLabel="All"></f:selectItem>
+                            <f:selectItems value="#{provincialController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                itemValue="#{c}"></f:selectItems>
+                        </p:selectOneMenu>
 
-                            <p:outputLabel value="Result" class="fs-6 fw-bold" ></p:outputLabel>
-                            <p:selectOneMenu value="#{provincialController.result}" class="form-control form-control-sm w-100">
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{provincialController.resultTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:outputLabel value="Result" class="fs-6 fw-bold"></p:outputLabel>
+                        <p:selectOneMenu value="#{provincialController.result}"
+                            class="form-control form-control-sm w-100">
+                            <f:selectItem itemLabel="All"></f:selectItem>
+                            <f:selectItems value="#{provincialController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                itemValue="#{c}"></f:selectItems>
+                        </p:selectOneMenu>
 
-                            <f:facet name="footer">
-                                <h:commandButton value="Generate Excel" class="w-25 btn btn-success">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh" ></p:dataExporter>
-                                </h:commandButton>
-                                <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 w-25">
-                                    <p:dataExporter type="pdf" target="tbl" fileName="test counts by moh"/>
-                                </h:commandButton>
-                                <h:commandButton value="Process" class="btn btn-warning w-25"
-                                                 action="#{provincialController.toCountOfResultsByMoh()}" >
-                                </h:commandButton>
-                            </f:facet>
+                        <f:facet name="footer">
+                            <h:commandButton value="Generate Excel" class="w-25 btn btn-success">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="test_counts_by_moh"></p:dataExporter>
+                            </h:commandButton>
+                            <h:commandButton value="Generate PDF" class="btn btn-danger mx-2 w-25">
+                                <p:dataExporter type="pdf" target="tbl" fileName="test counts by moh" />
+                            </h:commandButton>
+                            <h:commandButton value="Process" class="btn btn-warning w-25"
+                                action="#{provincialController.toCountOfResultsByMoh()}">
+                            </h:commandButton>
+                        </f:facet>
 
-                        </p:panelGrid>
+                    </p:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{provincialController.institutionCounts}" rendered="true"
-                                     rowIndexVar="n"
-                                     var="c"
-                                     paginator="true"
-                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
-                                     rows="10"
-                                     >
-                            <p:column headerText="MOH Area" sortBy="#{c.area.name}"
-                                      filterBy="#{c.area.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.area.name}" ></p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Count"  sortBy="#{c.count}">
-                                <p:outputLabel value="#{c.count}" ></p:outputLabel>
-                            </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </h:panelGrid>
-            </ui:define>
+                    <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl"
+                        value="#{provincialController.institutionCounts}" rendered="true" rowIndexVar="n" var="c"
+                        paginator="true"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                        rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column colspan="2"
+                                    headerText="#{webUserController.loggedUser.institution.name} - Count of Results by MOH - #{webUserController.parseDate(provincialController.fromDate)} to #{webUserController.parseDate(provincialController.toDate)}">
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="MOH Area" sortBy="#{c.area.name}" filterBy="#{c.area.name}"
+                                    filterMatchMode="contains"></p:column>
+                                <p:column headerText="Count" sortBy="#{c.count}"></p:column>
+                            </p:row>
+                        </p:columnGroup>
+                        <p:column>
+                            <p:outputLabel value="#{c.area.name}"></p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:outputLabel value="#{c.count}"></p:outputLabel>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="2"
+                                    footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}">
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </ui:define>
 
-        </ui:composition>
+    </ui:composition>
 
-    </h:body>
+</h:body>
+
 </html>

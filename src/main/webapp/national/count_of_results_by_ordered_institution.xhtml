@@ -21,6 +21,13 @@
                     <h:form >
                         <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
                             <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
+                                <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                    <f:selectItems value="#{nationalController.investigationFilters}"
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c.code}" ></f:selectItems>
+                                </h:selectOneMenu>
+
                                 <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
                                 <p:calendar value="#{nationalController.fromDate}"
                                             pattern="dd MMMM yyyy hh:mm a">
@@ -90,35 +97,54 @@
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                                      rows="10"
                                      >
-
-                            <p:column headerText="Province" sortBy="#{c.institution.province.name}"
-                                      filterBy="#{c.institution.province.name}" filterMatchMode="contains">
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="7" headerText="#{webUserController.loggedUser.institution.name} - Result Count By Institutions - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}">
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column headerText="Province" sortBy="#{c.institution.province.name}"
+                                    filterBy="#{c.institution.province.name}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="PDHS" sortBy="#{c.institution.pdhsArea.name}"
+                                    filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="RDHS" sortBy="#{c.institution.rdhsArea.name}"
+                                    filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="District" sortBy="#{c.institution.district.name}"
+                                    filterBy="#{c.institution.district.name}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="Institution" sortBy="#{c.institution.name}"
+                                    filterBy="#{c.institution.name}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
+                                    filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains"></p:column>
+                                    <p:column headerText="Count"  sortBy="#{c.count}"></p:column>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.province.name}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="PDHS" sortBy="#{c.institution.pdhsArea.name}"
-                                      filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains">
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.pdhsArea.name}" ></h:outputLabel>
                             </p:column>
 
-                            <p:column headerText="RDHS" sortBy="#{c.institution.rdhsArea.name}"
-                                      filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains">
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.rdhsArea.name}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="District" sortBy="#{c.institution.district.name}"
-                                      filterBy="#{c.institution.district.name}" filterMatchMode="contains">
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.district.name}"></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Institution" sortBy="#{c.institution.name}"
-                                      filterBy="#{c.institution.name}" filterMatchMode="contains">
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
-                                      filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains">
+                            <p:column>
                                 <h:outputLabel value="#{c.institution.institutionType.label}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="Count"  sortBy="#{c.count}">
+                            <p:column>
                                 <h:outputLabel value="#{c.count}" ></h:outputLabel>
                             </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="7" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                                </p:row>
+                            </p:columnGroup>
                         </p:dataTable>
                         </h:panelGrid>
                     </h:form>

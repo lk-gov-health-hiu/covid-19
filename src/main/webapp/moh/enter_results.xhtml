@@ -53,11 +53,16 @@
                                             var="l" itemLabel="#{l.name}" itemValue="#{l}">
                             </p:autoComplete>
 
-                            <h:commandButton value="Generate Excel" class="btn btn-success w-100">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process" class="btn btn-warning w-100"
-                                             action="#{mohController.toEnterResults()}" ></h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success ">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning"
+                                                 action="#{mohController.toEnterResults()}" ></h:commandButton>
+                            </f:facet>
 
 
                         </h:panelGrid>
@@ -147,7 +152,7 @@
                             </p:column>
                             <p:column headerText="Result" style="width:10em;"  sortBy="#{c.pcrResult.name}" filterBy="#{c.pcrResult.name}" filterMatchMode="contains" >
                                 <h:selectOneMenu id="cmbResult" value="#{c.pcrResult}"
-                                                
+
                                                  class="form-select">
                                     <f:selectItem itemLabel="Select Result" ></f:selectItem>
                                     <f:selectItems value="#{itemApplicationController.pcrResults}"

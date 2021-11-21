@@ -16,6 +16,7 @@ import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -230,6 +231,11 @@ public class WebUserController implements Serializable {
             ipAddress = request.getRemoteAddr();
         }
 
+    }
+
+    public String parseDate(Date complexDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(complexDate);
     }
 
     public String displayUsers(Institution ins) {
@@ -2093,7 +2099,7 @@ public class WebUserController implements Serializable {
             return null;
         }
     }
-    
+
     public String updateMyUserName() {
         try {
             getFacade().edit(current);
@@ -2105,7 +2111,7 @@ public class WebUserController implements Serializable {
             return "";
         }
     }
-    
+
     public String updateMyInstitutionDetails() {
         try {
             getInstitutionFacade().edit(current.getInstitution());
@@ -2253,7 +2259,7 @@ public class WebUserController implements Serializable {
         return rs;
     }
 
-    
+
     public WebUserRole[] getWebUserRolesForMoh() {
         List<WebUserRole> urs = new ArrayList<>();
         urs.add(WebUserRole.Moh);
@@ -2268,8 +2274,8 @@ public class WebUserController implements Serializable {
         return rs;
     }
 
-    
-    
+
+
     public WebUserRole[] getWebUserRolesForLabAdmin() {
         List<WebUserRole> urs = new ArrayList<>();
         urs.add(WebUserRole.Hospital_Admin);

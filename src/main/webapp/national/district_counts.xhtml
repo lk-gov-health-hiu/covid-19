@@ -15,7 +15,7 @@
             </ui:define>
 
             <ui:define name="content">
-                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                <p:panelGrid columns="1">
                     <f:facet name="header" >
                         <p:outputLabel value="Test Request District Counts" ></p:outputLabel>
                     </f:facet>
@@ -23,7 +23,7 @@
                     <h:form >
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="Ordered From" ></p:outputLabel>
-                            <p:calendar value="#{mohController.fromDate}" 
+                            <p:calendar value="#{mohController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm a">
                             </p:calendar><!-- comment -->
 
@@ -33,7 +33,7 @@
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu value="#{mohController.orderingCategory}" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{mohController.covidTestOrderingCategories}" 
+                                <f:selectItems value="#{mohController.covidTestOrderingCategories}"
                                                var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
@@ -45,11 +45,17 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:commandButton ajax="false" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{mohController.toListOfResults()}" ></p:commandButton>
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Generate PDF" class="btn btn-danger">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                                 action="#{mohController.toListOfResults()}" ></p:commandButton>
+
+                            </f:facet>
 
 
                         </p:panelGrid>
@@ -57,10 +63,10 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.tests}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     rowKey="#{c.id}" 
+                                     var="c"
+                                     rowKey="#{c.id}"
                                      rowStyleClass="#{c.resultCssClass}"
-                                     paginator="true" 
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
@@ -129,7 +135,7 @@
                                     <p:commandButton value="View Results" action="#{mohController.toViewResult()}" ajax="false"  style="width: 100%;" >
                                         <f:setPropertyActionListener value="#{c}" target="#{mohController.test}" ></f:setPropertyActionListener>
                                     </p:commandButton>
-                                    <p:commandButton ajax="false" value="Delete"  action="#{mohController.deleteTest()}"  style="width: 100%;" 
+                                    <p:commandButton ajax="false" value="Delete"  action="#{mohController.deleteTest()}"  style="width: 100%;"
                                                      onclick="if (!confirm('Are you sure you want to delete?'))
                                                                return false" >
                                         <f:setPropertyActionListener value="#{c}" target="#{mohController.deleting}" >
