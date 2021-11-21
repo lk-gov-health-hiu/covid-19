@@ -1,186 +1,186 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
+    xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-    <h:body>
-        <ui:composition template="/template1.xhtml">
-            <ui:define name="title">
-                Hospital | Print Results
-            </ui:define>
-            <ui:define name="content">
-              <h:form >
-                    <div class="row" >
-                        <div class="col-12 text-center mt-4 mb-2" >
-                            <h4 class="fw-bold">Print Results</h4>
-                        </div>
-
+<h:body>
+    <ui:composition template="/template1.xhtml">
+        <ui:define name="title">
+            Hospital | Print Results
+        </ui:define>
+        <ui:define name="content">
+            <h:form>
+                <div class="row">
+                    <div class="col-12 text-center mt-4 mb-2">
+                        <h4 class="fw-bold">Print Results</h4>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-6" >
-                            <p:panelGrid columns="2" styleClass="bg-white border border-light">
-                                <h:outputLabel value="Ordered From" ></h:outputLabel>
-                                <p:calendar value="#{hospitalController.fromDate}"
-                                            pattern="dd MMMM yyyy hh:mm a">
-                                </p:calendar><!-- comment -->
+                <div class="row">
+                    <div class="col-6">
+                        <p:panelGrid columns="2" styleClass="bg-white border border-light">
+                            <h:outputLabel value="Ordered From"></h:outputLabel>
+                            <p:calendar value="#{hospitalController.fromDate}" pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar><!-- comment -->
 
-                                <h:outputLabel value="Ordered To" ></h:outputLabel>
-                                <p:calendar value="#{hospitalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+                            <h:outputLabel value="Ordered To"></h:outputLabel>
+                            <p:calendar value="#{hospitalController.toDate}" pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar>
 
-                                <h:outputLabel value="Ordering Category" ></h:outputLabel>
-                                <h:selectOneMenu value="#{hospitalController.orderingCategory}" class="form-control"  >
-                                    <f:selectItem itemLabel="All" ></f:selectItem>
-                                    <f:selectItems value="#{hospitalController.covidTestOrderingCategories}"
-                                                   var="c" itemLabel="#{c.name}"
-                                                   itemValue="#{c}" ></f:selectItems>
-                                </h:selectOneMenu>
+                            <h:outputLabel value="Ordering Category"></h:outputLabel>
+                            <h:selectOneMenu value="#{hospitalController.orderingCategory}" class="form-control">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{hospitalController.covidTestOrderingCategories}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
 
-                                <h:outputLabel value="Test" ></h:outputLabel>
-                                <h:selectOneMenu value="#{hospitalController.testType}" class="form-control"  >
-                                    <f:selectItem itemLabel="All" ></f:selectItem>
-                                    <f:selectItems value="#{hospitalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                                   itemValue="#{c}" ></f:selectItems>
-                                </h:selectOneMenu>
+                            <h:outputLabel value="Test"></h:outputLabel>
+                            <h:selectOneMenu value="#{hospitalController.testType}" class="form-control">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{hospitalController.covidTestTypes}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
 
-                                <h:outputLabel value="Result" ></h:outputLabel>
-                                <h:selectOneMenu value="#{hospitalController.result}" class="form-control" >
-                                    <f:selectItem itemLabel="All" ></f:selectItem>
-                                    <f:selectItems value="#{hospitalController.resultTypes}" var="c" itemLabel="#{c.name}"
-                                                   itemValue="#{c}" ></f:selectItems>
-                                </h:selectOneMenu>
+                            <h:outputLabel value="Result"></h:outputLabel>
+                            <h:selectOneMenu value="#{hospitalController.result}" class="form-control">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{hospitalController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                    itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
 
-                                <h:outputLabel  value="Lab"></h:outputLabel>
-                                <p:autoComplete
-                                    inputStyleClass="autocomplete"
-                                    value="#{hospitalController.lab}"
-                                    forceSelection="true" tabindex="100"
-                                    completeMethod="#{hospitalController.completeLab}"
-                                    var="l" itemLabel="#{l.name}" itemValue="#{l}">
-                                </p:autoComplete>
+                            <h:outputLabel value="Lab"></h:outputLabel>
+                            <p:autoComplete inputStyleClass="autocomplete" value="#{hospitalController.lab}"
+                                forceSelection="true" tabindex="100" completeMethod="#{hospitalController.completeLab}"
+                                var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                            </p:autoComplete>
 
 
-                                <f:facet name="footer">
-                                    <p:row>
-                                        <p:column class="my-2" colspan="2">
-                                            <h:commandButton class="btn btn-success" value="Generate Excel">
-                                                <p:dataExporter selectionOnly="true" target="tbl" type="xlsx" fileName="test_enrollments" ></p:dataExporter>
-                                            </h:commandButton>
-                                            <h:commandButton class="btn btn-danger" value="Generate PDF">
-                                                <p:dataExporter selectionOnly="true" target="tbl" type="pdf" fileName="test_enrollments" ></p:dataExporter>
-                                            </h:commandButton>
-                                            <h:commandButton class="btn btn-warning" value="Process"
-                                                             action="#{clientController.toHospitalSelectForPrinting()}"></h:commandButton>
-                                        </p:column>
-                                    </p:row>
-                                </f:facet>
-                            </p:panelGrid>
-                        </div>
-                        <div class="col-6">
-
-                            <p:panelGrid columns="1" styleClass="bg-white border border-light">
-                                <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100" value="PRINT SELECTED AS INDIVIDUAL REPORTS"
-                                                 action="#{clientController.toHospitalPrintSelected()}"></h:commandButton>
-
-                                <h:commandButton class="btn fw-bold btn-primary mt-3 w-100" value="PRINT SELECTED AS SINGLE REPORT"
-                                                 action="#{clientController.toHospitalPrintSelectedBulk()}"></h:commandButton>
-
-                            </p:panelGrid>
-                        </div>
-                        <div class="row" >
-                            <div>
-                                <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Columns" icon="pi pi-align-justify"/>
-                                <p:columnToggler datasource="tbl" trigger="toggler"/>
-                            </div>
-                            <p:dataTable id="tbl" value="#{clientController.listedToPrint}"
-                                         rowIndexVar="n"
-                                         var="c"
-                                         rowKey="#{c.id}"
-                                         resizableColumns="true"
-                                         rows="10"
-                                         paginator="true"
-                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                         rowsPerPageTemplate="5,10,50,100,{ShowAll|'All'}"
-
-                                         rowStyleClass="#{(c.pcrResult.name) eq 'Positive'?'bg-danger':''}"
-
-                                         selection="#{clientController.selectedToPrint}">
-                                <p:column selectionMode="multiple" width="50" >
-                                </p:column>
-                                <p:column width="50" >
-                                    <h:outputLabel value="#{n+1}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Request From" >
-                                    <h:outputLabel value="#{c.institution.name}" >
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Received at" >
-                                    <h:outputLabel value="#{c.receivedAtLabAt}" >
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Confirmed at" >
-                                    <h:outputLabel value="#{c.resultConfirmedAt}" >
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Test No" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Lab No" sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.labNumber}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Gender"  sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Age"  sortBy="#{c.client.person.age}"
-                                          filterBy="#{c.client.person.age}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}"  filterMatchMode="contains">
-                                    <h:inputText id="txtPhone" value="#{c.client.person.phone1}" style="width: 98%;" >
-                                        <p:ajax event="blur" process="txtPhone"
-                                            listener="#{clientController.saveEncounterAndClient(c)}" >
-                                    </p:ajax>
-                                    </h:inputText>
-                                </p:column>
-                                <p:column  headerText="CT 1" width="100"  sortBy="#{c.ctValue}"
-                                           filterBy="#{c.ctValue}" filterMatchMode="contains" >
-                                    <h:outputText id="txtCt1" value="#{c.ctValue}" style="width: 98px;" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="CT 2" width="100"  sortBy="#{c.ctValue2}"
-                                          filterBy="#{c.ctValue2}" filterMatchMode="contains" >
-                                    <h:outputText id="txtCt2" value="#{c.ctValue2}" style="width: 98px;" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Result"  sortBy="#{c.pcrResult.name}"
-                                          filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.pcrResult.name}" ></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Unit/Ward"  sortBy="#{c.unitWard}" filterBy="#{c.unitWard}" filterMatchMode="contains">
-                                    <p:outputLabel value="#{c.unitWard}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="BHT/OPD No/Clinic No"  sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
-                                    <p:outputLabel value="#{c.bht}" ></p:outputLabel>
-                                </p:column>
-                            </p:dataTable>
-                        </div>
+                            <f:facet name="footer">
+                                <p:row>
+                                    <p:column class="my-2" colspan="2">
+                                        <h:commandButton class="btn btn-success" value="Generate Excel">
+                                            <p:dataExporter selectionOnly="true" target="tbl" type="xlsx"
+                                                fileName="test_enrollments"></p:dataExporter>
+                                        </h:commandButton>
+                                        <h:commandButton class="btn btn-danger" value="Generate PDF">
+                                            <p:dataExporter selectionOnly="true" target="tbl" type="pdf"
+                                                fileName="test_enrollments"></p:dataExporter>
+                                        </h:commandButton>
+                                        <h:commandButton class="btn btn-warning" value="Process"
+                                            action="#{clientController.toHospitalSelectForPrinting()}">
+                                        </h:commandButton>
+                                    </p:column>
+                                </p:row>
+                            </f:facet>
+                        </p:panelGrid>
                     </div>
-                </h:form>
-                <!--</p:panelGrid>-->
-            </ui:define>
-        </ui:composition>
-    </h:body>
+                    <div class="col-6">
+                        <p:panelGrid columns="1" styleClass="bg-white border border-light">
+                            <h:commandButton class="btn btn-primary fw-bold me-3 mt-3 w-100"
+                                value="PRINT SELECTED AS INDIVIDUAL REPORTS"
+                                action="#{clientController.toHospitalPrintSelected()}"></h:commandButton>
+
+                            <h:commandButton class="btn fw-bold btn-primary mt-3 w-100"
+                                value="PRINT SELECTED AS SINGLE REPORT"
+                                action="#{clientController.toHospitalPrintSelectedBulk()}"></h:commandButton>
+
+                        </p:panelGrid>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Columns"
+                            icon="pi pi-align-justify" />
+                        <p:columnToggler datasource="tbl" trigger="toggler" />
+                    </div>
+                    <p:dataTable id="tbl" value="#{clientController.listedToPrint}" rowIndexVar="n" var="c"
+                        rowKey="#{c.id}" resizableColumns="true" rows="10" paginator="true"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                        rowsPerPageTemplate="5,10,50,100,{ShowAll|'All'}"
+                        rowStyleClass="#{(c.pcrResult.name) eq 'Positive'?'bg-danger':''}"
+                        selection="#{clientController.selectedToPrint}">
+                        <p:column selectionMode="multiple" width="50">
+                        </p:column>
+                        <p:column width="50">
+                            <h:outputLabel value="#{n+1}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Request From">
+                            <h:outputLabel value="#{c.institution.name}">
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Received at">
+                            <h:outputLabel value="#{c.receivedAtLabAt}">
+                                <f:convertDateTime pattern="dd MMMM yyyy"></f:convertDateTime>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Confirmed at">
+                            <h:outputLabel value="#{c.resultConfirmedAt}">
+                                <f:convertDateTime pattern="dd MMMM yyyy"></f:convertDateTime>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Test No" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.encounterNumber}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Lab No" sortBy="#{c.labNumber}" filterBy="#{c.labNumber}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.labNumber}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Name" sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.name}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="NIC" sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.nic}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Gender" sortBy="#{c.encounterNumber}"
+                            filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.sex.name}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Age" sortBy="#{c.client.person.age}" filterBy="#{c.client.person.age}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.age}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Phone" sortBy="#{c.client.person.phone1}"
+                            filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                            <h:inputText id="txtPhone" value="#{c.client.person.phone1}" style="width: 98%;">
+                                <p:ajax event="blur" process="txtPhone"
+                                    listener="#{clientController.saveEncounterAndClient(c)}">
+                                </p:ajax>
+                            </h:inputText>
+                        </p:column>
+                        <p:column headerText="CT 1" width="100" sortBy="#{c.ctValue}" filterBy="#{c.ctValue}"
+                            filterMatchMode="contains">
+                            <h:outputText id="txtCt1" value="#{c.ctValue}" style="width: 98px;">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="CT 2" width="100" sortBy="#{c.ctValue2}" filterBy="#{c.ctValue2}"
+                            filterMatchMode="contains">
+                            <h:outputText id="txtCt2" value="#{c.ctValue2}" style="width: 98px;">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Result" sortBy="#{c.pcrResult.name}" filterBy="#{c.pcrResult.name}"
+                            filterMatchMode="contains">
+                            <h:outputLabel value="#{c.pcrResult.name}"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Unit/Ward" sortBy="#{c.unitWard}" filterBy="#{c.unitWard}"
+                            filterMatchMode="contains">
+                            <p:outputLabel value="#{c.unitWard}"></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="BHT/OPD No/Clinic No" sortBy="#{c.bht}" filterBy="#{c.bht}"
+                            filterMatchMode="contains">
+                            <p:outputLabel value="#{c.bht}"></p:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </h:form>
+            <!--</p:panelGrid>-->
+        </ui:define>
+    </ui:composition>
+</h:body>
+
 </html>
