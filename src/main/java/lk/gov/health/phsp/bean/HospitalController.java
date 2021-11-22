@@ -146,8 +146,8 @@ public class HospitalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
+
+
     public String toAddNewPcrResultWithNewClient() {
         pcr = new Encounter();
         nicExistsForPcr = null;
@@ -188,8 +188,8 @@ public class HospitalController implements Serializable {
         return "/hospital/pcr_with_result";
     }
 
-    
-    
+
+
     public String toDispatchSamplesByMohOrHospital() {
         String j = "select c "
                 + " from Encounter c "
@@ -997,7 +997,7 @@ public class HospitalController implements Serializable {
         rat.setResultConfirmed(Boolean.TRUE);
         rat.setResultConfirmedAt(d);
         rat.setResultConfirmedBy(webUserController.getLoggedUser());
-        
+
         rat.setUnitWard(sessionController.getLastWardUnit());
 
         rat.setCreatedAt(new Date());
@@ -1101,8 +1101,8 @@ public class HospitalController implements Serializable {
         return "/hospital/pcr";
     }
 
-    
-    
+
+
     public String toAddNewPcrResultWithExistingNic() {
         if (pcr == null) {
             return "";
@@ -1594,7 +1594,7 @@ public class HospitalController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/hospital/list_of_tests";
     }
-    
+
     public String toViewResults() {
         Map m = new HashMap();
 
@@ -1632,6 +1632,45 @@ public class HospitalController implements Serializable {
 
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/hospital/view_results";
+    }
+
+    public String toPrintResults() {
+        Map m = new HashMap();
+
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+
+        j += " and c.institution=:ins ";
+        m.put("ins", webUserController.getLoggedInstitution());
+
+        //c.client.person.mohArea = :moh
+        j += " and c.createdAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/hospital/print_results";
     }
 
     public String toDistrictViceTestListForOrderingCategories() {
