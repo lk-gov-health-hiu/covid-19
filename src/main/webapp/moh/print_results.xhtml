@@ -60,8 +60,9 @@
                                         <p:commandButton ajax="false" value="Generate PDF" class="btn btn-danger">
                                             <p:dataExporter target="tbl" type="pdf" fileName="moh_area_results">
                                             </p:dataExporter>
+                                        </p:commandButton>
                                             <p:commandButton class="btn btn-warning" ajax="false" value="Process"
-                                                action="#{mohController.toViewResults()}"></p:commandButton>
+                                                action="#{mohController.toPrintResults()}"></p:commandButton>
                                     </p:column>
                                 </p:row>
                             </f:facet>
@@ -87,15 +88,13 @@
                         type="button" value="Filter Columns" />
                     <p:columnToggler datasource="tbl" trigger="toggler" />
 
-                    <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand"
-                        id="tbl" value="#{mohController.tests}" var="c" rowKey="#{c.id}" rows="10" paginator="true"
+                    <p:dataTable id="tbl" value="#{mohController.tests}" rendered="true" rowIndexVar="n" var="c"
+                        rowKey="#{c.id}" paginator="true"
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                        rowsPerPageTemplate="10,50,100,{ShowAll|'All'}" rowStyleClass="#{c.resultCssClass}"
-                        selection="#{clientController.selectedToPrint}">
-
-                        <p:column selectionMode="multiple" width="50">
-                        </p:column>
+                        rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10" resizableColumns="true"
+                        rowStyleClass="#{c.pcrResult.name eq 'Positive'?'bg-danger':''}">
+                        <p:column selectionMode="multiple" style="width:50px;text-align:center"/>
                         <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}"
                             filterMatchMode="contains" style="width: 8em;">
                             <h:outputLabel value="#{c.encounterNumber}" class="form-label"></h:outputLabel>
@@ -108,80 +107,65 @@
                             filterMatchMode="contains" style="width: 5em;">
                             <h:outputLabel value="#{c.pcrTestType.name}" class="form-label"></h:outputLabel>
                         </p:column>
-                        <p:column headerText="Name" style="width: 12em;" sortBy="#{c.client.person.name}"
-                            filterBy="#{c.client.person.name}" filterMatchMode="contains">
-                            <h:outputLabel value="#{c.client.person.name}"></h:outputLabel>
+                        <p:column headerText="Sampelled Date" sortBy="#{c.sampledAt}" style="width: 8em;">
+                            <h:outputLabel value="#{c.sampledAt}" class="form-label">
+                                <f:convertDateTime pattern="dd MMM yyyy"></f:convertDateTime>
+                            </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Sex" class="w-auto" sortBy="#{c.client.person.sex.name}"
-                            filterBy="#{c.client.person.sex.name}" filterMatchMode="contains" style="width: 5em;">
-                            <h:outputLabel value="#{c.client.person.sex.name}"></h:outputLabel>
+                        <p:column headerText="Name" sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}"
+                            filterMatchMode="contains" style="width: 18em;">
+                            <h:outputLabel value="#{c.client.person.name}" class="form-label"></h:outputLabel>
                         </p:column>
-                        <p:column headerText="Age" sortBy="#{c.client.person.age}" filterBy="#{c.client.person.age}"
-                            filterMatchMode="contains" style="width: 5em;">
-                            <h:outputLabel value="#{c.client.person.age}"></h:outputLabel>
+                        <p:column headerText="Age" sortBy="#{c.client.person.age}" style="width: 5em;"
+                            filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.age}" class="form-label"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Gender" style="width: 5em;" sortBy="#{c.encounterNumber}"
+                            filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.sex.name}" class="form-label"></h:outputLabel>
                         </p:column>
                         <p:column headerText="NIC" sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}"
                             filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel value="#{c.client.person.nic}"></h:outputLabel>
+                            <h:outputLabel value="#{c.client.person.nic}" class="form-label"></h:outputLabel>
                         </p:column>
                         <p:column headerText="Phone" sortBy="#{c.client.person.phone1}"
                             filterBy="#{c.client.person.phone1}" filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel value="#{c.client.person.phone1}"></h:outputLabel>
+                            <h:outputLabel value="#{c.client.person.phone1}" class="form-label"></h:outputLabel>
+                            <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " class="form-label">
+                            </h:outputLabel>
+                            <h:outputLabel rendered="#{c.client.person.phone2 ne null}"
+                                value="#{c.client.person.phone2}" class="form-label"></h:outputLabel>
                         </p:column>
                         <p:column headerText="Address" sortBy="#{c.client.person.address}"
                             filterBy="#{c.client.person.address}" filterMatchMode="contains" style="width: 18em;">
-                            <h:outputLabel value="#{c.client.person.address}"></h:outputLabel>
+                            <h:outputLabel value="#{c.client.person.address}" class="form-label"></h:outputLabel>
                         </p:column>
-                        <p:column headerText="GN Area" sortBy="#{c.client.person.gnArea.name}"
-                            filterBy="#{c.client.person.gnArea.name}" filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel value="#{c.client.person.gnArea.name}"></h:outputLabel>
+                        <p:column headerText="Ward" sortBy="#{c.unitWard}" filterBy="#{c.unitWard}"
+                            filterMatchMode="contains" style="width: 5em;">
+                            <h:outputLabel value="#{c.unitWard}" class="form-label"></h:outputLabel>
                         </p:column>
-                        <p:column headerText="PHI Area" sortBy="#{c.client.person.phiArea.name}"
-                            filterBy="#{c.client.person.phiArea.name}" filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel value="#{c.client.person.phiArea.name}"></h:outputLabel>
+                        <p:column headerText="BHT/Clinic/OPD No" sortBy="#{c.bht}" filterBy="#{c.bht}"
+                            filterMatchMode="contains" style="width: 5em;">
+                            <h:outputLabel value="#{c.bht}" class="form-label"></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Lab" sortBy="#{c.referalInstitution.name}"
+                            filterBy="#{c.referalInstitution.name}" filterMatchMode="contains" style="width: 15em;">
+                            <h:outputLabel value="#{c.referalInstitution.name}" class="form-label"></h:outputLabel>
                         </p:column>
                         <p:column headerText="Result" sortBy="#{c.pcrResult.name}" filterBy="#{c.pcrResult.name}"
                             filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel id="cmbResult" value="#{c.pcrResult.name}">
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column id="ct1" headerText="CT1" sortBy="#{c.ctValue}" filterBy="#{c.ctValue}"
-                            filterMatchMode="contains" style="width: 5em;">
-                            <p:outputLabel id="txtCt" value="#{c.ctValue}"
-                                rendered="#{c.pcrTestType.code eq 'covid19_pcr_test'}">
-                            </p:outputLabel>
-                        </p:column>
-                        <p:column id="ct2" headerText="CT2" sortBy="#{c.ctValue2}" filterBy="#{c.ctValue2}"
-                            filterMatchMode="contains" style="width: 5em;">
-                            <p:outputLabel id="txtCt2" value="#{c.ctValue2}"
-                                rendered="#{c.pcrTestType.code eq 'covid19_pcr_test'}">
-                                <p:ajax event="keyup" process="txtCt2"
-                                    listener="#{clientController.saveEncounterResultsAtMohForConfirmedDate(c)}">
-                                </p:ajax>
-                            </p:outputLabel>
-                        </p:column>
-                        <p:column headerText="Comments" sortBy="#{c.comments}" filterBy="#{c.comments}"
-                            filterMatchMode="contains" style="width: 10em;">
-                            <h:outputLabel id="txtComments" value="#{c.comments}">
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Sampled Date" sortBy="#{c.sampledAt}" filterBy="#{c.sampledAt}"
-                            style="width: 10em;">
-                            <p:outputLabel value="#{c.sampledAt}"></p:outputLabel>
+                            <h:outputLabel value="#{c.pcrResult.name}" class="form-label"></h:outputLabel>
                         </p:column>
                         <p:column headerText="Actions" exportable="false" style="width: 12em;">
-                            <h:commandButton rendered="#{c.referenceCase eq null}" value="Investigate"
-                                action="#{clientController.toNewCaseInvestigationFromTest()}"
-                                class="btn btn-warning small btn-sm">
-                                <f:setPropertyActionListener value="#{c}"
-                                    target="#{clientController.selectedEncounter}">
+                            <h:commandButton value="View Results" action="#{mohController.toViewResult()}"
+                                class="btn btn-success">
+                                <f:setPropertyActionListener value="#{c}" target="#{mohController.test}">
                                 </f:setPropertyActionListener>
                             </h:commandButton>
-                            <h:commandButton rendered="#{c.referenceCase ne null}" value="View Details"
-                                action="#{clientController.toViewOrEditCaseEnrollmentFromEncounter()}"
-                                class="btn btn-success btn-sm small">
-                                <f:setPropertyActionListener value="#{c.referenceCase}"
-                                    target="#{clientController.selectedEncounter}">
+                            <h:commandButton rendered="false" class="btn btn-warning" value="Delete"
+                                action="#{mohController.deleteTest()}" onclick="if (!confirm('Are you sure you want to delete?'))
+                                                             return false">
+                                <f:setPropertyActionListener value="#{c}" target="#{mohController.deleting}">
                                 </f:setPropertyActionListener>
                             </h:commandButton>
                         </p:column>
