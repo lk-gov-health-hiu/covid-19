@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-  xmlns:h="http://xmlns.jcp.org/jsf/html"
->
+<html lang="en" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <head>
   <meta charset="UTF-8" />
@@ -12,9 +9,14 @@
 
   <style>
     @media screen {
-        body {
+      body {
         padding: 10px;
       }
+
+      .inline {
+        display: inline-block;
+      }
+
       .print-area {
         border: 1px solid #000;
         padding: 2cm;
@@ -28,7 +30,7 @@
         margin-bottom: 10px;
       }
 
-      #print-button {
+      .button {
         background-color: #4267B2;
         color: rgb(255, 255, 255);
         padding-top: 8px;
@@ -41,13 +43,16 @@
         cursor: pointer;
       }
     }
+
     @page {
       size: A4;
     }
+
     @media print {
       .no-print {
         display: none;
       }
+
       .print-area {
         break-after: page;
         padding: 2cm;
@@ -59,16 +64,29 @@
 </head>
 
 <body>
-  <button class="no-print" id="print-button" onclick="window.print()">
-    Print Investigation
-  </button>
-    
+
+  <div class="row no-print">
+    <div class="col-2  no-print">
+      <button class="no-print button" onclick="window.print()">
+        Print
+      </button>
+      <h:form class="inline">
+        <h:commandButton class="no-print button" value="Back" action="#{mohController.toPrintResults()}">
+        </h:commandButton>
+      </h:form>
+    </div>
+    <div class="col-2 no-print">
+    </div>
+  </div>
+
+  <ui:repeat value="#{clientController.selectedToPrint}" var="p">
+
     <div class="content-area">
       <div class="print-area">
-          <h:outputText value="#{hospitalController.test.resultPrintHtml}" escape="false"></h:outputText>
+        <h:outputText value="#{p.resultPrintHtml}" escape="false"></h:outputText>
       </div>
     </div>
-  
+  </ui:repeat>
 </body>
 
 </html>
