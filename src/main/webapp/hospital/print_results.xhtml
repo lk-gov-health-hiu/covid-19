@@ -100,7 +100,7 @@
                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10" resizableColumns="true"
-                        rowStyleClass="#{c.pcrResult.name eq 'Positive'?'bg-danger':''}">
+                        rowStyleClass="#{c.pcrResult.name eq 'Positive'?'bg-danger':''}" selection="#{clientController.selectedToPrint}">
                         <p:column selectionMode="multiple" style="width:50px;text-align:center"/>
                         <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}"
                             filterMatchMode="contains" style="width: 8em;">
