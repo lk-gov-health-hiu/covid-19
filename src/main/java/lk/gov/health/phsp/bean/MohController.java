@@ -2248,8 +2248,7 @@ public class MohController implements Serializable {
         return "/moh/list_of_results_for_orders_from_my_moh";
     }
 
-    public String toViewResults() {
-        System.out.println("toTestList");
+    public String toPrintResults() {
         Map m = new HashMap();
 
         String j = "select c "
@@ -2281,10 +2280,10 @@ public class MohController implements Serializable {
         }
 
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        return "/moh/view_results";
+        return "moh/print_results";
     }
 
-    public String toPrintResults() {
+    public String toViewResults() {
         Map m = new HashMap();
 
         String j = "select c "
