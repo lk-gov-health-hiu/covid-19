@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.Privilege;
+import lk.gov.health.phsp.enums.WebUserRoleLevel;
 
 /**
  *
@@ -251,6 +252,11 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+
+        if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Moh) {
+            privileged = true;
+        }
+
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
@@ -285,6 +291,11 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+
+        if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Moh) {
+            privileged = true;
+        }
+
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
