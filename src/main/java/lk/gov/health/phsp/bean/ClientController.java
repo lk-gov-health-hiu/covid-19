@@ -1865,20 +1865,32 @@ public class ClientController implements Serializable {
         if (e == null) {
             return "No Encounter";
         }
-        String html = getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution());
+
+        String html = new String();
+
+        if (getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution()) != null) {
+            html = getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution());
+        }
+
         if (html == null || html.trim().equals("")) {
             return "No Report Format";
         }
         //Patient Properties
-        html = html.replace("{name}", e.getClient().getPerson().getName());
+        if (e.getClient().getPerson().getName() != null) {
+            html = html.replace("{name}", e.getClient().getPerson().getName());
+        } else {
+            html = html.replace("{name}", "Unknown");
+        }
         if (e.getClient().getPerson().getNic() != null) {
             html = html.replace("{nic}", e.getClient().getPerson().getNic());
         } else {
             html = html.replace("{nic}", "");
         }
-        e.getClient().getPerson().calAgeFromDob();
+        if (e.getClient().getPerson().getDateOfBirth() != null) {
+            e.getClient().getPerson().calAgeFromDob();
+        }
 
-        if (e.getClient().getPerson().getAgeDays() > 2) {
+        if (e.getClient().getPerson().getAgeDays() > 2 || e.getClient().getPerson().getAgeInDays() != null) {
             html = html.replace("{age}", e.getClient().getPerson().getAge());
         } else {
             html = html.replace("{age}", "");
@@ -1890,7 +1902,11 @@ public class ClientController implements Serializable {
             html = html.replace("{sex}", "");
         }
 
-        html = html.replace("{address}", e.getClient().getPerson().getAddress());
+        if (e.getClient().getPerson().getAddress() != null) {
+            html = html.replace("{address}", e.getClient().getPerson().getAddress());
+        } else {
+            html = html.replace("{address}", "");
+        }
         if (e.getClient().getPerson().getPhone1() != null) {
             html = html.replace("{phone1}", e.getClient().getPerson().getPhone1());
         } else {
@@ -2143,12 +2159,12 @@ public class ClientController implements Serializable {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveTerm", webUserController.getLoggedInstitution()));
                 html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
             } else {
-                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue(""));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue(""));
+                html = html.replace("{pcr_result_string}", "");
+                html = html.replace("{pcr_comment_string}", "");
             }
         } else {
-            html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue(""));
-            html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue(""));
+            html = html.replace("{pcr_result_string}", "");
+            html = html.replace("{pcr_comment_string}", "");
         }
 
         return html;
