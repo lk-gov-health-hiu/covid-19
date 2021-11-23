@@ -1856,6 +1856,7 @@ public class ClientController implements Serializable {
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
+            e.setResultPrintHtml(generateLabReport(e));
             encounterFacade.edit(e);
         }
         return "/moh/print_preview";
