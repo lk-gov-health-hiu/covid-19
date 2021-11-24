@@ -73,6 +73,10 @@ public class PreferenceController implements Serializable {
     private String pcrTestTerm;
     private String ratTestTerm;
     private String customLabName;
+    private String ratPositiveComment;
+    private String ratNegativeComment;
+    private String ratInconclusiveComment;
+    private String ratInvalidComment;
 
     private String startingSerialCount;
     String labNumberGeneration;
@@ -265,6 +269,14 @@ public class PreferenceController implements Serializable {
         savePreference("ratTestTerm", webUserController.getLoggedInstitution(), this.ratTestTerm);
         // save custom lab name as a preference
         savePreference("customLabName", webUserController.getLoggedInstitution(), this.customLabName);
+        // save ratpostiveComment as a preference
+        savePreference("ratPositiveComment", webUserController.getLoggedInstitution(), this.ratPositiveComment);
+        // save ratNegativeComment as a preference
+        savePreference("ratNegativeComment", webUserController.getLoggedInstitution(), this.ratNegativeComment);
+        // save ratInvalidComment as a preference
+        savePreference("ratInvalidComment", webUserController.getLoggedInstitution(), this.ratInvalidComment);
+        // save ratInconclusiveComment as a preference
+        savePreference("ratInconclusiveComment", webUserController.getLoggedInstitution(), this.ratInconclusiveComment);
     }
 
     public Preference findPreferance(String name) {
@@ -753,6 +765,38 @@ public class PreferenceController implements Serializable {
 
     public void setCustomLabName(String labNameTerm) {
         this.customLabName = labNameTerm;
+    }
+
+    public String getRatPositiveComment() {
+        return this.ratPositiveComment;
+    }
+
+    public String getRatNegativeComment() {
+        return this.ratNegativeComment;
+    }
+
+    public String getRatInconclusiveComment() {
+        return this.ratInconclusiveComment;
+    }
+
+    public String getRatInvalidComment() {
+        return this.ratInvalidComment;
+    }
+
+    public void setRatPositiveComment(String ratPositiveComment) {
+        this.ratPositiveComment = ratPositiveComment;
+    }
+
+    public void setRatNegativeComment(String ratNegativeComment) {
+        this.ratNegativeComment = ratNegativeComment;
+    }
+
+    public void setRatInconclusiveComment(String ratInconclusiveComment) {
+        this.ratInconclusiveComment = ratInconclusiveComment;
+    }
+
+    public void setRatInvalidComment(String ratInvalidComment) {
+        this.ratInvalidComment = ratInvalidComment;
     }
 
     // </editor-fold>
