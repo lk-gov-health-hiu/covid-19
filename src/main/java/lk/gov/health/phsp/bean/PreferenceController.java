@@ -72,7 +72,7 @@ public class PreferenceController implements Serializable {
     private String bulkExcelRightColBottom;
     private String pcrTestTerm;
     private String ratTestTerm;
-    private String labNameTerm;
+    private String customLabName;
 
     private String startingSerialCount;
     String labNumberGeneration;
@@ -747,12 +747,12 @@ public class PreferenceController implements Serializable {
         this.pcrInvalidComment = pcrInvalidComment;
     }
 
-    public String getLabNameTerm() {
-        return this.labNameTerm;
+    public String getCustomLabName() {
+        return this.customLabName;
     }
 
-    public void setLabNameTerm(String labNameTerm) {
-        this.labNameTerm = labNameTerm;
+    public void setCustomLabName(String labNameTerm) {
+        this.customLabName = labNameTerm;
     }
 
     // </editor-fold>
