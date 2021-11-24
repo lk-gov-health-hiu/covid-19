@@ -2137,10 +2137,10 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_ct2}", "");
         }
 
-        if (getPreferenceController().findPreferanceValue("labNameTerm", webUserController.getLoggedInstitution()) != null) {
-            html = html.replace("{lab_name}", getPreferenceController().findPreferanceValue("labNameTerm", webUserController.getLoggedInstitution()));
+        if (getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()) != null) {
+            html = html.replace("{custom_lab_name}", getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()));
         } else {
-            html = html.replace("{lab_name}", "");
+            html = html.replace("{custom_lab_name}", "");
         }
 
         if (e.getResultComments() != null) {
