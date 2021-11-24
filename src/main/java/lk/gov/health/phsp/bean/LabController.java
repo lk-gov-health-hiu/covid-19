@@ -496,6 +496,17 @@ public class LabController implements Serializable {
                     + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
             ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
 
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultReviewed=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pt) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pt) "
+                    + " and (e.resultConfirmed is null or e.resultConfirmed=:pt) ";
+            ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
             labSummaries.add(ls);
         }
     }
