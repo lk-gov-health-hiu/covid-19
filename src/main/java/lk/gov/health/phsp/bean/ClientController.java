@@ -2129,7 +2129,7 @@ public class ClientController implements Serializable {
 
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
-
+ 
         } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
             html = html.replace("{ct1_term}", "");
             html = html.replace("{ct2_term}", "");
@@ -2162,16 +2162,32 @@ public class ClientController implements Serializable {
         if (e.getPcrResult() != null) {
             if (e.getPcrResult().equals(itemApplicationController.getPcrPositive())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrPositiveTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrPositiveComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrPositiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratPositiveComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrNegative())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrNegativeTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrNegativeComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrNegativeComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratNegativeComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrInvalid())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInvalidTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInvalidComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInvalidComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInvalidComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrInconclusive())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInconclusiveComment", webUserController.getLoggedInstitution()));
+                }
             } else {
                 html = html.replace("{pcr_result_string}", "");
                 html = html.replace("{pcr_comment_string}", "");
