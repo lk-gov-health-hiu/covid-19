@@ -72,6 +72,7 @@ public class PreferenceController implements Serializable {
     private String bulkExcelRightColBottom;
     private String pcrTestTerm;
     private String ratTestTerm;
+    private String labNameTerm;
 
     private String startingSerialCount;
     String labNumberGeneration;
@@ -262,7 +263,8 @@ public class PreferenceController implements Serializable {
         savePreference("pcrTestTerm", webUserController.getLoggedInstitution(), this.pcrTestTerm);
         // save rat test term as a preference
         savePreference("ratTestTerm", webUserController.getLoggedInstitution(), this.ratTestTerm);
-
+        // save custom lab name as a preference
+        savePreference("labNameTerm", webUserController.getLoggedInstitution(), this.labNameTerm);
     }
 
     public Preference findPreferance(String name) {
@@ -743,6 +745,14 @@ public class PreferenceController implements Serializable {
 
     public void setPcrInvalidComment(String pcrInvalidComment) {
         this.pcrInvalidComment = pcrInvalidComment;
+    }
+
+    public String getLabNameTerm() {
+        return this.labNameTerm;
+    }
+
+    public void setLabNameTerm(String labNameTerm) {
+        this.labNameTerm = labNameTerm;
     }
 
     // </editor-fold>
