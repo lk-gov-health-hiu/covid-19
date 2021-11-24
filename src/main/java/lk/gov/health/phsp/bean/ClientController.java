@@ -2121,15 +2121,28 @@ public class ClientController implements Serializable {
                 html = html.replace("{pcr_ct1}", "");
             }
 
+            if (e.getCtValue2() != null) {
+                html = html.replace("{pcr_ct2}", e.getCtValue2().toString());
+            } else {
+                html = html.replace("{pcr_ct2}", "");
+            }
+
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
-        }
 
-        if (e.getCtValue2() != null) {
-            html = html.replace("{pcr_ct2}", e.getCtValue2().toString());
-        } else {
+        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid_19_rat_test")) {
+            html = html.replace("{ct1_term}", "");
+            html = html.replace("{ct2_term}", "");
+            html = html.replace("{pcr_ct1}", "");
             html = html.replace("{pcr_ct2}", "");
         }
+
+        if (getPreferenceController().findPreferanceValue("labNameTerm", webUserController.getLoggedInstitution()) != null) {
+            html = html.replace("{lab_name}", getPreferenceController().findPreferanceValue("labNameTerm", webUserController.getLoggedInstitution()));
+        } else {
+            html = html.replace("{lab_name}", "");
+        }
+
         if (e.getResultComments() != null) {
             html = html.replace("{pcr_comments}", e.getResultComments());
         } else {
