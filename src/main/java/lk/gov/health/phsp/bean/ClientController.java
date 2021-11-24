@@ -2130,7 +2130,7 @@ public class ClientController implements Serializable {
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
 
-        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid_19_rat_test")) {
+        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
             html = html.replace("{ct1_term}", "");
             html = html.replace("{ct2_term}", "");
             html = html.replace("{pcr_ct1}", "");
