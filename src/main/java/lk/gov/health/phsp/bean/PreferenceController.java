@@ -264,7 +264,7 @@ public class PreferenceController implements Serializable {
         // save rat test term as a preference
         savePreference("ratTestTerm", webUserController.getLoggedInstitution(), this.ratTestTerm);
         // save custom lab name as a preference
-        savePreference("labNameTerm", webUserController.getLoggedInstitution(), this.labNameTerm);
+        savePreference("customLabName", webUserController.getLoggedInstitution(), this.customLabName);
     }
 
     public Preference findPreferance(String name) {
