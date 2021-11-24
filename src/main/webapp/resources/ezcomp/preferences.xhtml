@@ -81,8 +81,19 @@
 
                             <p:outputLabel value="PCR Invalid Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
                             <p:inputText value="#{preferenceController.pcrInvalidComment}" class="form-control w-100"></p:inputText>
+                            
+                            <p:outputLabel value="RAT Positive Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.ratPositiveComment}" class="form-control w-100"></p:inputText>
 
-
+                            <p:outputLabel value="RAT Negative Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.ratNegativeComment}" class="form-control w-100"></p:inputText>
+                            
+                            <p:outputLabel value="RAT Inconclusive Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.ratInconclusiveComment}" class="form-control w-100"></p:inputText>
+                            
+                            <p:outputLabel value="RAT Invalid Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.ratInvalidComment}" class="form-control w-100"></p:inputText>
+                            
                             <p:outputLabel value="CT1 Term" class="fs-6 fw-bold"></p:outputLabel ><!-- comment -->
                             <p:inputText value="#{preferenceController.ct1Term}" class="form-control w-100"></p:inputText>
 
@@ -119,6 +130,7 @@
                                         {lab_no}
                                         {ref_no}
                                         {custom_lab_name}
+                                        {lab_name}
                                         <br/>
                                         {gn}
                                         {phi}
@@ -146,6 +158,8 @@
                                         {pcr_result_string}
                                         {pcr_ct1}
                                         {pcr_ct2}
+                                        {ct1_term}
+                                        {ct2_term}
                                         {pcr_comments}
                                         {pcr_comment_string}
                             </h:panelGroup>

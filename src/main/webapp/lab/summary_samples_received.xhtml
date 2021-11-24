@@ -11,7 +11,6 @@
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="content">
-                <h:outputStylesheet library="css" name="tem1.css"/>
                 <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
                         <p:outputLabel value="Samples Received" ></p:outputLabel>
@@ -25,16 +24,16 @@
                             <p:outputLabel value="To Date" ></p:outputLabel>
                             <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
 
-                            <p:commandButton ajax="false" value="Process" 
+                            <p:commandButton ajax="false" value="Process" class="btn btn-warning"
                                              action="#{clientController.toLabSummarySamplesReceived()}" ></p:commandButton>
-                            <p:commandButton ajax="false" value="Generate Excel" >
+                            <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
                                 <p:dataExporter type="xlsx" fileName="Samples Received" target="tbl" ></p:dataExporter>
                             </p:commandButton>
 
                         </p:panelGrid>
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.labSummariesReceived}" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.labSummariesReceived}"
                                      rowIndexVar="n"
                                      var="c" paginator="true" rowKey="#{c.id}" rows="10">
                             <p:column headerText="No" width="50" >
