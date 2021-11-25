@@ -34,6 +34,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Dispatch Samples" action="#{hospitalController.toDispatchSamplesByMohOrHospital()}"/>
                     <p:menuitem class="submenu-item" ajax="false" value="Enter Results" action="#{hospitalController.toEnterResults()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="View Results" action="#{hospitalController.toViewResults()}" />
+                
                 </p:submenu>
 
                 <p:submenu class="submenu mx-2" label="Investigate" rendered="#{webUserController.hasPrivilege('Client_Management') and webUserController.loggedUser.webUserRoleLevel eq 'Moh' }" >
