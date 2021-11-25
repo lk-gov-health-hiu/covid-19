@@ -34,6 +34,7 @@ import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Prescription;
@@ -59,12 +60,74 @@ public class ClientEncounterComponentItemController implements Serializable {
     private ItemController itemController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    ItemApplicationController itemApplicationController;
 
     private List<ClientEncounterComponentItem> items = null;
     private List<ClientEncounterComponentItem> formsetItems = null;
     private ClientEncounterComponentItem selected;
 
     private Long searchId;
+    private Date date;
+    private Long count;
+
+    public String toEnterDailyRatCount() {
+        if (date == null) {
+            date = new Date();
+        }
+        selected = findDailyData(date, itemApplicationController.getDailyTotalRatCount(), webUserController.getLoggedInstitution());
+        count = selected.getLongNumberValue();
+        return "/aggregates/daily_rat_count";
+    }
+    
+    public void ratCountDateChanged() {
+        selected = findDailyData(date, itemApplicationController.getDailyTotalRatCount(), webUserController.getLoggedInstitution());
+        count = selected.getLongNumberValue();
+    }
+
+    private ClientEncounterComponentItem findDailyData(Date date, Item concept, Institution ins) {
+        String j = "select i "
+                + " from ClientEncounterComponentItem i "
+                + " where i.institution=:ins "
+                + " and i.item=:c "
+                + " and i.itemDate=:d";
+        Map m = new HashMap();
+        m.put("ins", ins);
+        m.put("c", concept);
+        m.put("d", date);
+
+        ClientEncounterComponentItem c;
+        c = getFacade().findFirstByJpql(j, m);
+        
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+
+        System.out.println("c = " + c);
+        
+        if (c == null) {
+            c = new ClientEncounterComponentItem();
+            c.setItem(concept);
+            c.setItemDate(date);
+            c.setInstitution(ins);
+        }
+
+        return c;
+    }
+
+    public void saveDailyRatCount() {
+        selected = findDailyData(date, itemApplicationController.getDailyTotalRatCount(), webUserController.getLoggedInstitution());
+        selected.setLongNumberValue(count);
+        if (selected.getId() == null) {
+            selected.setCreatedAt(new Date());
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(selected);
+        } else {
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            getFacade().edit(selected);
+        }
+        JsfUtil.addErrorMessage("Saved");
+    }
 
     public void searchById() {
 
@@ -1064,6 +1127,8 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     }
 
+    
+    
     public Long getSearchId() {
         return searchId;
     }
@@ -1082,6 +1147,22 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     public ItemController getItemController() {
         return itemController;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)

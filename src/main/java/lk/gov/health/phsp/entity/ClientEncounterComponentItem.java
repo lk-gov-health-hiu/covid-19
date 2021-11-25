@@ -48,10 +48,20 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     @ManyToOne
     private Encounter itemEncounter;
     @ManyToOne
+    private Institution institution;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date itemDate;
+    @ManyToOne
+    private Item item;
+
+    @ManyToOne
     private ClientEncounterComponentFormSet itemFormset;
     @Enumerated(EnumType.STRING)
     private DataRepresentationType dataRepresentationType;
 
+    
+    
+    
     @Lob
     private String longTextValue;
     @Lob
@@ -89,10 +99,7 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area areaValue2;
     private Boolean booleanValue2;
-    
-    
-    
-    
+
     public Client getItemClient() {
         return itemClient;
     }
@@ -315,5 +322,30 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
         this.booleanValue2 = booleanValue2;
     }
 
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Date getItemDate() {
+        return itemDate;
+    }
+
+    public void setItemDate(Date itemDate) {
+        this.itemDate = itemDate;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    
     
 }
