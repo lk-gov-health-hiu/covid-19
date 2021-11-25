@@ -502,10 +502,10 @@ public class LabController implements Serializable {
                     + " and e.createdAt between :fd and :td "
                     + " and e.referalInstitution in :rins "
                     + " and e.institution=:ins "
-                    + " and e.resultReviewed=:pt "
-                    + " and e.sampleRejectedAtLab=:pt "
-                    + " and e.sampleMissing=:pt "
-                    + " and e.resultConfirmed=:pt ";
+                    + " and (e.resultReviewed=:pt "
+                    + " or e.sampleRejectedAtLab=:pt "
+                    + " or e.sampleMissing=:pt "
+                    + " or e.resultConfirmed=:pt)";
             ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
             labSummaries.add(ls);
         }
