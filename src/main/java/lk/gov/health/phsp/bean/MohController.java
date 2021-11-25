@@ -2279,7 +2279,46 @@ public class MohController implements Serializable {
             m.put("ri", lab);
         }
 
+        Map m2 = new HashMap();
+
+        String j2 = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m2.put("ret", false);
+
+        j2 += " and c.encounterType=:etype ";
+        m2.put("etype", EncounterType.Test_Enrollment);
+
+        j2 += " and c.institution<>:ins ";
+        m2.put("ins", webUserController.getLoggedInstitution());
+
+        j2 += " and (c.client.person.mohArea=:moh) ";
+        m2.put("moh", webUserController.getLoggedInstitution().getMohArea());
+
+        j2 += " and c.resultConfirmedAt between :fd and :td ";
+        m2.put("fd", getFromDate());
+        m2.put("td", getToDate());
+
+        if (testType != null) {
+            j2 += " and c.pcrTestType=:tt ";
+            m2.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j2 += " and c.pcrOrderingCategory=:oc ";
+            m2.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j2 += " and c.pcrResult=:result ";
+            m2.put("result", result);
+        }
+        if (lab != null) {
+            j2 += " and c.referalInstitution=:ri ";
+            m2.put("ri", lab);
+        }
+
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        List<Encounters> tests2 = encounterFacade.findByJpql(j2, m2, TemportalType.TIMESTAMP); 
+        tests.add(tests2);
         return "moh/print_results";
     }
 
