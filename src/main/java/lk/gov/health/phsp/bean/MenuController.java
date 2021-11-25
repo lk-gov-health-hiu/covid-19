@@ -253,10 +253,6 @@ public class MenuController implements Serializable {
             }
         }
 
-        if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Moh) {
-            privileged = true;
-        }
-
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
@@ -290,10 +286,6 @@ public class MenuController implements Serializable {
             if (up.getPrivilege() == Privilege.System_Administration) {
                 privileged = true;
             }
-        }
-
-        if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Moh) {
-            privileged = true;
         }
 
         if (!privileged) {
