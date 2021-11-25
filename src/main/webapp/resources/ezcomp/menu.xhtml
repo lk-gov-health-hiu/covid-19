@@ -34,6 +34,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Dispatch Samples" action="#{hospitalController.toDispatchSamplesByMohOrHospital()}"/>
                     <p:menuitem class="submenu-item" ajax="false" value="Enter Results" action="#{hospitalController.toEnterResults()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="View Results" action="#{hospitalController.toViewResults()}" />
+                
                 </p:submenu>
 
                 <p:submenu class="submenu mx-2" label="Investigate" rendered="#{webUserController.hasPrivilege('Client_Management') and webUserController.loggedUser.webUserRoleLevel eq 'Moh' }" >
@@ -69,9 +70,10 @@
                     <p:menuitem ajax="false" value="Approve Results" action="#{clientController.toConfirmResults}"
                                 rendered="#{webUserController.hasPrivilege('Confirm_Results')}"/>
                     <p:menuitem ajax="false" value="Print Results" action="#{clientController.toLabToSelectForPrinting()}"
-                                rendered="#{webUserController.hasPrivilege('Print_Results')}"/>
-                    <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{hospitalController.toHospitalSelectForPrinting()}"
-                                rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital'}"/>
+                                rendered="#{webUserController.hasPrivilege('Print_Results') and webUserController.loggedUser.webUserRoleLevel eq 'Lab'}"/>
+                </p:submenu>
+                <p:submenu class="submenu mx-2" label="Hospital" rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital'}">
+                    <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{hospitalController.toPrintResults()}"/>
                 </p:submenu>
                 <p:submenu class="submenu mx-2" label="Requests from Lab" rendered="#{webUserController.hasPrivilege('Lab_Management')}">
                     <p:menuitem ajax="false" value="New RAT Request" rendered="false" action="#{labController.toAddNewRatOrderWithNewClient()}"  />
@@ -87,7 +89,7 @@
                 <p:menuitem class="text-white" ajax="false" value="Search" action="#{menuController.toSearch()}" />
                 <p:menuitem class="text-white" ajax="false" value="Reports" action="#{menuController.toReportsIndex()}" />
                 <p:menuitem class="text-white" ajax="false" value="Administration" action="#{menuController.toAdministrationIndex()}"
-                    rendered="#{webUserController.hasPrivilege('Institution_Administration') or webUserController.hasPrivilege('System_Administration')}"/>
+                    rendered="#{webUserController.hasPrivilege('Institution_Administration') or webUserController.hasPrivilege('System_Administration') or webUserController.loggedUser.webUserRoleLevel eq 'Moh'}"/>
 
                 <p:submenu class="submenu mx-2" label="Help" >
                     <p:menuitem value="User Manual" action="/wiki"   ajax="false" />

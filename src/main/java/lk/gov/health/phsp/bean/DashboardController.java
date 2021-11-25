@@ -457,6 +457,7 @@ public class DashboardController implements Serializable {
         	this.yesterdayRatPositiveRate = "0.0%";
         }
 
+        this.samplesAwaitingDispatch = dashboardApplicationController.samplesAwaitingDispatch(null, yesterdayStart, now, webUserController.getLoggedInstitution(), itemApplicationController.getPcr());
     }
 
     public void prepareRegionalDashboard() {

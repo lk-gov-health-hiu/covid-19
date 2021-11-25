@@ -496,6 +496,17 @@ public class LabController implements Serializable {
                     + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
             ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
 
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultReviewed=:pt "
+                    + " and e.sampleRejectedAtLab=:pt "
+                    + " and e.sampleMissing=:pt "
+                    + " and e.resultConfirmed=:pt ";
+            ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
             labSummaries.add(ls);
         }
     }
@@ -3156,7 +3167,7 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and c.resultConfirmed between :fd and :td ";
+        j += " and c.resultConfirmedAt between :fd and :td ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {

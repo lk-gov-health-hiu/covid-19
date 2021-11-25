@@ -37,7 +37,7 @@
                             </p:autoComplete>
 
                             <p:outputLabel value="Test"  class="fs-6 fw-bold"></p:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}"  class="fs-6 w-100">
+                            <h:selectOneMenu value="#{labController.testType}"  class="fs-6 w-100 form-select">
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
@@ -53,12 +53,9 @@
 
 
                         </p:panelGrid>
-<div>
-                            <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Toggle Columns" icon="pi pi-align-justify"/>
-                            <p:columnToggler datasource="tbl" trigger="toggler"/>
-                        </div>
+
                         <ez:lab_request_datatable/>
-                        
+
                     </h:form>
                 </p:panelGrid>
             </ui:define>
