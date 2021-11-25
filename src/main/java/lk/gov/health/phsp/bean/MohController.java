@@ -2317,8 +2317,8 @@ public class MohController implements Serializable {
         }
 
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        List<Encounters> tests2 = encounterFacade.findByJpql(j2, m2, TemportalType.TIMESTAMP); 
-        tests.add(tests2);
+        List<Encounter> tests2 = encounterFacade.findByJpql(j2, m2, TemporalType.TIMESTAMP);
+        tests.addAll(tests2);
         return "moh/print_results";
     }
 
