@@ -41,6 +41,11 @@
                     <p:menuitem ajax="false" value="Assign Cases to Investigate" action="#{mohController.toAssignInvestigation()}" />
                     <p:menuitem ajax="false" value="Cases Awaiting Investigation" action="#{mohController.toStartInvestigation()}" />
                 </p:submenu>
+                
+                <p:submenu class="submenu mx-2" label="Aggregates"  >
+                    <p:menuitem ajax="false" value="Total Daily RAT Count" action="#{clientEncounterComponentItemController.toEnterDailyRatCount()}" />
+                </p:submenu>
+                
                 <p:submenu class="submenu mx-2" label="Contacts" rendered="#{webUserController.hasPrivilege('Client_Management') and webUserController.loggedUser.webUserRoleLevel eq 'Moh' }" >
                     <p:menuitem ajax="false" value="List of First Contacts" action="#{mohController.toListOfFirstContactsToTest()}" />
                 </p:submenu>

@@ -1296,7 +1296,11 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Monitoring_and_evaluation_reports);
                 wups.add(Privilege.View_individual_data);
                 wups.add(Privilege.View_aggragate_date);
-
+                wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Users);
+                wups.add(Privilege.Manage_Metadata);
+                wups.add(Privilege.Manage_Area);
+                wups.add(Privilege.Manage_Institutions);
                 break;
             case Lab_National:
             case Super_User:
@@ -1359,6 +1363,7 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Review_Results);
                 wups.add(Privilege.Print_Results);
                 break;
+            case Doctor:
             case Hospital_Admin:
                 wups.add(Privilege.Add_Client);
                 wups.add(Privilege.Add_Tests);
