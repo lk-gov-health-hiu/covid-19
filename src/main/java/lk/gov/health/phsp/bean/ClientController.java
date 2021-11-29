@@ -1990,6 +1990,12 @@ public class ClientController implements Serializable {
 
         //Institute Properties
         if (e.getReferalInstitution() != null) {
+            if (e.getReferalInstitution().getMohArea() != null) {
+                html.replace("{r_moh}", e.getReferalInstitution().getMohArea().getName());
+            } else {
+                html.replace("{r_moh}", "");
+            }
+
             if (e.getReferalInstitution().getName() != null) {
                 html = html.replace("{lab}", e.getReferalInstitution().getName());
                 html = html.replace("{lab_name}", e.getReferalInstitution().getName());
@@ -2328,6 +2334,13 @@ public class ClientController implements Serializable {
 
         //Institute Properties
         if (e.getReferalInstitution() != null) {
+
+            if (e.getReferalInstitution().getMohArea() != null) {
+                html.replace("{r_moh}", e.getReferalInstitution().getMohArea().getName());
+            } else {
+                html.replace("{r_moh}", "");
+            }
+
             if (e.getReferalInstitution().getName() != null) {
                 html = html.replace("{lab}", e.getReferalInstitution().getName());
                 html = html.replace("{lab_name}", e.getReferalInstitution().getName());
@@ -2362,6 +2375,12 @@ public class ClientController implements Serializable {
             html = html.replace("{lab_phone}", "");
             html = html.replace("{lab_fax}", "");
             html = html.replace("{lab_email}", "");
+        }
+
+        if (e.getInstitution().getMohArea() != null) {
+            html = html.replace("{moh}", e.getInstitution().getMohArea().getName());
+        } else {
+            html = html.replace("{moh}", "");
         }
 
         if (e.getCreatedAt() != null) {
