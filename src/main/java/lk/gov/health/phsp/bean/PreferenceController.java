@@ -49,6 +49,7 @@ public class PreferenceController implements Serializable {
     Institution Preferences
      */
     private String labReportHtml;
+    private String qurantineReportHtml;
     private String numberOfRowsPerPage;
     private String labReportBulkHtml;
     private String labApprovalSteps;
@@ -277,6 +278,8 @@ public class PreferenceController implements Serializable {
         savePreference("ratInvalidComment", webUserController.getLoggedInstitution(), this.ratInvalidComment);
         // save ratInconclusiveComment as a preference
         savePreference("ratInconclusiveComment", webUserController.getLoggedInstitution(), this.ratInconclusiveComment);
+        // save qurantine report template
+        savePreference("qurantineReportHtml", webUserController.getLoggedInstitution(), this.qurantineReportHtml);
     }
 
     public Preference findPreferance(String name) {
@@ -797,6 +800,14 @@ public class PreferenceController implements Serializable {
 
     public void setRatInvalidComment(String ratInvalidComment) {
         this.ratInvalidComment = ratInvalidComment;
+    }
+
+    public String getQurantineReportHtml() {
+        return this.qurantineReportHtml;
+    }
+
+    public void setQurantineReportHtml(String html) {
+        this.qurantineReportHtml = html;
     }
 
     // </editor-fold>
