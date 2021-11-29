@@ -92,26 +92,28 @@
             <div class="print-area">
                 <h:outputText value="#{p.resultPrintHtml}" escape="false"></h:outputText>
             </div>
-            <div class="print-area qurantineReports">
+            <div class="no-print qurantineReports">
                 <h:outputText value="#{p.qurantineReportHtml}"></h:outputText>
             </div>
         </div>
     </ui:repeat>
 
     <script>
-        var checkbox = document.querySelector("#print")
+        var checkbox = document.querySelector("#printqurantine")
         var qurantineReports = document.getElementsByClassName("qurantineReports")
         checkbox.addEventListener('change', function () {
             if (this.checked) {
-                qurantineReports.forEach(element => {
-                    element.classList.remove("no-print")
+                for (let index = 0; index < qurantineReports.length; index++) {
+                    const element = qurantineReports[index]
                     element.classList.add("print-area")
-                })
+                    element.classList.remove("no-print")
+                }
             } else {
-                qurantineReports.forEach(element => {
-                    element.classList.remove("print-area")
+                for (let index = 0; index < qurantineReports.length; index++) {
+                    const element = qurantineReports[index]
                     element.classList.add("no-print")
-                })
+                    element.classList.remove("print-area")
+                }
             }
         })
     </script>
