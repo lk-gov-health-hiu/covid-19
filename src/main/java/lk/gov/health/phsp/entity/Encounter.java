@@ -38,6 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -138,7 +139,8 @@ public class Encounter implements Serializable {
 
     @Lob
     private String resultPrintHtml;
-
+    @Lob
+    @Column(length = 100000)
     private String qurantineReportHtml;
 
     private Boolean resultNoted;
