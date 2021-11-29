@@ -167,6 +167,9 @@ public class PreferenceController implements Serializable {
         this.ratTestTerm = findPreferanceValue("ratTestTerm", webUserController.getLoggedInstitution());
         startingSerialCount = findPreferanceValue("startingSerialCount", webUserController.getLoggedInstitution());
 
+        // get qurantine certificate printout template
+        this.qurantineReportHtml = findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution());
+
         ct1Term = findPreferanceValue("ct1Term", webUserController.getLoggedInstitution(), "");
         ct2Term = findPreferanceValue("ct2Term", webUserController.getLoggedInstitution(), "");
         bulkExcelTitle = findPreferanceValue("bulkExcelTitle", webUserController.getLoggedInstitution(), "");
