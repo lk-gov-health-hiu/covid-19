@@ -30,6 +30,10 @@
                 margin-bottom: 10px;
             }
 
+            .hidden {
+                display: none;
+            }
+
             .button {
                 background-color: #4267B2;
                 color: rgb(255, 255, 255);
@@ -92,7 +96,7 @@
             <div class="print-area">
                 <h:outputText value="#{p.resultPrintHtml}" escape="false"></h:outputText>
             </div>
-            <div class="no-print qurantineReports">
+            <div class="no-print hidden qurantineReports">
                 <h:outputText value="#{p.qurantineReportHtml}"></h:outputText>
             </div>
         </div>
@@ -107,12 +111,14 @@
                     const element = qurantineReports[index]
                     element.classList.add("print-area")
                     element.classList.remove("no-print")
+                    element.classList.remove("hidden")
                 }
             } else {
                 for (let index = 0; index < qurantineReports.length; index++) {
                     const element = qurantineReports[index]
                     element.classList.add("no-print")
                     element.classList.remove("print-area")
+                    element.classList.add("hidden")
                 }
             }
         })
