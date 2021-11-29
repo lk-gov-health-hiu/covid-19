@@ -140,7 +140,7 @@ public class Encounter implements Serializable {
     @Lob
     private String resultPrintHtml;
     @Lob
-    @Column(length = 100000, columnDefinition="LONGTEXT")
+    @Column(name="QCERTHTML",columnDefinition="LONGTEXT")
     private String qurantineReportHtml;
 
     private Boolean resultNoted;
