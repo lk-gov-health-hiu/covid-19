@@ -138,6 +138,7 @@ public class Encounter implements Serializable {
 
     @Lob
     private String resultPrintHtml;
+    @Lob
     private String qurantineReportHtml;
 
     private Boolean resultNoted;
