@@ -1873,8 +1873,8 @@ public class ClientController implements Serializable {
 
         String html = new String();
 
-        if (getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution()) != null) {
-            html = getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution());
+        if (getPreferenceController().findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution()) != null) {
+            html = getPreferenceController().findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution());
         }
 
         if (html == null || html.trim().equals("")) {
