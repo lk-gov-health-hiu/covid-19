@@ -1943,7 +1943,7 @@ public class ClientController implements Serializable {
             html = html.replace("{phi}", "");
         }
 
-        if (e.getInstitution().getMohArea().getName() != null) {
+        if (e.getInstitution().getMohArea() != null) {
             html = html.replace("{moh}", e.getInstitution().getMohArea().getName());
         } else {
             html = html.replace("{moh}", "");
