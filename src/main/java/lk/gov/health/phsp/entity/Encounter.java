@@ -38,6 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -70,7 +71,7 @@ public class Encounter implements Serializable {
     private String comments;
 
     private boolean firstEncounter;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Encounter referenceTest;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -87,7 +88,7 @@ public class Encounter implements Serializable {
     private Date sentToLabAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser sentToLabBy;
-    
+
     private Boolean sampleMissing;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampleMissingAt;
@@ -138,6 +139,9 @@ public class Encounter implements Serializable {
 
     @Lob
     private String resultPrintHtml;
+    @Lob
+    @Column(name="QCERTHTML",columnDefinition="LONGTEXT")
+    private String qurantineReportHtml;
 
     private Boolean resultNoted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -183,9 +187,9 @@ public class Encounter implements Serializable {
     @ManyToOne
     private Item pcrOrderingCategory;
     @ManyToOne
-   
+
     private Item vaccinationStatus;
-    
+
     @ManyToOne
     private Item symptomaticStatus;
     private String pcrOrderingCategoryOther;
@@ -827,8 +831,8 @@ public class Encounter implements Serializable {
     public Item getPcrTestType() {
         return pcrTestType;
     }
-    
-    
+
+
 
     public void setPcrTestType(Item pcrTestType) {
         this.pcrTestType = pcrTestType;
@@ -865,8 +869,8 @@ public class Encounter implements Serializable {
     public Double getCtValue2() {
         return ctValue2;
     }
-    
-    
+
+
 
     public void setCtValue2(Double ctValue2) {
         this.ctValue2 = ctValue2;
@@ -876,8 +880,15 @@ public class Encounter implements Serializable {
         return sampleRejectedAtLab;
     }
 
-    
-    
+    public String getQurantineReportHtml() {
+        return this.qurantineReportHtml;
+    }
+
+    public void setQurantineReportHtml(String html) {
+        this.qurantineReportHtml = html;
+    }
+
+
     public void setSampleRejectedAtLab(Boolean sampleRejectedAtLab) {
         this.sampleRejectedAtLab = sampleRejectedAtLab;
     }
@@ -914,8 +925,8 @@ public class Encounter implements Serializable {
         this.pendingAtLabAt = pendingAtLabAt;
     }
 
-    
-    
+
+
     public WebUser getPendingAtLabBy() {
         return pendingAtLabBy;
     }
@@ -1060,8 +1071,8 @@ public class Encounter implements Serializable {
     public void setSampleMissingBy(WebUser sampleMissingBy) {
         this.sampleMissingBy = sampleMissingBy;
     }
-    
-    
-    
+
+
+
 
 }

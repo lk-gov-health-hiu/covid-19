@@ -11,11 +11,7 @@
 </h:head>
 
 <h:body>
-
     <ui:composition template="/template1.xhtml">
-
-
-
         <ui:define name="content">
             <div class="container-fluid">
                 <div class="row">
@@ -32,13 +28,12 @@
                                 <h:commandLink value="PCR | RAT Requests by GN Area"
                                     action="#{mohController.toCountOfTestsByGn()}"
                                     class="list-group-item list-group-item-action">
-                                    >
                                 </h:commandLink>
                             </h:form>
                             <h:form>
                                 <h:commandLink value="PCR | RAT Requests by PHI Area"
                                     action="#{mohController.toCountOfTestsByPhi()}"
-                                    class="btn btn-outline-primary btn-block w-100">
+                                    class="list-group-item list-group-item-action">
                                 </h:commandLink>
                             </h:form>
                             <h:form>
