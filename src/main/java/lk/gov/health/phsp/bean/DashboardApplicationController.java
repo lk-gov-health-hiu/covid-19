@@ -182,7 +182,7 @@ public class DashboardApplicationController {
 //        Get the PCR Positive cases within the last 14 days
         Map<String, String> pcrPositiveSeries = this.getSeriesOfCases(
                 now,
-                14,
+                30,
                 this.itemApplicationController.getPcr(),
                 this.itemApplicationController.getPcrPositive()
         );
@@ -190,7 +190,7 @@ public class DashboardApplicationController {
 //        Get the RAT positive cases within the last 14 dats
         Map<String, String> ratPositiveSeries = this.getSeriesOfCases(
                 now,
-                14,
+                30,
                 this.itemApplicationController.getRat(),
                 this.itemApplicationController.getPcrPositive()
         );
@@ -505,7 +505,8 @@ public Map<String, String> getSeriesOfCases(
         hashMap.put("", "");
     } else {
         for (int i = 0; i <= duration; i++) {
-            Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * i);
+            int dayCount = i +1;
+            Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * dayCount);
             Date endDate = CommonController.endOfTheDate(currentDate);
             Long positive_cases = this.getConfirmedCount(
                     null,
