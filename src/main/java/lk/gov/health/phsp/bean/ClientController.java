@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.ByteArrayOutputStream;
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,10 +11,12 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.Area;
@@ -59,9 +63,15 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.internal.guava.UncheckedExecutionException;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
+import org.apache.commons.codec.digest.DigestUtils;
+import io.nayuki.qrcodegen.*;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
+
 
 // </editor-fold>
 @Named
@@ -1748,12 +1758,14 @@ public class ClientController implements Serializable {
 
     public String toLabPrintSelected() {
         for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
             e.setResultPrintHtml(generateLabReport(e));
             e.setQurantineReportHtml(generateQurantineReport(e));
-//            selectedToPrint = null;
             encounterFacade.edit(e);
         }
 //        selectedToPrint = null;
@@ -1762,6 +1774,9 @@ public class ClientController implements Serializable {
 
     public String toHospitalPrintSelected() {
         for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
@@ -1855,6 +1870,9 @@ public class ClientController implements Serializable {
 
     public String toMohPrintSelected() {
         for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
@@ -2563,9 +2581,11 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_result_string}", "");
             html = html.replace("{pcr_comment_string}", "");
         }
-
+        QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
+        html += "<div style='text-align: center; margin-top: 36px; margin-bottom:36px;'>" + qr.toSvgString(4) +"</div>";
         return html;
     }
+
 
     public String generateLabReportsBulk(List<Encounter> es) {
         Map<String, ReportHolder> rhs = new HashMap<>();
