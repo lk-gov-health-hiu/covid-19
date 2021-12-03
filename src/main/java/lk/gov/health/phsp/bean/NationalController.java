@@ -1238,9 +1238,9 @@ public class NationalController implements Serializable {
             return;
         } else {
             for (int i = 0; i <= duration; i++) {
-                int dayCount = i + 1;
+                int dayCount = i;
                 DailyTestCount dtc = new DailyTestCount();
-                Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * dayCount);
+                Date currentDate = new Date(startOfTheDate.getTime() + (long) MILLIS_IN_A_DAY * dayCount);
                 Date endDate = CommonController.endOfTheDate(currentDate);
                 dtc.setDate(currentDate);
 
