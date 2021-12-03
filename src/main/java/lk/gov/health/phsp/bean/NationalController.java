@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -54,9 +55,11 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.InvestigationFilterType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.pojcs.DailyTestCount;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.InstitutionPeformance;
 import lk.gov.health.phsp.pojcs.InstitutionTypeCount;
+import org.joda.time.Duration;
 // </editor-fold>
 
 /**
@@ -108,6 +111,7 @@ public class NationalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Variables">
+    private ArrayList<DailyTestCount> dailyTestCounts;
     private Boolean nicExistsForPcr;
     private Boolean nicExistsForRat;
     private Encounter rat;
@@ -172,8 +176,6 @@ public class NationalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-
-
     public String searchByName() {
         if (searchingName == null && searchingName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a name to search");
@@ -368,7 +370,6 @@ public class NationalController implements Serializable {
         j += " group by c.institution"
                 + " order by count(c) desc ";
 
-
         institutionCounts = new ArrayList<>();
 
         List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
@@ -442,7 +443,6 @@ public class NationalController implements Serializable {
         j += " group by c.institution"
                 + " order by count(c) desc ";
 
-
         institutionCounts = new ArrayList<>();
 
         List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
@@ -497,7 +497,6 @@ public class NationalController implements Serializable {
         j += " group by c.institution"
                 + " order by count(c) desc ";
 
-
         institutionCounts = new ArrayList<>();
 
         List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
@@ -516,7 +515,6 @@ public class NationalController implements Serializable {
 
     // This will return data of number of tests done by hospitals of a given RDHS
     // Rukshan
-
     public String toCountOfTestsFromRdhsToInstitution() {
         Map m = new HashMap();
 
@@ -530,8 +528,6 @@ public class NationalController implements Serializable {
 
         j += " and (c.createdAt > :fd and c.createdAt < :td) ";
         m.put("fd", getFromDate());
-
-
 
         m.put("td", getToDate());
 
@@ -561,7 +557,6 @@ public class NationalController implements Serializable {
 
         j += " group by c.institution"
                 + " order by count(c) desc ";
-
 
         institutionCounts = new ArrayList<>();
 
@@ -948,7 +943,6 @@ public class NationalController implements Serializable {
             m.put("oc", orderingCategory);
         }
 
-
         j += " and c.pcrResult=:result ";
         m.put("result", itemApplicationController.getPcrPositive());
 
@@ -960,20 +954,17 @@ public class NationalController implements Serializable {
         j += " group by c.institution.rdhsArea "
                 + " order by count(c) desc ";
 
-
         List<Object> objPositives = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
-
 
         if (objCounts == null || objCounts.isEmpty()) {
             return "/national/positivity_rate_by_rdhs";
         }
 
-
-        for (int index = 0; index <= objPositives.size()-1; index++) {
+        for (int index = 0; index <= objPositives.size() - 1; index++) {
             InstitutionCount incPositive = (InstitutionCount) objPositives.get(index);
             InstitutionCount incCounts = (InstitutionCount) objCounts.get(index);
-            double tempPositiveRate = ((double) incPositive.getCount()/incCounts.getCount()*100);
+            double tempPositiveRate = ((double) incPositive.getCount() / incCounts.getCount() * 100);
             String tempRate = df.format(tempPositiveRate) + "%";
             InstitutionCount rateCount = new InstitutionCount();
             rateCount.setArea(incPositive.getArea());
@@ -1045,9 +1036,7 @@ public class NationalController implements Serializable {
 
         institutionCounts = new ArrayList<>();
 
-
         List<Object> objCounts = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
-
 
         if (objCounts == null || objCounts.isEmpty()) {
             return "/national/count_of_tests_by_rdhs";
@@ -1229,6 +1218,83 @@ public class NationalController implements Serializable {
             institutionPeformances.add(ip);
         }
         generateInstitutionPeformanceSummery();
+    }
+
+    public String toDailyCounts() {
+        dailyTestCounts = new ArrayList<DailyTestCount>();
+        return "/national/daily_national_counts";
+    }
+
+    public void processDailyCounts() {
+        dailyTestCounts = new ArrayList<DailyTestCount>();
+        int MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
+
+        Date startOfTheDate = CommonController.startOfTheDate(fromDate);
+        long diff = toDate.getTime() - fromDate.getTime();
+        long duration = diff/MILLIS_IN_A_DAY;
+
+        if (duration < 1) {
+            JsfUtil.addErrorMessage("Check Dates");
+            return;
+        } else {
+            for (int i = 0; i <= duration; i++) {
+                int dayCount = i + 1;
+                DailyTestCount dtc = new DailyTestCount();
+                Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * dayCount);
+                Date endDate = CommonController.endOfTheDate(currentDate);
+                dtc.setDate(currentDate);
+
+                Long totalPcr;
+                Long totalRat;
+                Long positiveRat;
+                Long positivePcr;
+                Long totalPositives;
+                Long totalTests;
+
+                positivePcr = dashboardApplicationController.getConfirmedCount(
+                        null,
+                        currentDate,
+                        endDate,
+                        itemApplicationController.getPcr(),
+                        null,
+                        itemApplicationController.getPcrPositive(),
+                        null);
+                positiveRat = dashboardApplicationController.getConfirmedCount(
+                        null,
+                        currentDate,
+                        endDate,
+                        itemApplicationController.getRat(),
+                        null,
+                        itemApplicationController.getPcrPositive(),
+                        null);
+                totalPcr = dashboardApplicationController.getConfirmedCount(
+                        null,
+                        currentDate,
+                        endDate,
+                        itemApplicationController.getPcr(),
+                        null,
+                        null,
+                        null);
+                totalRat = dashboardApplicationController.getConfirmedCount(
+                        null,
+                        currentDate,
+                        endDate,
+                        itemApplicationController.getRat(),
+                        null,
+                        null,
+                        null);
+                totalPositives = positivePcr + positiveRat;
+                totalTests = totalPcr + totalRat;
+                dtc.setPositivePcr(positivePcr);
+                dtc.setPositiveRat(positiveRat);
+                dtc.setTotalPcr(totalPcr);
+                dtc.setTotalRat(totalRat);
+                dtc.setTotalPositives(totalPositives);
+                dtc.setTotalTests(totalTests);
+                
+                dailyTestCounts.add(dtc);
+            }
+        }
     }
 
     public String toCountOfResultsByLab() {
@@ -1783,8 +1849,6 @@ public class NationalController implements Serializable {
         return "/national/list_of_tests";
     }
 
-    
-    
     public String toListOfTestsDetail() {
         Map m = new HashMap();
         String j = "select c "
@@ -1802,7 +1866,6 @@ public class NationalController implements Serializable {
         return "/national/list_of_tests_details";
     }
 
-    
     public String toListOfTestsWithoutMohForRegionalLevel() {
         Map m = new HashMap();
         String j = "select c "
@@ -2416,7 +2479,6 @@ public class NationalController implements Serializable {
 
         j += " group by c";
 
-
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/regional/list_of_cases_by_management_plan";
@@ -2447,7 +2509,6 @@ public class NationalController implements Serializable {
         }
 
         j += " group by c";
-
 
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
@@ -2743,7 +2804,6 @@ public class NationalController implements Serializable {
     }
 
     // Return the name of the current institution type
-
     public String getInstitutionTypeName() {
         return this.institutionType.name();
     }
@@ -2947,7 +3007,7 @@ public class NationalController implements Serializable {
         return selectedToDispatch;
     }
 
-      public String dispatchSelectedSamples() {
+    public String dispatchSelectedSamples() {
         if (dispatchingLab == null) {
             JsfUtil.addErrorMessage("Please select a lab to send samples");
             return "";
@@ -3007,6 +3067,12 @@ public class NationalController implements Serializable {
         this.searchingName = searchingName;
     }
 
+    public ArrayList<DailyTestCount> getDailyTestCounts() {
+        return dailyTestCounts;
+    }
 
+    public void setDailyTestCounts(ArrayList<DailyTestCount> dailyTestCounts) {
+        this.dailyTestCounts = dailyTestCounts;
+    }
 
 }
