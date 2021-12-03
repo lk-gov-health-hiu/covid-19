@@ -937,7 +937,7 @@ public class WebUserController implements Serializable {
                     break;
                 case National:
                 case National_Lab:
-                    dashboardApplicationController.updateDashboard();
+//                    dashboardApplicationController.updateDashboard();
                     break;
                 case Moh:
                     dashboardController.prepareMohDashboard();
