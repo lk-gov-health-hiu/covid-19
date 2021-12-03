@@ -181,6 +181,7 @@ public class Encounter implements Serializable {
     private EncounterType encounterType;
 
     private String encounterNumber;
+    private String encounterIdHash;
 
     @ManyToOne
     private Item pcrTestType;
@@ -458,6 +459,14 @@ public class Encounter implements Serializable {
 
     public void setLastEditeAt(Date lastEditeAt) {
         this.lastEditeAt = lastEditeAt;
+    }
+
+    public String getEncounterIdHash() {
+        return this.encounterIdHash;
+    }
+
+    public void setEncounterIdHash(String hash) {
+        this.encounterIdHash = hash;
     }
 
     public Integer getEncounterYear() {
