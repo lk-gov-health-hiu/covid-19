@@ -34,6 +34,15 @@
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>Digicert</servlet-name>
+        <servlet-class>lk.gov.health.phsp.digicert.Digicert</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Digicert</servlet-name>
+        <url-pattern>/digicert/*</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>Jersey Filter</filter-name>
@@ -47,7 +56,7 @@
         <filter-name>Jersey Filter</filter-name>
         <url-pattern>/data/*</url-pattern>
     </filter-mapping>
-        <filter-mapping>
+    <filter-mapping>
         <filter-name>corsFilter</filter-name>
         <url-pattern>/data/*</url-pattern>
     </filter-mapping>
