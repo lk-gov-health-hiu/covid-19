@@ -2582,7 +2582,7 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_comment_string}", "");
         }
         QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
-        html += "<div style='margin-top: 36px; margin-bottom:36px;'> <span style='height: 150px; width: 150px; display:block;'>" + qr.toSvgString(4) +"<span></div>";
+        html += "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) +"<span></div>";
         return html;
     }
 
