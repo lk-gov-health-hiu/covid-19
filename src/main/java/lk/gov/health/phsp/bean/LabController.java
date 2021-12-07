@@ -2501,6 +2501,64 @@ public class LabController implements Serializable {
         return "/lab/rat_order";
     }
 
+    public String toAddNewRatWithResultWithExistingNic() {
+        if (rat == null) {
+            return "";
+        }
+        if (rat.getClient() == null) {
+            return "";
+        }
+        if (rat.getClient().getPerson() == null) {
+            return "";
+        }
+        if (rat.getClient().getPerson().getNic() == null || rat.getClient().getPerson().getNic().trim().equals("")) {
+            return "";
+        }
+        Client nicClient = lastClientWithNic(rat.getClient().getPerson().getNic(), rat.getClient());
+        if (nicClient == null) {
+            return "";
+        }
+        nicExistsForRat = null;
+        Encounter tmpEnc = rat;
+        rat = new Encounter();
+        rat.setEncounterNumber(tmpEnc.getEncounterNumber());
+        Date d = new Date();
+        Client c = nicClient;
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        rat.setPcrTestType(itemApplicationController.getRat());
+        rat.setPcrOrderingCategory(sessionController.getLastRatOrderingCategory());
+        rat.setClient(c);
+        if (sessionController.getLastInstitution() != null) {
+            rat.setInstitution(sessionController.getLastInstitution());
+        } else {
+            if (webUserController.getLoggedInstitution().getParent() != null) {
+                rat.setInstitution(webUserController.getLoggedInstitution().getParent());
+            } else {
+                rat.setInstitution(webUserController.getLoggedInstitution());
+            }
+        }
+        rat.setInstitutionUnit(sessionController.getLastInstitutionUnit());
+        rat.setCreatedInstitution(webUserController.getLoggedInstitution());
+        rat.setReferalInstitution(webUserController.getLoggedInstitution());
+        rat.setEncounterType(EncounterType.Test_Enrollment);
+        rat.setEncounterDate(d);
+        rat.setEncounterFrom(d);
+        rat.setEncounterMonth(CommonController.getMonth(d));
+        rat.setEncounterQuarter(CommonController.getQuarter(d));
+        rat.setEncounterYear(CommonController.getYear(d));
+
+        rat.setSampled(true);
+        rat.setSampledAt(new Date());
+        rat.setSampledBy(webUserController.getLoggedUser());
+        rat.setResultConfirmed(Boolean.TRUE);
+        rat.setResultConfirmedAt(d);
+        rat.setResultConfirmedBy(webUserController.getLoggedUser());
+
+        rat.setCreatedAt(new Date());
+        return "/lab/rat_with_result";
+    }
+
     public String toAddNewRatWithExistingNic() {
         if (rat == null) {
             return "";
