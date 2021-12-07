@@ -2096,7 +2096,7 @@ public class LabController implements Serializable {
         return itemApplicationController.getSexes();
     }
 
-    public String toAddNewRatWithNewClient() {
+    public String toAddNewRatWithResult() {
         rat = new Encounter();
         nicExistsForRat = null;
         Date d = new Date();
@@ -2136,9 +2136,63 @@ public class LabController implements Serializable {
         rat.setResultConfirmedBy(webUserController.getLoggedUser());
 
         rat.setCreatedAt(new Date());
-        return "/lab/rat";
+        return "/lab/rat_with_result";
     }
 
+    public String toAddNewPcrWithResult() {
+        pcr = new Encounter();
+        nicExistsForPcr = null;
+        Date date = new Date();
+        Client client = new Client();
+
+        client.getPerson().setDistrict(webUserController.getLoggedUser().getInstitution().getDistrict());
+        client.getPerson().setMohArea(webUserController.getLoggedUser().getInstitution().getMohArea());
+        client.getPerson().setPhiArea(webUserController.getLoggedUser().getInstitution().getPhiArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+        pcr.setClient(client);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(date);
+        pcr.setEncounterFrom(date);
+        pcr.setEncounterMonth(CommonController.getMonth(date));
+        pcr.setEncounterQuarter(CommonController.getQuarter(date));
+        pcr.setEncounterYear(CommonController.getYear(date));
+
+        if (sessionController.getLastLab() == null) {
+            pcr.setReferalInstitution(sessionController.getLastLab());
+        } else {
+            pcr.setReferalInstitution(webUserController.getLoggedInstitution());
+        }
+
+        pcr.setCreatedAt(date);
+        pcr.setCreatedBy(webUserController.getLoggedUser());
+
+        pcr.setSampled(true);
+        pcr.setSampledAt(date);
+        pcr.setSampledBy(webUserController.getLoggedUser());
+
+        pcr.setResultConfirmedAt(date);
+
+        if (sessionController.getLastWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkPlace(sessionController.getLastWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkplaceContact(sessionController.getLastContactOfWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplaceDetails() != null) {
+            pcr.getClient().getPerson().setWorkplaceContactDetails(sessionController.getLastContactOfWorkplaceDetails());
+        }
+
+        pcr.setCreatedAt(date);
+
+        return "/lab/pcr_with_result";
+    }
+
+    //This function is defunct
     public String toAddNewRatOrderWithNewClient() {
         rat = new Encounter();
         nicExistsForRat = null;
@@ -2213,7 +2267,28 @@ public class LabController implements Serializable {
         pcr.setSentToLabAt(new Date());
         pcr.setSentToLabBy(webUserController.getLoggedUser());
         pcr.setCreatedAt(new Date());
-        return "/lab/pcr";
+        return "/lab/pcr_order";
+    }
+
+    public String savePcrAndToTestList() {
+        boolean newOne = false;
+        if (pcr != null) {
+            if (pcr.getId() == null) {
+                newOne = true;
+            }
+        }
+        if (savePcr() != null) {
+            if (newOne) {
+                return toTestList();
+            }
+            return toTestListNoProcess();
+        } else {
+            return "";
+        }
+    }
+
+    public String toTestListNoProcess() {
+        return "/moh/list_of_tests";
     }
 
     public String toAddNewPcrWithExistingNic() {
@@ -2230,6 +2305,7 @@ public class LabController implements Serializable {
             return "";
         }
         Client nicClient = lastClientWithNic(pcr.getClient().getPerson().getNic(), pcr.getClient());
+        System.out.println(nicClient);
         if (nicClient == null) {
             return "";
         }
@@ -2266,7 +2342,109 @@ public class LabController implements Serializable {
         pcr.setSampledAt(new Date());
         pcr.setSampledBy(webUserController.getLoggedUser());
         pcr.setCreatedAt(new Date());
-        return "/lab/pcr";
+        return "/lab/pcr_order";
+    }
+
+    public String toAddNewPcrWithResultWithExistingNic() {
+        if (pcr == null) {
+            return "";
+        }
+        if (pcr.getClient() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson().getNic() == null || pcr.getClient().getPerson().getNic().trim().equals("")) {
+            return "";
+        }
+        Client nicClient = lastClientWithNic(pcr.getClient().getPerson().getNic(), pcr.getClient());
+
+        if (nicClient == null) {
+            return "";
+        }
+        nicExistsForPcr = null;
+        Encounter tmpEnc = pcr;
+        pcr = new Encounter();
+        pcr.setEncounterNumber(tmpEnc.getEncounterNumber());
+        Date d = new Date();
+        Client c = nicClient;
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+        pcr.setClient(c);
+        if (sessionController.getLastInstitution() != null) {
+            pcr.setInstitution(sessionController.getLastInstitution());
+        } else {
+            if (webUserController.getLoggedInstitution().getParent() != null) {
+                pcr.setInstitution(webUserController.getLoggedInstitution().getParent());
+            } else {
+                pcr.setInstitution(webUserController.getLoggedInstitution());
+            }
+        }
+        pcr.setInstitutionUnit(sessionController.getLastInstitutionUnit());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(webUserController.getLoggedInstitution());
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+        return "/lab/pcr_with_result";
+    }
+
+    public String toAddNewPcrResultWithNewClient() {
+        pcr = new Encounter();
+        nicExistsForPcr = null;
+        Date d = new Date();
+        Client c = new Client();
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+
+        pcr.setClient(c);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(lab);
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+
+        if (sessionController.getLastWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkPlace(sessionController.getLastWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkplaceContact(sessionController.getLastContactOfWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplaceDetails() != null) {
+            pcr.getClient().getPerson().setWorkplaceContactDetails(sessionController.getLastContactOfWorkplaceDetails());
+        }
+
+        return "/lab/pcr_with_result";
+    }
+
+    public String toSaveAndNewPcrWithResult() {
+        if (savePcr() != null) {
+            return toAddNewPcrResultWithNewClient();
+        } else {
+            return "";
+        }
     }
 
     public String toAddNewRatOrderWithExistingNic() {
@@ -2386,7 +2564,7 @@ public class LabController implements Serializable {
             return "";
         }
         JsfUtil.addSuccessMessage("Ready to enter a new RAT");
-        return toAddNewRatWithNewClient();
+        return toAddNewRatWithResult();
     }
 
     public String saveRatAndToNewRatOrder() {
