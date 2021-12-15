@@ -32,6 +32,7 @@ public enum EncounterType {
     Case_Enrollment("Case Enrollment"),
     Test_Enrollment("Test Enrollment"),
     Death("Death"),
+    Health_Decleration("Health Decleration"),
     @Deprecated
     No_Covid("Deprecated No_Covid"),
     @Deprecated

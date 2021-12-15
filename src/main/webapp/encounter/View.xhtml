@@ -24,11 +24,11 @@
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterFrom}"/>
                         <h:outputText value="#{encounterController.selected.encounterFrom}" title="#{bundleClinical.ViewEncounterTitle_encounterFrom}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterTo}"/>
                         <h:outputText value="#{encounterController.selected.encounterTo}" title="#{bundleClinical.ViewEncounterTitle_encounterTo}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterType}"/>
                         <h:outputText value="#{encounterController.selected.encounterType}" title="#{bundleClinical.ViewEncounterTitle_encounterType}"/>
@@ -40,19 +40,19 @@
                         <h:outputText value="#{encounterController.selected.createdBy}" title="#{bundleClinical.ViewEncounterTitle_createdBy}"/>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_createdAt}"/>
                         <h:outputText value="#{encounterController.selected.createdAt}" title="#{bundleClinical.ViewEncounterTitle_createdAt}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredBy}"/>
                         <h:outputText value="#{encounterController.selected.retiredBy}" title="#{bundleClinical.ViewEncounterTitle_retiredBy}"/>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredAt}"/>
                         <h:outputText value="#{encounterController.selected.retiredAt}" title="#{bundleClinical.ViewEncounterTitle_retiredAt}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredReversedBy}"/>
                         <h:outputText value="#{encounterController.selected.retiredReversedBy}" title="#{bundleClinical.ViewEncounterTitle_retiredReversedBy}"/>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredReversedAt}"/>
                         <h:outputText value="#{encounterController.selected.retiredReversedAt}" title="#{bundleClinical.ViewEncounterTitle_retiredReversedAt}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_institution}"/>
                         <h:outputText value="#{encounterController.selected.institution}" title="#{bundleClinical.ViewEncounterTitle_institution}"/>
@@ -62,7 +62,7 @@
                         <h:outputText value="#{encounterController.selected.completedBy}" title="#{bundleClinical.ViewEncounterTitle_completedBy}"/>
                         <h:outputText value="#{bundleClinical.ViewEncounterLabel_completedAt}"/>
                         <h:outputText value="#{encounterController.selected.completedAt}" title="#{bundleClinical.ViewEncounterTitle_completedAt}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                         </h:outputText>
                     </p:panelGrid>
                     <p:commandButton value="#{bundleClinical.Close}" onclick="EncounterViewDialog.hide()"/>

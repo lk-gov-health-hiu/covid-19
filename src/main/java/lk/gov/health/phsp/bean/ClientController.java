@@ -72,7 +72,6 @@ import io.nayuki.qrcodegen.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-
 // </editor-fold>
 @Named
 @SessionScoped
@@ -562,7 +561,7 @@ public class ClientController implements Serializable {
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution in :rins "
-                + " and c.sentToLab is not null "
+                + " and (c.sentToLab=:sl) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
@@ -571,6 +570,7 @@ public class ClientController implements Serializable {
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("true", true);
         m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
@@ -1023,12 +1023,13 @@ public class ClientController implements Serializable {
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and c.referalInstitution in :rins "
-                + " and c.sentToLab is not null "
+                + " and c.sentToLab=:sl "
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rat) ";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("rej", false);
         m.put("sm", false);
+        m.put("sl", true);
         m.put("rat", false);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
@@ -1039,7 +1040,18 @@ public class ClientController implements Serializable {
         }
 
         j += " order by c.encounterNumber";
+        System.err.println("m = " + m);
+        System.err.println("m = " + m);
+        System.out.println("j = " + j);
+        for (Object o : m.values()) {
+            System.err.println("o = " + o);
+        }
+        for (Object k : m.keySet()) {
+            System.err.println("k = " + k);
+        }
+        System.out.println("j = " + j);
         listedToReceive = encounterFacade.findByJpql(j, m);
+        System.out.println("listedToReceive = " + listedToReceive.size());
         return "/lab/receive_orders";
     }
 
@@ -1732,9 +1744,8 @@ public class ClientController implements Serializable {
         return toLabReceiveAll();
     }
 
-
     public String divertSamplesFromLab() {
-        if(divertingLab==null){
+        if (divertingLab == null) {
             JsfUtil.addErrorMessage("Select a Lab to divert");
             return "";
         }
@@ -1854,7 +1865,6 @@ public class ClientController implements Serializable {
         return "/hospital/printing_results_bulk";
     }
 
-
     public String toSelectedToEnterResults() {
         for (Encounter e : selectedToPrint) {
             e.setResultEntered(false);
@@ -1882,7 +1892,6 @@ public class ClientController implements Serializable {
         }
         return "/moh/print_preview";
     }
-
 
     public String generateQurantineReport(Encounter e) {
         if (e == null) {
@@ -2106,13 +2115,13 @@ public class ClientController implements Serializable {
             html = html.replace("{confirmed_time}", "");
         }
 
-         if (e.getCreatedBy()!= null) {
+        if (e.getCreatedBy() != null) {
             html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
         } else {
             html = html.replace("{created_by}", "");
         }
 
-        if (e.getSampledBy()!= null) {
+        if (e.getSampledBy() != null) {
             html = html.replace("{sampled_by}", e.getSampledBy().getPerson().getName());
         } else {
             html = html.replace("{sampled_by}", "");
@@ -2457,13 +2466,13 @@ public class ClientController implements Serializable {
             html = html.replace("{confirmed_time}", "");
         }
 
-         if (e.getCreatedBy()!= null) {
+        if (e.getCreatedBy() != null) {
             html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
         } else {
             html = html.replace("{created_by}", "");
         }
 
-        if (e.getSampledBy()!= null) {
+        if (e.getSampledBy() != null) {
             html = html.replace("{sampled_by}", e.getSampledBy().getPerson().getName());
         } else {
             html = html.replace("{sampled_by}", "");
@@ -2582,10 +2591,9 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_comment_string}", "");
         }
         QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
-        html += "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) +"<span></div>";
+        html += "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
         return html;
     }
-
 
     public String generateLabReportsBulk(List<Encounter> es) {
         Map<String, ReportHolder> rhs = new HashMap<>();
@@ -3562,9 +3570,9 @@ public class ClientController implements Serializable {
                 if (resultColInt != null) {
                     strResult = cellValue(row.getCell(resultColInt));
                     if (strResult != null) {
-                        if(strResult.equalsIgnoreCase("p")){
+                        if (strResult.equalsIgnoreCase("p")) {
                             result = itemApplicationController.getPcrPositive();
-                        }else if(strResult.equalsIgnoreCase("n")){
+                        } else if (strResult.equalsIgnoreCase("n")) {
                             result = itemApplicationController.getPcrNegative();
                         } else if (strResult.toLowerCase().contains("invalid")) {
                             result = itemApplicationController.getPcrInvalid();

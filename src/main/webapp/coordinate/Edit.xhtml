@@ -49,7 +49,7 @@
                                            itemValue="#{retiredByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.retiredAt}" title="#{bundleClinical.EditCoordinateTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{coordinateController.selected.retiredAt}" title="#{bundleClinical.EditCoordinateTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_retiredReversedBy}" for="retiredReversedBy" />
                         <p:selectOneMenu id="retiredReversedBy" value="#{coordinateController.selected.retiredReversedBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -58,9 +58,9 @@
                                            itemValue="#{retiredReversedByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_retiredReversedAt}" for="retiredReversedAt" />
-                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.retiredReversedAt}" title="#{bundleClinical.EditCoordinateTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:calendar id="retiredReversedAt" pattern="dd MMMM yyyy HH:mm" value="#{coordinateController.selected.retiredReversedAt}" title="#{bundleClinical.EditCoordinateTitle_retiredReversedAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.createdAt}" title="#{bundleClinical.EditCoordinateTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{coordinateController.selected.createdAt}" title="#{bundleClinical.EditCoordinateTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_lastEditBy}" for="lastEditBy" />
                         <p:selectOneMenu id="lastEditBy" value="#{coordinateController.selected.lastEditBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -69,7 +69,7 @@
                                            itemValue="#{lastEditByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_lastEditeAt}" for="lastEditeAt" />
-                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.lastEditeAt}" title="#{bundleClinical.EditCoordinateTitle_lastEditeAt}"  showOn="button"/>
+                        <p:calendar id="lastEditeAt" pattern="dd MMMM yyyy HH:mm" value="#{coordinateController.selected.lastEditeAt}" title="#{bundleClinical.EditCoordinateTitle_lastEditeAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditCoordinateLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{coordinateController.selected.retireComments}" title="#{bundleClinical.EditCoordinateTitle_retireComments}" />
                     </p:panelGrid>

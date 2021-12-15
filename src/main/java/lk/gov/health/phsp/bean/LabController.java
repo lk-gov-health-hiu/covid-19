@@ -451,14 +451,145 @@ public class LabController implements Serializable {
             j = "select count(e) "
                     + " from Encounter e "
                     + " where  (e.retired is null or e.retired=:pf) "
-                    + " and e.createdAt between :fd and :td "
+                    + " and (e.createdAt > :fd and e.createdAt< :td) "
                     + " and e.referalInstitution in :rins "
                     + " and e.institution=:ins "
                     + " and e.sentToLab=:pt "
                     + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
                     + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
                     + " and (e.receivedAtLab is null or e.receivedAtLab=:pf) ";
-            ls.setToReceive(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+            System.err.println("m = " + m);
+            System.out.println("j = " + j);
+            for (Object o : m.values()) {
+                System.err.println("o = " + o);
+            }
+            for (Object k : m.keySet()) {
+                System.err.println("k = " + k);
+            }
+            Long toReceiveCount = encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            System.out.println("toReceiveCount = " + toReceiveCount);
+            ls.setToReceive(toReceiveCount);
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.receivedAtLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultEntered is null or e.resultEntered=:pf) ";
+            ls.setToEnterData(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultEntered=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultReviewed is null or e.resultReviewed=:pf) ";
+            ls.setToReview(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultReviewed=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
+            ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.resultReviewed=:pt "
+                    + " or e.sampleRejectedAtLab=:pt "
+                    + " or e.sampleMissing=:pt "
+                    + " or e.resultConfirmed=:pt)";
+            ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+            labSummaries.add(ls);
+        }
+    }
+
+    public void processLabSummary1() {
+        labSummaries = new ArrayList<>();
+        String j;
+        Map m = new HashMap();
+        Map<LabSummary, Long> labSummeriesMap = new HashMap<>();
+        //Institutions
+        j = "select i "
+                + " from Encounter e join e.institution i "
+                + " where (e.retired is null or e.retired=:pf) "
+                + " and e.createdAt between :fd and :td "
+                + " and e.referalInstitution in :rins "
+                + " group by i"
+                + " order by i.name";
+        m = new HashMap();
+        m.put("pf", false);
+        m.put("rins", webUserController.getLoggableInstitutions());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Institution> tins = institutionFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        for (Institution ti : tins) {
+            LabSummary ls = new LabSummary();
+
+            ls.setInstitution(ti);
+
+            m = new HashMap();
+            m.put("rins", webUserController.getLoggableInstitutions());
+            m.put("ins", ti);
+
+            m.put("pf", false);
+            m.put("ins", ti);
+            m.put("fd", getFromDate());
+            m.put("td", getToDate());
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.sentToLab is null or e.sentToLab=:pf) ";
+
+            ls.setToDispatch(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            m.put("pt", true);
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and (e.createdAt > :fd and e.createdAt< :td) "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.sentToLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.receivedAtLab is null or e.receivedAtLab=:pf) ";
+            System.err.println("m = " + m);
+            System.out.println("j = " + j);
+            for (Object o : m.values()) {
+                System.err.println("o = " + o);
+            }
+            for (Object k : m.keySet()) {
+                System.err.println("k = " + k);
+            }
+            Long toReceiveCount = encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            System.out.println("toReceiveCount = " + toReceiveCount);
+            ls.setToReceive(toReceiveCount);
 
             j = "select count(e) "
                     + " from Encounter e "
@@ -672,7 +803,6 @@ public class LabController implements Serializable {
 
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-
 
         if (this.filter == null) {
             this.filter = "createdat";
