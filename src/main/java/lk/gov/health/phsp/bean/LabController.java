@@ -1451,7 +1451,7 @@ public class LabController implements Serializable {
         m.put("ins", institution);
         m.put("rins", webUserController.getLoggableInstitutions());
         listedToDispatch = encounterFacade.findByJpql(j, m, TemporalType.DATE);
-        return "/lab/dispatch_samples";
+        return "/lab/dispatch_samples_external_lab";
     }
 
     public String toAssignInvestigation() {
