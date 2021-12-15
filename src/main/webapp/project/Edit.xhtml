@@ -33,7 +33,7 @@
                     </h:selectOneMenu>
                     <h:outputLabel value="#{bundle.EditProjectLabel_createdAt}" for="createdAt" />
                     <h:inputText id="createdAt" value="#{projectController.selected.createdAt}" title="#{bundle.EditProjectTitle_createdAt}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditProjectLabel_retirer}" for="retirer" />
                     <h:selectOneMenu id="retirer" value="#{projectController.selected.retirer}" title="#{bundle.EditProjectTitle_retirer}" >
@@ -41,7 +41,7 @@
                     </h:selectOneMenu>
                     <h:outputLabel value="#{bundle.EditProjectLabel_retiredAt}" for="retiredAt" />
                     <h:inputText id="retiredAt" value="#{projectController.selected.retiredAt}" title="#{bundle.EditProjectTitle_retiredAt}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditProjectLabel_retireComments}" for="retireComments" />
                     <h:inputText id="retireComments" value="#{projectController.selected.retireComments}" title="#{bundle.EditProjectTitle_retireComments}" />
@@ -51,7 +51,7 @@
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditProjectLabel_billTime}" for="billTime" />
                     <h:inputText id="billTime" value="#{projectController.selected.billTime}" title="#{bundle.EditProjectTitle_billTime}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditProjectLabel_billClass}" for="billClass" />
                     <h:inputText id="billClass" value="#{projectController.selected.billClass}" title="#{bundle.EditProjectTitle_billClass}" />
@@ -61,7 +61,7 @@
                     </h:selectOneMenu>
                     <h:outputLabel value="#{bundle.EditProjectLabel_editedAt}" for="editedAt" />
                     <h:inputText id="editedAt" value="#{projectController.selected.editedAt}" title="#{bundle.EditProjectTitle_editedAt}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                     </h:inputText>
                     <h:outputLabel value="#{bundle.EditProjectLabel_checkedBy}" for="checkedBy" />
                     <h:selectOneMenu id="checkedBy" value="#{projectController.selected.checkedBy}" title="#{bundle.EditProjectTitle_checkedBy}" >
@@ -69,7 +69,7 @@
                     </h:selectOneMenu>
                     <h:outputLabel value="#{bundle.EditProjectLabel_checkeAt}" for="checkeAt" />
                     <h:inputText id="checkeAt" value="#{projectController.selected.checkeAt}" title="#{bundle.EditProjectTitle_checkeAt}" >
-                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        <f:convertDateTime pattern="dd MMMM yyyy HH:mm" />
                     </h:inputText>
                 </h:panelGrid>
                 <h:commandLink action="#{projectController.update}" value="#{bundle.EditProjectSaveLink}"/>

@@ -29,7 +29,7 @@
                                            itemValue="#{createrItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateUploadLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.createdAt}" title="#{bundleClinical.EditUploadTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{uploadController.selected.createdAt}" title="#{bundleClinical.EditUploadTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retirer}" for="retirer" />
                         <p:selectOneMenu id="retirer" value="#{uploadController.selected.retirer}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -37,7 +37,7 @@
                                            itemValue="#{retirerItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.retiredAt}" title="#{bundleClinical.EditUploadTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{uploadController.selected.retiredAt}" title="#{bundleClinical.EditUploadTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{uploadController.selected.retireComments}" title="#{bundleClinical.CreateUploadTitle_retireComments}" />
                         <p:outputLabel value="#{bundleClinical.CreateUploadLabel_baImage}" for="baImage" />

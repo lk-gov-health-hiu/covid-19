@@ -54,7 +54,7 @@
                                            itemValue="#{createdByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.createdAt}" title="#{bundleClinical.EditDesignComponentTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{designComponentController.selected.createdAt}" title="#{bundleClinical.EditDesignComponentTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_lastEditBy}" for="lastEditBy" />
                         <p:selectOneMenu id="lastEditBy" value="#{designComponentController.selected.lastEditBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -63,7 +63,7 @@
                                            itemValue="#{lastEditByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_lastEditeAt}" for="lastEditeAt" />
-                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.lastEditeAt}" title="#{bundleClinical.EditDesignComponentTitle_lastEditeAt}"  showOn="button"/>
+                        <p:calendar id="lastEditeAt" pattern="dd MMMM yyyy HH:mm" value="#{designComponentController.selected.lastEditeAt}" title="#{bundleClinical.EditDesignComponentTitle_lastEditeAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredReversedBy}" for="retiredReversedBy" />
                         <p:selectOneMenu id="retiredReversedBy" value="#{designComponentController.selected.retiredReversedBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -72,7 +72,7 @@
                                            itemValue="#{retiredReversedByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredReversedAt}" for="retiredReversedAt" />
-                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.retiredReversedAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:calendar id="retiredReversedAt" pattern="dd MMMM yyyy HH:mm" value="#{designComponentController.selected.retiredReversedAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredReversedAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredBy}" for="retiredBy" />
                         <p:selectOneMenu id="retiredBy" value="#{designComponentController.selected.retiredBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -81,7 +81,7 @@
                                            itemValue="#{retiredByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.retiredAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{designComponentController.selected.retiredAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{designComponentController.selected.retireComments}" title="#{bundleClinical.EditDesignComponentTitle_retireComments}" />
                         <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_html}" for="html" />

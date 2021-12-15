@@ -136,14 +136,28 @@
                                       filterBy="#{c.sampledAt}" style="width: 10em;">
                                 <p:outputLabel value="#{c.sampledAt}" ></p:outputLabel>
                             </p:column>
+                            <p:column headerText="Vaccination Status"  sortBy="#{c.vaccinationStatus.name}"
+                                      filterBy="#{c.vaccinationStatus.name}" style="width: 6em;">
+                                <p:outputLabel value="#{c.vaccinationStatus.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Symptomatic Status"  
+                                      sortBy="#{c.symptomaticStatus.name}"
+                                      filterBy="#{c.symptomaticStatus.name}" style="width: 6em;">
+                                <p:outputLabel value="#{c.symptomaticStatus.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Worlplace"  
+                                      sortBy="#{c.client.person.workPlace}"
+                                      filterBy="#{c.client.person.workPlace}" style="width: 6em;">
+                                <p:outputLabel value="#{c.client.person.workPlace}" ></p:outputLabel>
+                            </p:column>
 
                             <p:column headerText="Actions" exportable="false" style="width: 18em;" >
                                 <h:commandButton value="Edit Order" action="#{mohController.toEditTest()}" class="btn btn-success mx-2"   >
                                     <f:setPropertyActionListener value="#{c}" target="#{mohController.test}" ></f:setPropertyActionListener>
                                 </h:commandButton>
                                 <h:commandButton  value="Delete"  action="#{mohController.deleteTest()}"   class="btn btn-warning"
-                                                 onclick="if (!confirm('Are you sure you want to delete?'))
-                                                             return false" >
+                                                  onclick="if (!confirm('Are you sure you want to delete?'))
+                                                              return false" >
                                     <f:setPropertyActionListener value="#{c}" target="#{mohController.deleting}" >
                                     </f:setPropertyActionListener>
                                 </h:commandButton>

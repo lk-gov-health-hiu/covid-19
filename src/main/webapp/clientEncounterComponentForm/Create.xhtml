@@ -99,7 +99,7 @@
                                            itemValue="#{createdByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentFormController.selected.createdAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{clientEncounterComponentFormController.selected.createdAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_lastEditBy}" for="lastEditBy" />
                         <p:selectOneMenu id="lastEditBy" value="#{clientEncounterComponentFormController.selected.lastEditBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -107,7 +107,7 @@
                                            itemValue="#{lastEditByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_lastEditeAt}" for="lastEditeAt" />
-                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentFormController.selected.lastEditeAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_lastEditeAt}"  showOn="button"/>
+                        <p:calendar id="lastEditeAt" pattern="dd MMMM yyyy HH:mm" value="#{clientEncounterComponentFormController.selected.lastEditeAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_lastEditeAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_retiredReversedBy}" for="retiredReversedBy" />
                         <p:selectOneMenu id="retiredReversedBy" value="#{clientEncounterComponentFormController.selected.retiredReversedBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -115,7 +115,7 @@
                                            itemValue="#{retiredReversedByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_retiredReversedAt}" for="retiredReversedAt" />
-                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentFormController.selected.retiredReversedAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:calendar id="retiredReversedAt" pattern="dd MMMM yyyy HH:mm" value="#{clientEncounterComponentFormController.selected.retiredReversedAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_retiredReversedAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_retiredBy}" for="retiredBy" />
                         <p:selectOneMenu id="retiredBy" value="#{clientEncounterComponentFormController.selected.retiredBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -123,7 +123,7 @@
                                            itemValue="#{retiredByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentFormController.selected.retiredAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{clientEncounterComponentFormController.selected.retiredAt}" title="#{bundleClinical.EditClientEncounterComponentFormTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{clientEncounterComponentFormController.selected.retireComments}" title="#{bundleClinical.CreateClientEncounterComponentFormTitle_retireComments}" />
                         <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentFormLabel_html}" for="html" />
