@@ -50,6 +50,14 @@
                                     <h:inputText id="txtUnitWard" class="form-control" value="#{hospitalController.rat.unitWard}">
                                     </h:inputText>
                                 </div>
+                                <div class="col-md-3">
+                                    <h:outputLabel class="h6 form-label fw-bold mb-2" value="BHT # | OPD # | Clinic #" for="bhtNo" />
+                                    <h:inputText id="bhtNo"  value="#{hospitalController.rat.bht}"
+                                                 class="form-control w-100"
+                                                 required="false"
+                                                 requiredMessage="Need a Number">
+                                    </h:inputText>
+                                </div>
                             </div>
                             <div class="row mb-4">
                                 <h5 class="fw-bold text-muted">Regional Details</h5>
@@ -148,6 +156,16 @@
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-3">
+                                    <label for="vstatus" class="form-label fw-bold">Vaccination Status <small
+                                            class="text-muted px-2">Required</small></label>
+                                    <h:selectOneMenu id="vstatus" value="#{hospitalController.rat.vaccinationStatus}" class="form-select" required="false" requiredMessage="Vaccination Status is required">
+                                        <f:selectItem itemLabel="Please select"></f:selectItem>
+                                        <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="s" itemLabel="#{s.name}"
+                                                       itemValue="#{s}"></f:selectItems>
+                                    </h:selectOneMenu>
+                                    <h:message class="text-danger small" for="vstatus"></h:message>
+                                </div>
+                                <div class="col-md-3">
                                     <label for="symptomatic" class="form-label fw-bold">Symptomatic status</label>
                                     <h:selectOneMenu id="symptomatic" value="#{hospitalController.rat.symptomaticStatus}" class="form-select">
                                         <f:selectItem itemLabel="Please select"></f:selectItem>
@@ -173,20 +191,6 @@
                                         </f:selectItems>
                                     </h:selectOneMenu>
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="phone1" class="form-label fw-bold">Contact Number<small
-                                            class="px-2 text-muted">Required</small></label>
-                                    <p:commandLink id="lnkLastphone1" action="#{hospitalController.retrieveLastPhoneForRat()}"
-                                                   process="lnkLastphone1" update="phone1">
-                                        <i class="bi bi-arrow-clockwise"></i>
-                                    </p:commandLink>
-                                    <h:inputText class="form-control" id="phone1" required="true"
-                                                 requiredMessage="Contact number is required" autocomplete="off"
-                                                 value="#{hospitalController.rat.client.person.phone1}" title="Mobile"
-                                                 validatorMessage="Please check the number">
-                                    </h:inputText>
-                                    <h:message class="text-danger small" for="phone1"></h:message>
-                                </div>
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-6">
@@ -200,6 +204,20 @@
                                                  requiredMessage="Please enter the address" value="#{hospitalController.rat.client.person.address}"
                                                  title="Address"></h:inputText>
                                     <h:message class="text-danger small" for="address"></h:message>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="phone1" class="form-label fw-bold">Contact Number<small
+                                            class="px-2 text-muted">Required</small></label>
+                                    <p:commandLink id="lnkLastphone1" action="#{hospitalController.retrieveLastPhoneForRat()}"
+                                                   process="lnkLastphone1" update="phone1">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </p:commandLink>
+                                    <h:inputText class="form-control" id="phone1" required="true"
+                                                 requiredMessage="Contact number is required" autocomplete="off"
+                                                 value="#{hospitalController.rat.client.person.phone1}" title="Mobile"
+                                                 validatorMessage="Please check the number">
+                                    </h:inputText>
+                                    <h:message class="text-danger small" for="phone1"></h:message>
                                 </div>
                             </div>
                             <div class="row my-4 py-2 bg-light">
