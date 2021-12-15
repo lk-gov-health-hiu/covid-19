@@ -34,116 +34,116 @@
                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
                      rows="10"
                      >
-            <p:columnGroup type="header">
-                <p:row>
-                    <p:column colspan="17" headerText="#{webUserController.loggedUser.institution.name} - List of Requests "></p:column>
-                </p:row>
-<!--                                <p:row>
-                                    <p:column colspan="16" headerText="#{webUserController.loggedUser.institution.name} - List of Requests - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
-                                </p:row>-->
-                <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Lab No." sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.labNumber}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.pcrTestType.name}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
-                          filterBy="#{c.client.person.age}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Gender"
-                          width="80"
-                          sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="BHT"  sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.bht}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
-                    <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
-                    <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></h:outputLabel>
-                    <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></h:outputLabel>
-                </p:column>
-                <p:column headerText="Deleted" rendered="true" >
-                    <p:selectBooleanButton offLabel="Not Deleted" onLabel="Deleted"  
-                                           value="#{c.retired}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
+
+            <p:row>
+                <p:column colspan="17" headerText="#{webUserController.loggedUser.institution.name} - List of Requests "></p:column>
+            </p:row>
+            <!--                                <p:row>
+                                                <p:column colspan="16" headerText="#{webUserController.loggedUser.institution.name} - List of Requests - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
+                                            </p:row>-->
+            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Lab No." sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.labNumber}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.pcrTestType.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Gender"
+                      width="80"
+                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="BHT"  sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.bht}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></h:outputLabel>
+                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Deleted" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Deleted" onLabel="Deleted"  
+                                       value="#{c.retired}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
 
 
-                <p:column headerText="Rejected" rendered="true" >
-                    <p:selectBooleanButton offLabel="Not Rejected" onLabel="Rejected"  
-                                           value="#{c.sampleRejectedAtLab}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
+            <p:column headerText="Rejected" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Rejected" onLabel="Rejected"  
+                                       value="#{c.sampleRejectedAtLab}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
 
-                <p:column headerText="Missing" rendered="true" >
-                    <p:selectBooleanButton offLabel="Not Missing" onLabel="Missing"  
-                                           value="#{c.sampleMissing}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column>
+            <p:column headerText="Missing" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Missing" onLabel="Missing"  
+                                       value="#{c.sampleMissing}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column>
 
-                <p:column headerText="Received" rendered="true" >
-                    <p:selectBooleanButton offLabel="Not Received" onLabel="Received"  
-                                           value="#{c.receivedAtLab}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
+            <p:column headerText="Received" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Received" onLabel="Received"  
+                                       value="#{c.receivedAtLab}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
 
-                <p:column headerText="Entered" rendered="true"  >
-                    <p:selectBooleanButton offLabel="Not Entered" onLabel="Entered"  value="#{c.resultEntered}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
-                <p:column headerText="Reviewed" >
-                    <p:selectBooleanButton offLabel="Not Reviewed" onLabel="Reviewed"  value="#{c.resultEntered}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
-                <p:column headerText="Confirmed" >
-                    <p:selectBooleanButton offLabel="Not Confirmed" onLabel="Confirmed"  value="#{c.resultConfirmed}" >
-                        <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
-                    </p:selectBooleanButton>
-                </p:column> 
+            <p:column headerText="Entered" rendered="true"  >
+                <p:selectBooleanButton offLabel="Not Entered" onLabel="Entered"  value="#{c.resultEntered}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+            <p:column headerText="Reviewed" >
+                <p:selectBooleanButton offLabel="Not Reviewed" onLabel="Reviewed"  value="#{c.resultEntered}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+            <p:column headerText="Confirmed" >
+                <p:selectBooleanButton offLabel="Not Confirmed" onLabel="Confirmed"  value="#{c.resultConfirmed}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
 
-                <p:column headerText="Actions" exportable="false" style="width: 10rem;" >
+            <p:column headerText="Actions" exportable="false" style="width: 10rem;" >
 
-                    <h:commandButton  class="btn btn-primary mb-2 d-flex flex-column w-100  align-items-center" 
-                                      value="View Patient" onclick="form.target = '_blank'"
-                                      action="#{menuController.toViewPatient()}"  >
-                        <f:setPropertyActionListener value="#{c.client}" 
-                                                     target="#{clientController.selected}" >
-                        </f:setPropertyActionListener>
-                    </h:commandButton>
-                    <h:commandButton  class="btn btn-secondary mb-2 d-flex flex-column w-100  align-items-center" 
-                                      value="View Request" onclick="form.target = '_blank'"
-                                      action="#{menuController.toViewRequest()}"  >
-                        <f:setPropertyActionListener value="#{c}" 
-                                                     target="#{commonController.request}" >
-                        </f:setPropertyActionListener>
-                    </h:commandButton>
-                    <h:commandButton class="btn btn-warning d-flex flex-column w-100  align-items-center" 
-                                     value="View Result" onclick="form.target = '_blank'"
-                                     action="#{menuController.toViewResult()}" >
-                        <f:setPropertyActionListener value="#{c}" 
-                                                     target="#{commonController.result}" >
-                        </f:setPropertyActionListener>
-                    </h:commandButton>
-                </p:column>
+                <h:commandButton  class="btn btn-primary mb-2 d-flex flex-column w-100  align-items-center" 
+                                  value="View Patient" onclick="form.target = '_blank'"
+                                  action="#{menuController.toViewPatient()}"  >
+                    <f:setPropertyActionListener value="#{c.client}" 
+                                                 target="#{clientController.selected}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+                <h:commandButton  class="btn btn-secondary mb-2 d-flex flex-column w-100  align-items-center" 
+                                  value="View Request" onclick="form.target = '_blank'"
+                                  action="#{menuController.toViewRequest()}"  >
+                    <f:setPropertyActionListener value="#{c}" 
+                                                 target="#{commonController.request}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+                <h:commandButton class="btn btn-warning d-flex flex-column w-100  align-items-center" 
+                                 value="View Result" onclick="form.target = '_blank'"
+                                 action="#{menuController.toViewResult()}" >
+                    <f:setPropertyActionListener value="#{c}" 
+                                                 target="#{commonController.result}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+            </p:column>
 
-            </p:columnGroup>
+
             <p:columnGroup type="footer">
                 <p:row>
                     <p:column colspan="17" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
