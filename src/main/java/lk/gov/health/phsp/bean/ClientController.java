@@ -557,23 +557,25 @@ public class ClientController implements Serializable {
         referingInstitution = webUserController.getLoggedInstitution();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c)) "
                 + " from Encounter c "
-                + " where c.retired=false "
+                + " where c.retired=:pf "
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution in :rins "
-                + " and (c.sentToLab=:sl) "
+                + " and (c.sentToLab=:pf) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
+        
+        m.put("pf", false);
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("true", true);
         m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
+        
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
         m.put("rins", cis);
