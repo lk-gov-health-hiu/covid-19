@@ -2755,6 +2755,7 @@ public class LabController implements Serializable {
         return toAddNewRatWithResult();
     }
 
+
     public String saveRatAndToNewRatOrder() {
         if (saveRat() == null) {
             return "";
@@ -2766,6 +2767,18 @@ public class LabController implements Serializable {
     public String saveRatAndToRatView() {
         if (saveRat() != null) {
             return toRatView();
+        } else {
+            return "";
+        }
+    }
+
+    // This will save a new rat and go to the print preview page for printing of the report
+    public String saveRatAndPrintResult() {
+        if (saveRat() != null) {
+            List selectedToPrint = new List<Encounter>();
+            selectedToPrint.add(rat);
+            clientController.setSelectedToPrint(selectedToPrint);
+            clientController.toLabPrintSelected();
         } else {
             return "";
         }
