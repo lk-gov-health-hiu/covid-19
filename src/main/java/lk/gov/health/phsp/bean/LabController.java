@@ -2772,12 +2772,23 @@ public class LabController implements Serializable {
         }
     }
 
-    // This will save a new rat and go to the print preview page for printing of the report
+    // This function will redirect user to printing a rat after entring a result
     public String saveRatAndPrintResult() {
         if (saveRat() != null) {
             List selectedToPrint = new List<Encounter>();
             selectedToPrint.add(rat);
             clientController.setSelectedToPrint(selectedToPrint);
+            clientController.toLabPrintSelected();
+        } else {
+            return "";
+        }
+    }
+
+    // This will redirect user to printing a pcr after entering a result
+    public String savePcrAndPrintResult() {
+        if (saveRat() != null) {
+            List selectedToPrint = new List<Encounter>();
+            selectedToPrint.add(pcr);
             clientController.toLabPrintSelected();
         } else {
             return "";
