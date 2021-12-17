@@ -28,8 +28,8 @@
                 <p:submenu class="submenu" label="Tests" rendered="#{webUserController.hasPrivilege('Client_Management') and webUserController.loggedUser.webUserRoleLevel eq 'Hospital' }" >
                     <p:menuitem class="submenu-item" ajax="false" value="New RAT Request" action="#{hospitalController.toAddNewRatOrderWithNewClient()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New PCR Request" action="#{hospitalController.toAddNewPcrWithNewClient()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="New RAT Request Result" action="#{hospitalController.toAddNewRatWithNewClient()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="New PCR Request Result" action="#{hospitalController.toAddNewPcrResultWithNewClient()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="New RAT Request With Result" action="#{hospitalController.toAddNewRatWithNewClient()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="New PCR Request With Result" action="#{hospitalController.toAddNewPcrResultWithNewClient()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Test Lists" action="#{hospitalController.toTestList()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Dispatch Samples" action="#{hospitalController.toDispatchSamplesByMohOrHospital()}"/>
                     <p:menuitem class="submenu-item" ajax="false" value="Enter Results" action="#{hospitalController.toEnterResults()}" />
