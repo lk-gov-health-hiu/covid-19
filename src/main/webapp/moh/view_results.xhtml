@@ -175,6 +175,25 @@
                                       filterBy="#{c.sampledAt}" style="width: 10em;">
                                 <p:outputLabel value="#{c.sampledAt}" ></p:outputLabel>
                             </p:column>
+                            <p:column headerText="Vaccination Status"  sortBy="#{c.vaccinationStatus.name}"
+                                      filterBy="#{c.vaccinationStatus.name}" style="width: 6em;">
+                                <p:outputLabel value="#{c.vaccinationStatus.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Symptomatic Status"  
+                                      sortBy="#{c.symptomaticStatus.name}"
+                                      filterBy="#{c.symptomaticStatus.name}" style="width: 6em;">
+                                <p:outputLabel value="#{c.symptomaticStatus.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ordering Category"  
+                                      sortBy="#{c.pcrOrderingCategory.name}"
+                                      filterBy="#{c.pcrOrderingCategory.name}" style="width: 6em;">
+                                <p:outputLabel value="#{c.pcrOrderingCategory.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Worlplace"  
+                                      sortBy="#{c.client.person.workPlace}"
+                                      filterBy="#{c.client.person.workPlace}" style="width: 6em;">
+                                <p:outputLabel value="#{c.client.person.workPlace}" ></p:outputLabel>
+                            </p:column>
                             <p:column headerText="Actions" exportable="false"
                                       style="width: 12em;">
                                 <h:commandButton  rendered="#{c.referenceCase eq null}"

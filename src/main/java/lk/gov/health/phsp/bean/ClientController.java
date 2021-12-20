@@ -550,14 +550,13 @@ public class ClientController implements Serializable {
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution in :rins "
-                + " and (c.sentToLab=:pf) "
+                + " and (c.sentToLab=:sl) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
         
-        m.put("pf", false);
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
@@ -568,7 +567,8 @@ public class ClientController implements Serializable {
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
         m.put("rins", cis);
-        m.put("sl", webUserController.getLoggedInstitution());
+        m.put("sl", true);
+        m.put("pf", false);
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
         // // System.out.println("getFromDate() = " + getFromDate());
