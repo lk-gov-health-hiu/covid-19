@@ -2,123 +2,138 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <ui:define name="title">
-        Regional Reports Index
-    </ui:define>
-</h:head>
-<h:body>
-    <ui:composition template="/template1.xhtml">
-        <ui:define name="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12 p-2">
-                        <p:messages></p:messages>
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <ui:define name="title">
+            Regional Reports Index
+        </ui:define>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 p-2">
+                            <p:messages></p:messages>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-3">
-                        <h:form>
-                            <div class="list-group mt-3">
-                                <li class="list-group-item active fw-bold">Actions</li>
-                                <h:commandLink value="List of Tests without MOH"
-                                    class="list-group-item list-group-item-action"
-                                    action="#{regionalController.toListOfTestsWithoutMoh()}">
-                                </h:commandLink>
-                                <h:commandLink class="list-group-item list-group-item-action"
-                                    value="List of First Contacts without MOH"
-                                    action="#{regionalController.toListOfFirstContactsWithoutMohForRegionalLevel()}">
-                                </h:commandLink>
-                            </div>
-                            <div class="list-group mt-3">
-                                <li class="list-group-item active fw-bold">
-                                    Counts
-                                </li>
-                                <h:commandLink value="Request Counts by Ordered Institution"
-                                    action="#{regionalController.toCountOfTestsByOrderedInstitution()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink value="Result Counts by Ordered Institution"
-                                    action="#{regionalController.toCountOfResultsByOrderedInstitution()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink value="Request Counts by MOH Area"
-                                    action="#{regionalController.toCountOfTestsByMohArea()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink value="Positivity Rate by MOH Area"
-                                    action="#{regionalController.toTestPositivtyRateByMoh()}"
-                                    class="list-group-item list-group-item-action"></h:commandLink>
-                                <h:commandLink value="Result Counts by MOH Area"
-                                    action="#{regionalController.toCountOfResultsByMoh()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink value="Result Counts by GN Area"
-                                    action="#{regionalController.toCountOfResultsByGnArea()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
+                    <div class="row">
+                        <div class="col-3">
+                            <h:form>
+                                <div class="list-group mt-3">
+                                    <li class="list-group-item active fw-bold">Actions</li>
+                                    <h:commandLink value="List of Tests without MOH"
+                                                   class="list-group-item list-group-item-action"
+                                                   action="#{regionalController.toListOfTestsWithoutMoh()}">
+                                    </h:commandLink>
+                                    <h:commandLink class="list-group-item list-group-item-action"
+                                                   value="List of First Contacts without MOH"
+                                                   action="#{regionalController.toListOfFirstContactsWithoutMohForRegionalLevel()}">
+                                    </h:commandLink>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <li class="list-group-item active fw-bold">
+                                        Counts
+                                    </li>
+                                    <h:commandLink rendered="false" value="Request Counts by Ordered Institution"
+                                                   action="#{regionalController.toCountOfTestsByOrderedInstitution()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                    <h:commandLink value="Counts by Ordered Institution"
+                                                   action="#{regionalController.toCountOfResultsByOrderedInstitution()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                    <h:commandLink value="Request Counts by MOH Area" rendered="false"
+                                                   action="#{regionalController.toCountOfTestsByMohArea()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
 
-                                <h:commandLink value="Result Counts by Lab"
-                                    action="#{regionalController.toCountOfResultsByLab()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                            </div>
-                            <div class="list-group mt-3">
-                                <li class="list-group-item active fw-bold">Lists</li>
-                                <h:commandLink value="Requests List" action="#{regionalController.toListOfTests()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink value="Result List" action="#{regionalController.toListResults()}"
-                                    class="list-group-item list-group-item-action">
-                                </h:commandLink>
-                                <h:commandLink class="list-group-item list-group-item-action"
-                                    value="List of First Contacts"
-                                    action="#{regionalController.toListOfFirstContactsForRegionalLevel()}">
-                                </h:commandLink>
-                                <h:commandLink class="list-group-item list-group-item-action"
-                                    value="List by Management Plan"
-                                    action="#{mohController.toListCasesByManagementForRegionalLevel()}">
-                                </h:commandLink>
-                            </div>
-                        </h:form>
-                    </div>
-                    <div class="col-9">
-                        <ui:insert name="reports">
-                        </ui:insert>
-                    </div>
-                </div>
-            </div>
+                                    <h:commandLink value="Counts by Resident MOH Area"
+                                                   action="#{regionalController.toCountOfResultsByMoh()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
 
-            <h:panelGroup rendered="false">
+                                    <h:commandLink value="Positivity Rate by MOH Area" rendered="false"
+                                                   action="#{regionalController.toTestPositivtyRateByMoh()}"
+                                                   class="list-group-item list-group-item-action"></h:commandLink>
 
-                <div class="card">
-                    <div class="card-header">
-                        Reports
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <p:commandButton ajax="false" class="btn btn-outline-primary btn-block w-100"
-                                    value="Cases by Management Plan"
-                                    action="#{mohController.toListCasesByManagementForRegionalLevel()}">
-                                </p:commandButton>
-                            </div>
+                                    <h:commandLink value="Counts by Resident GN Area"
+                                                   action="#{regionalController.toCountOfResultsByGnArea()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
 
+                                    <h:commandLink value="Result Counts by Performed Lab"
+                                                   action="#{regionalController.toCountOfResultsByLab()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <li class="list-group-item active fw-bold">Lists</li>
+                                    <h:commandLink rendered="false" value="Requests List" action="#{regionalController.toListOfTests()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                    <h:commandLink value="Result List" action="#{regionalController.toListResults()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                    <h:commandLink class="list-group-item list-group-item-action"
+                                                   value="List of First Contacts"
+                                                   action="#{regionalController.toListOfFirstContactsForRegionalLevel()}">
+                                    </h:commandLink>
+                                    <h:commandLink class="list-group-item list-group-item-action"
+                                                   value="List by Management Plan"
+                                                   action="#{mohController.toListCasesByManagementForRegionalLevel()}">
+                                    </h:commandLink>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <li class="list-group-item active fw-bold">Peformance</li>
+                                    <h:commandLink value="Institution-vice Peformance"
+                                                   action="#{regionalController.toInstitutionvicePeformanceReport()}"
+                                                   class="list-group-item list-group-item-action">
+                                    </h:commandLink>
+                                </div>
+                            </h:form>
+                        </div>
+
+                        
+                        <div class="col-9">
+                            <ui:insert name="reports">
+                            </ui:insert>
                         </div>
                     </div>
                 </div>
 
-            </h:panelGroup>
+
+
+
+                <h:panelGroup rendered="false">
+
+                    <div class="card">
+                        <div class="card-header">
+                            Reports
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p:commandButton ajax="false" class="btn btn-outline-primary btn-block w-100"
+                                                     value="Cases by Management Plan"
+                                                     action="#{mohController.toListCasesByManagementForRegionalLevel()}">
+                                    </p:commandButton>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
 
 
 
 
 
-        </ui:define>
+            </ui:define>
 
-    </ui:composition>
+        </ui:composition>
 
-</h:body>
+    </h:body>
 
 </html>

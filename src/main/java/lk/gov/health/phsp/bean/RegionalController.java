@@ -55,6 +55,7 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
+import lk.gov.health.phsp.pojcs.InstitutionPeformance;
 // </editor-fold>
 
 /**
@@ -164,6 +165,10 @@ public class RegionalController implements Serializable {
     private List<InstitutionCount> labSummariesConfirmed;
     private List<InstitutionCount> labSummariesPositive;
 
+    private List<InstitutionPeformance> institutionPeformances;
+    private List<InstitutionPeformance> institutionPeformancesFiltered;
+    private InstitutionPeformance institutionPeformancesSummery;
+
     private Item vaccinationStatus;
 
     private Area district;
@@ -179,8 +184,6 @@ public class RegionalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-
-
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -209,7 +212,6 @@ public class RegionalController implements Serializable {
         return "/regional/summary_lab_vs_ordered_to_receive";
     }
 
-
     public void processSummaryReceivedAtLab() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -236,12 +238,11 @@ public class RegionalController implements Serializable {
         j += " group by c.institution, c.referalInstitution";
         institutionCounts = new ArrayList<>();
 
-
         List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
-        Long c=1l;
+        Long c = 1l;
         for (Object o : obs) {
             if (o instanceof InstitutionCount) {
-                InstitutionCount ic=(InstitutionCount) o;
+                InstitutionCount ic = (InstitutionCount) o;
                 ic.setId(c);
                 c++;
                 institutionCounts.add(ic);
@@ -300,7 +301,7 @@ public class RegionalController implements Serializable {
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         List<Object> os = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         awaitingDispatch = new ArrayList<>();
-        Long c=0l;
+        Long c = 0l;
         for (Object o : os) {
             if (o instanceof InstitutionCount) {
                 InstitutionCount ic = (InstitutionCount) o;
@@ -529,7 +530,6 @@ public class RegionalController implements Serializable {
         j += " and c.institution.rdhsArea=:rd ";
         m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
 
-
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -577,10 +577,8 @@ public class RegionalController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-
         j += " and c.institution.rdhsArea=:rd";
         m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
-
 
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
@@ -591,7 +589,6 @@ public class RegionalController implements Serializable {
             j += " and c.pcrOrderingCategory=:oc ";
             m.put("oc", orderingCategory);
         }
-
 
         j += " and c.pcrResult=:result ";
         m.put("result", itemApplicationController.getPcrPositive());
@@ -604,19 +601,17 @@ public class RegionalController implements Serializable {
         j += " group by c.institution.mohArea "
                 + " order by count(c) desc ";
 
-
         List<Object> objPositives = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
-
 
         if (objCounts == null || objCounts.isEmpty()) {
             return "/regional/positivity_rate_by_moh";
         }
 
-        for (int index = 0; index <= objPositives.size()-1; index++) {
+        for (int index = 0; index <= objPositives.size() - 1; index++) {
             InstitutionCount incPositive = (InstitutionCount) objPositives.get(index);
             InstitutionCount incCounts = (InstitutionCount) objCounts.get(index);
-            double tempPositiveRate = ((double) incPositive.getCount()/incCounts.getCount()*100);
+            double tempPositiveRate = ((double) incPositive.getCount() / incCounts.getCount() * 100);
             String tempRate = df.format(tempPositiveRate) + "%";
             InstitutionCount rateCount = new InstitutionCount();
             rateCount.setArea(incPositive.getArea());
@@ -627,6 +622,17 @@ public class RegionalController implements Serializable {
         }
 
         return "/regional/positivity_rate_by_moh";
+    }
+
+    public List<InstitutionPeformance> getInstitutionPeformances() {
+        if (institutionPeformances == null) {
+            institutionPeformances = new ArrayList<>();
+        }
+        return institutionPeformances;
+    }
+
+    public String toInstitutionvicePeformanceReport() {
+        return "/regional/institution_vice_peformance_report";
     }
 
     public String toMohAreaResultList() {
@@ -1237,7 +1243,6 @@ public class RegionalController implements Serializable {
                 break;
         }
 
-
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -1642,8 +1647,7 @@ public class RegionalController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/regional/list_of_results";
     }
-    
-    
+
     public String toListResultsByResidentMohArea() {
         Map m = new HashMap();
         String j = "select c "
@@ -1655,7 +1659,7 @@ public class RegionalController implements Serializable {
         j += " and (c.client.person.district=:district) ";
 //        m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         m.put("district", webUserController.getLoggedInstitution().getDistrict());
-         if (this.filter == null) {
+        if (this.filter == null) {
             this.filter = "createdAt";
         }
 
@@ -1937,7 +1941,6 @@ public class RegionalController implements Serializable {
 
         j += " group by c";
 
-
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/regional/list_of_cases_by_management_plan";
@@ -1969,12 +1972,126 @@ public class RegionalController implements Serializable {
 
         j += " group by c";
 
-
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/national/list_of_cases_by_management_plan";
     }
 
+    public List<InstitutionPeformance> getInstitutionPeformancesFiltered() {
+        if (institutionPeformancesFiltered == null) {
+            institutionPeformancesFiltered = new ArrayList<>();
+        }
+        return institutionPeformancesFiltered;
+    }
+    
+    
+    public void generateFilteredInstitutionPeformanceSummery() {
+        Long p = 0l;
+        Long r = 0l;
+        Long pp = 0l;
+        Long rp = 0l;
+        if (getInstitutionPeformancesFiltered() != null && !getInstitutionPeformancesFiltered().isEmpty()) {
+            for (InstitutionPeformance ip : getInstitutionPeformancesFiltered()) {
+                if (ip.getPcrPositives() != null) {
+                    pp += ip.getPcrPositives();
+                }
+                if (ip.getRatPositives() != null) {
+                    rp += ip.getRatPositives();
+                }
+                if (ip.getPcrs() != null) {
+                    p += ip.getPcrs();
+                }
+                if (ip.getRats() != null) {
+                    r += ip.getRats();
+                }
+            }
+        }
+        getInstitutionPeformancesSummery().setId(0l);
+        getInstitutionPeformancesSummery().setPcrPositives(pp);
+        getInstitutionPeformancesSummery().setPcrs(p);
+        getInstitutionPeformancesSummery().setRats(r);
+        getInstitutionPeformancesSummery().setRatPositives(rp);
+
+    }
+    
+    
+    public void processInstitutionVicePeformanceReport() {
+        institutionPeformances = new ArrayList<>();
+        List<InstitutionType> types = new ArrayList<>();
+        types.add(InstitutionType.Base_Hospital);
+        types.add(InstitutionType.District_General_Hospital);
+        types.add(InstitutionType.Divisional_Hospital);
+        types.add(InstitutionType.Hospital);
+        types.add(InstitutionType.Intermediate_Care_Centre);
+        types.add(InstitutionType.Lab);
+        types.add(InstitutionType.MOH_Office);
+        types.add(InstitutionType.Mobile_Lab);
+        types.add(InstitutionType.National_Hospital);
+        types.add(InstitutionType.Private_Sector_Institute);
+        types.add(InstitutionType.Primary_Medical_Care_Unit);
+        types.add(InstitutionType.Private_Sector_Labatory);
+        types.add(InstitutionType.Provincial_General_Hospital);
+        types.add(InstitutionType.Teaching_Hospital);
+        
+        rdhs = webUserController.getLoggedUser().getInstitution().getRdhsArea();
+        
+        List<Institution> inss = institutionApplicationController.findRegionalInstitutions(types, rdhs);
+        fromDate = CommonController.startOfTheDate(fromDate);
+        toDate = CommonController.endOfTheDate(toDate);
+        for (Institution ins : inss) {
+            InstitutionPeformance ip = new InstitutionPeformance();
+            ip.setInstitution(ins);
+            ip.setPcrs(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getPcr(), orderingCategory, null, null));
+            ip.setRats(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getRat(), orderingCategory, null, null));
+            ip.setPcrPositives(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getPcr(), orderingCategory, itemApplicationController.getPcrPositive(), null));
+            ip.setRatPositives(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getRat(), orderingCategory, itemApplicationController.getPcrPositive(), null));
+            institutionPeformances.add(ip);
+        }
+        generateInstitutionPeformanceSummery();
+    }
+    
+    
+    
+    
+    public void generateInstitutionPeformanceSummery() {
+        Long p = 0l;
+        Long r = 0l;
+        Long pp = 0l;
+        Long rp = 0l;
+        if (getInstitutionPeformances() != null && !getInstitutionPeformances().isEmpty()) {
+            for (InstitutionPeformance ip : getInstitutionPeformances()) {
+                if (ip.getPcrPositives() != null) {
+                    pp += ip.getPcrPositives();
+                }
+                if (ip.getRatPositives() != null) {
+                    rp += ip.getRatPositives();
+                }
+                if (ip.getPcrs() != null) {
+                    p += ip.getPcrs();
+                }
+                if (ip.getRats() != null) {
+                    r += ip.getRats();
+                }
+            }
+        }
+        getInstitutionPeformancesSummery().setId(0l);
+        getInstitutionPeformancesSummery().setPcrPositives(pp);
+        getInstitutionPeformancesSummery().setPcrs(p);
+        getInstitutionPeformancesSummery().setRats(r);
+        getInstitutionPeformancesSummery().setRatPositives(rp);
+    }
+    
+    public InstitutionPeformance getInstitutionPeformancesSummery() {
+        if (institutionPeformancesSummery == null) {
+            institutionPeformancesSummery = new InstitutionPeformance();
+        }
+        return institutionPeformancesSummery;
+    }
+    
     public String toEnterResults() {
         System.out.println("toTestList");
         Map m = new HashMap();
