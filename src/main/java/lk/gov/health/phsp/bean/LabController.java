@@ -44,6 +44,9 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.SmsFacade;
 import javax.inject.Named;
 import javax.persistence.TemporalType;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.WebUser;
@@ -147,6 +150,8 @@ public class LabController implements Serializable {
     private List<Encounter> selectedToAssign;
     private List<Encounter> listedToDispatch;
     private List<Encounter> selectedToDispatch;
+    private List<Encounter> selectedToPrint;
+
     private Date fromDate;
     private Date toDate;
 
@@ -2775,10 +2780,19 @@ public class LabController implements Serializable {
     // This function will redirect user to printing a rat after entring a result
     public String saveRatAndPrintResult() {
         if (saveRat() != null) {
-            List selectedToPrint = new List<Encounter>();
-            selectedToPrint.add(rat);
-            clientController.setSelectedToPrint(selectedToPrint);
-            clientController.toLabPrintSelected();
+            Long eid = rat.getId();
+            String hash = DigestUtils.sha1Hex(eid.toString());
+            rat.setEncounterIdHash(hash);
+            rat.setResultPrinted(true);
+            rat.setResultPrintedAt(new Date());
+            rat.setResultPrintedBy(webUserController.getLoggedUser());
+            rat.setResultPrintHtml(clientController.generateLabReport(rat));
+            rat.setQurantineReportHtml(clientController.generateQurantineReport(rat));
+            encounterFacade.edit(rat);
+            List<Encounter> elist = new ArrayList<Encounter>();
+            elist.add(rat);
+            clientController.setSelectedToPrint(elist);
+            return "/lab/print_preview";
         } else {
             return "";
         }
@@ -2786,10 +2800,20 @@ public class LabController implements Serializable {
 
     // This will redirect user to printing a pcr after entering a result
     public String savePcrAndPrintResult() {
-        if (saveRat() != null) {
-            List selectedToPrint = new List<Encounter>();
-            selectedToPrint.add(pcr);
-            clientController.toLabPrintSelected();
+        if (savePcr() != null) {;
+            List<Encounter> elist = new ArrayList<Encounter>();
+            Long eid = pcr.getId();
+            String hash = DigestUtils.sha1Hex(eid.toString());
+            pcr.setEncounterIdHash(hash);
+            pcr.setResultPrinted(true);
+            pcr.setResultPrintedBy(webUserController.getLoggedUser());
+            pcr.setResultPrintedAt(new Date());
+            pcr.setResultPrintHtml(clientController.generateLabReport(pcr));
+            pcr.setQurantineReportHtml(clientController.generateQurantineReport(pcr));
+            encounterFacade.edit(pcr);
+            elist.add(pcr);
+            clientController.setSelectedToPrint(elist);
+            return "/lab/print_preview";
         } else {
             return "";
         }
@@ -4239,6 +4263,14 @@ public class LabController implements Serializable {
 
     public String getSearchingBhtno() {
         return searchingBhtno;
+    }
+
+    public List<Encounter> getSelectedToPrint() {
+        return this.selectedToPrint;
+    }
+
+    public void setSelectedToPrint(List<Encounter> selectedToPrint) {
+        this.selectedToPrint = selectedToPrint;
     }
 
     public void setSearchingBhtno(String searchingBhtno) {
