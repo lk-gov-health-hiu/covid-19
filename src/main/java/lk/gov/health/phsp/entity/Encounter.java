@@ -72,69 +72,69 @@ public class Encounter implements Serializable {
 
     private boolean firstEncounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter referenceTest;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter referenceCase;
 
     private Boolean sampled;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampledAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampledBy;
 
     private Boolean sentToLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sentToLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sentToLabBy;
 
     private Boolean sampleMissing;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampleMissingAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampleMissingBy;
 
     private Boolean receivedAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date receivedAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser receivedAtLabBy;
 
     private Boolean sampleRejectedAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampleRejectedAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampleRejectedAtLabBy;
 
     private Boolean resultEntered;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultEnteredAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultEnteredBy;
 
     private Boolean pendingAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date pendingAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser pendingAtLabBy;
 
     private Boolean resultReviewed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultReviewedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultReviewedBy;
 
     private Boolean resultConfirmed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultConfirmedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultConfirmedBy;
 
     private Boolean resultPrinted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultPrintedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultPrintedBy;
 
     @Lob
@@ -146,13 +146,13 @@ public class Encounter implements Serializable {
     private Boolean resultNoted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultNotedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultNotedBy;
 
     private Double ctValue;
     private Double ctValue2;
     private String ctValueStr;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrResult;
     private String pcrResultStr;
     private String resultComments;
@@ -183,15 +183,14 @@ public class Encounter implements Serializable {
     private String encounterNumber;
     private String encounterIdHash;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrTestType;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrOrderingCategory;
-    @ManyToOne
-
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item vaccinationStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item symptomaticStatus;
     private String pcrOrderingCategoryOther;
      @Deprecated
@@ -234,13 +233,13 @@ public class Encounter implements Serializable {
     /*
     Last Edit Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
 
     private boolean completed;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
