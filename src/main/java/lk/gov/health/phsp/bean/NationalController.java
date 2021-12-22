@@ -23,8 +23,18 @@
  */
 package lk.gov.health.phsp.bean;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 
 import lk.gov.health.phsp.entity.Client;
@@ -61,6 +71,7 @@ import lk.gov.health.phsp.pojcs.InstitutionPeformance;
 import lk.gov.health.phsp.pojcs.InstitutionTypeCount;
 import org.joda.time.Duration;
 // </editor-fold>
+import org.json.JSONObject;
 
 /**
  *
@@ -168,6 +179,9 @@ public class NationalController implements Serializable {
     private List<Encounter> listedToDivert;
     private List<Encounter> selectedToDivert;
     private List<Encounter> selectedToDispatch;
+
+    private URL apiUrl;
+    private String biaData;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -1291,7 +1305,7 @@ public class NationalController implements Serializable {
                 dtc.setTotalRat(totalRat);
                 dtc.setTotalPositives(totalPositives);
                 dtc.setTotalTests(totalTests);
-                
+
                 dailyTestCounts.add(dtc);
             }
         }
@@ -2103,6 +2117,72 @@ public class NationalController implements Serializable {
             return "";
         }
     }
+
+    public String biaQurantineData() {
+        try {
+          // Creates a new url object with the ApirPort api URL
+          apiUrl = new URL("https://pos.airport.lk:8005/healthbulkapi/api/");
+        } catch (MalformedURLException e) {
+          // TODO: Auto-generated catch block
+          e.printStackTrace();
+        }
+
+        try {
+          // Create a new HTTP connection
+          HttpURLConnection connection = (HttpURLConnection)apiUrl.openConnection();
+          // Set the request method to POST
+          connection.setRequestMethod("POST");
+          // Set content type to application/json
+          connection.setRequestProperty("content-type", "application/json");
+          // set connection to return output
+          connection.setDoOutput(true);
+          // create a json string for request body
+          //TODO: Replace the arrival date with the fromDate formatted to below format
+          String jsonString = new JSONObject()
+                              .put("key", "77c8c8458e6452579c36dffd67e2101f75e81dc9ea26f34b77affec6a15a34b1488f61e2c762370a598c4460c8e9015800d2fb7a88e48dcf429e8c06b4ce7951")
+                              .put("username", "health2")
+                              .put("password", "healthuser2")
+                              .put("arrivalDate","2021-11-24")
+                              .toString();
+          // set request body
+            try(OutputStream os = connection.getOutputStream()) {
+                byte[] input = jsonString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+          //reading the response
+          String res;
+          BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
+          ByteArrayOutputStream buf = new ByteArrayOutputStream();
+          int resultLines = bis.read();
+          while(resultLines != -1) {
+              buf.write((byte) resultLines);
+              resultLines = bis.read();
+          }
+          res = buf.toString();
+          System.out.println(res);
+          this.biaData = res;
+          // try(BufferedReader br = new BufferedReader(
+          //   new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+          //     StringBuilder response = new StringBuilder();
+          //     String responseLine = null;
+          //     while ((responseLine = br.readLine()) != null) {
+          //         System.out.println(responseLine);
+          //         response.append(responseLine.trim());
+          //     }
+          //     // System.out.println(response.toString());
+
+          //     this.biaData = response.toString();
+          //     return "/national/bia";
+          // }
+
+        } catch (IOException e) {
+          // TODO: Auto-generated catch block
+          e.printStackTrace();
+        }
+
+        return "/national/bia";
+      }
 
     public String toViewResult() {
         if (test == null) {
@@ -3073,6 +3153,14 @@ public class NationalController implements Serializable {
 
     public void setDailyTestCounts(ArrayList<DailyTestCount> dailyTestCounts) {
         this.dailyTestCounts = dailyTestCounts;
+    }
+
+    public String getBiaData() {
+        return this.biaData;
+    }
+
+    public void setBiaData(String biaData) {
+        this.biaData = biaData;
     }
 
 }
