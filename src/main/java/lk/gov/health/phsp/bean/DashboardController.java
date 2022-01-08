@@ -379,6 +379,11 @@ public class DashboardController implements Serializable {
                 null,
                 itemApplicationController.getPcr()
         );
+    // generate epi curve for moh
+        Map<String, String> positiveSeries = dashboardApplicationController.getSeriesOfCases(now,
+        180, null, this.itemApplicationController.getPcrPositive(), webUserController.getLoggedInstitution());
+
+        this.posiveCasesJSON = new JSONObject(positiveSeries);
     }
 
     public void prepareHospitalDashboard() {
