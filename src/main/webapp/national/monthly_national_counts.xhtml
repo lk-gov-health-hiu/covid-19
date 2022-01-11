@@ -10,7 +10,7 @@
 
                 <h:panelGrid columns="1" styleClass="alignTop">
                     <f:facet name="header">
-                        <p:outputLabel value="National Daily Counts"></p:outputLabel>
+                        <p:outputLabel value="National Monthly Counts"></p:outputLabel>
                     </f:facet>
 
                     <h:form>
@@ -39,10 +39,10 @@
                                     </h:commandButton>
                                     <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
                                         <p:dataExporter type="pdf" target="tbl"
-                                                        fileName="National Daily Counts" />
+                                                        fileName="National Weekely Counts" />
                                     </h:commandButton>
                                     <h:commandButton value="Process" class="btn btn-warning w-25"
-                                                     action="#{nationalController.processDailyCounts()}">
+                                                     action="#{nationalController.processMonthlyCounts()}">
                                     </h:commandButton>
                                 </f:facet>
 
@@ -56,7 +56,7 @@
                                          rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
                                
                                     
-                                <p:column headerText="Date" sortBy="#{c.date}">
+                                <p:column headerText="Start of the Month" sortBy="#{c.date}">
                                     <h:outputText value="#{c.date}" >
                                         <f:convertDateTime parent="dd MMMM yyyy" ></f:convertDateTime>
                                     </h:outputText>
