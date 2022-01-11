@@ -220,6 +220,27 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
+    
+    public String toAnalysisIndex() {
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Regional:
+                return "/regional/analysis_index";
+            case National:
+                return "/national/analysis_index";
+            case Hospital:
+                return "/hospital/analysis_index";
+            case Lab:
+                return "/lab/analysis_index";
+            case National_Lab:
+                return "/national/analysis_index";
+            case Moh:
+                return "/moh/analysis_index";
+            case Provincial:
+                return "/provincial/analysis_index";
+            default:
+                return "";
+        }
+    }
 
     public String toSearch() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
