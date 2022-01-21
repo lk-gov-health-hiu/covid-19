@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <!-- INTERFACE -->
 <cc:interface>
@@ -254,6 +255,11 @@
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
                             <strong>Last 30 Day Positive Cases Trend</strong> 
                             <small class="px-3">
+                                <h:outputText value="Last Updated at " ></h:outputText>
+                                <h:outputText value="#{dashboardApplicationController.lastUpdatedAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy hh:mm" ></f:convertDateTime>
+                                </h:outputText>
+                                <h:outputText value=" " ></h:outputText>
                                 <h:commandLink action="#{dashboardApplicationController.updateDashboard}" 
                                                value="Reload the Dashboard"></h:commandLink>
                             
