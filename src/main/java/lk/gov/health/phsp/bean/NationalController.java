@@ -1236,6 +1236,26 @@ public class NationalController implements Serializable {
         return "/national/monthly_national_counts";
     }
 
+    public String toSexDistribution() {
+        institutionCounts = new ArrayList<>();
+        return "/national/sex_distribution";
+    }
+
+    public String toOrderingCategories() {
+        institutionCounts = new ArrayList<>();
+        return "/national/ordering_category_distribution";
+    }
+    
+    public String toSymptomaticStatusCategories() {
+        institutionCounts = new ArrayList<>();
+        return "/national/symptomatic_status_distribution";
+    }
+    
+    public String toVaccinationStatusCategories() {
+        institutionCounts = new ArrayList<>();
+        return "/national/vaccination_status_distribution";
+    }
+
     public void processDailyCounts() {
         dailyTestCounts = new ArrayList<DailyTestCount>();
         int MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
@@ -1308,84 +1328,395 @@ public class NationalController implements Serializable {
         }
     }
 
+    public void processSexDistribution() {
+        institutionCounts = new ArrayList<>();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.client.person.sex, count(e)) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td "
+                + " group by e.client.person.sex";
+        Map m = new HashMap();
+
+        boolean f;
+        f = false;
+        if (f) {
+            Encounter e = new Encounter();
+            e.getClient().getPerson().getSex();
+            //e.client.person.sex
+
+        }
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and e.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        // // System.out.println("obs = " + obs.size());
+        for (Object o : obs) {
+            if (o instanceof InstitutionCount) {
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+
+        j = "select count(e) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.client.person.sex is null"
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        InstitutionCount ic = new InstitutionCount();
+
+        m = new HashMap();
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and e.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        Long countWithoutSex = encounterFacade.countByJpql(j, m);
+
+        ic.setCount(countWithoutSex);
+        institutionCounts.add(ic);
+    }
+
+    public void processOrderingCategoryDistribution() {
+        institutionCounts = new ArrayList<>();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.pcrOrderingCategory, count(e)) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td "
+                + " group by e.pcrOrderingCategory";
+        Map m = new HashMap();
+
+        boolean f;
+        f = false;
+        if (f) {
+            Encounter e = new Encounter();
+            e.getPcrOrderingCategory();
+            //e.pcrOrderingCategory();
+
+        }
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        // // System.out.println("obs = " + obs.size());
+        for (Object o : obs) {
+            if (o instanceof InstitutionCount) {
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+
+        j = "select count(e) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.pcrOrderingCategory is null"
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        InstitutionCount ic = new InstitutionCount();
+
+        m = new HashMap();
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        Long countWithoutSex = encounterFacade.countByJpql(j, m);
+
+        ic.setCount(countWithoutSex);
+        institutionCounts.add(ic);
+    }
+
+    public void processSymptomaticStatusDistribution() {
+        institutionCounts = new ArrayList<>();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.symptomaticStatus, count(e)) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td "
+                + " group by e.symptomaticStatus";
+        Map m = new HashMap();
+
+        boolean f;
+        f = false;
+        if (f) {
+            Encounter e = new Encounter();
+            e.getSymptomaticStatus();
+            //e.symptomaticStatus();
+
+        }
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        // // System.out.println("obs = " + obs.size());
+        for (Object o : obs) {
+            if (o instanceof InstitutionCount) {
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+
+        j = "select count(e) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.symptomaticStatus is null"
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        InstitutionCount ic = new InstitutionCount();
+
+        m = new HashMap();
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        Long countWithoutSex = encounterFacade.countByJpql(j, m);
+
+        ic.setCount(countWithoutSex);
+        institutionCounts.add(ic);
+    }
+    
+    
+    public void processVaccinationStatusDistribution() {
+        institutionCounts = new ArrayList<>();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.vaccinationStatus, count(e)) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td "
+                + " group by e.vaccinationStatus";
+        Map m = new HashMap();
+
+        boolean f;
+        f = false;
+        if (f) {
+            Encounter e = new Encounter();
+            e.getVaccinationStatus();
+            //e.vaccinationStatus();
+
+        }
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        // // System.out.println("obs = " + obs.size());
+        for (Object o : obs) {
+            if (o instanceof InstitutionCount) {
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+
+        j = "select count(e) "
+                + " from Encounter e "
+                + " where e.retired=:pf "
+                + " and e.vaccinationStatus is null"
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        InstitutionCount ic = new InstitutionCount();
+
+        m = new HashMap();
+
+        m.put("type", EncounterType.Test_Enrollment);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("pf", false);
+
+        if (testType != null) {
+            j += " and e.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+
+        if (result != null) {
+            j += " and e.pcrResult=:result ";
+            m.put("result", result);
+        }
+
+        Long countWithoutSex = encounterFacade.countByJpql(j, m);
+
+        ic.setCount(countWithoutSex);
+        institutionCounts.add(ic);
+    }
+
     public void processWeekelyCounts() {
+        System.out.println("processWeekelyCounts");
         dailyTestCounts = new ArrayList<DailyTestCount>();
         int MILLIS_IN_A_Week = 1000 * 60 * 60 * 24 * 7;
 
         Date runningDate = CommonController.startOfTheDate(fromDate);
         long diff = toDate.getTime() - fromDate.getTime();
-        long duration = diff / MILLIS_IN_A_Week;
+        long numberOfWeeks = diff / MILLIS_IN_A_Week;
+        numberOfWeeks = Math.abs(numberOfWeeks);
 
-        if (duration < 1) {
-            JsfUtil.addErrorMessage("Check Dates");
-            return;
-        } else {
-            for (int i = 0; i <= duration; i += 7) {
-                DailyTestCount dtc = new DailyTestCount();
+        System.out.println("numberOfWeeks = " + numberOfWeeks);
 
-                Date start = CommonController.startOfTheDate(runningDate);
-
-                Calendar c = Calendar.getInstance();
-                c.setTime(runningDate);
-                c.add(Calendar.DATE, 6);
-
-                Date end = CommonController.startOfTheDate(c.getTime());
-                dtc.setDate(start);
-
-                c.add(Calendar.DATE, 1);
-                runningDate = c.getTime();
-
-                Long totalPcr;
-                Long totalRat;
-                Long positiveRat;
-                Long positivePcr;
-                Long totalPositives;
-                Long totalTests;
-
-                positivePcr = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getPcr(),
-                        null,
-                        itemApplicationController.getPcrPositive(),
-                        null);
-                positiveRat = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getRat(),
-                        null,
-                        itemApplicationController.getPcrPositive(),
-                        null);
-                totalPcr = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getPcr(),
-                        null,
-                        null,
-                        null);
-                totalRat = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getRat(),
-                        null,
-                        null,
-                        null);
-                totalPositives = positivePcr + positiveRat;
-                totalTests = totalPcr + totalRat;
-                dtc.setPositivePcr(positivePcr);
-                dtc.setPositiveRat(positiveRat);
-                dtc.setTotalPcr(totalPcr);
-                dtc.setTotalRat(totalRat);
-                dtc.setTotalPositives(totalPositives);
-                dtc.setTotalTests(totalTests);
-
-                dailyTestCounts.add(dtc);
-            }
+        if (numberOfWeeks < 1) {
+            numberOfWeeks = 1;
         }
+
+        for (int i = 0; i <= numberOfWeeks; i++) {
+            DailyTestCount dtc = new DailyTestCount();
+            System.out.println("runningDate = " + runningDate);
+
+            Date start = CommonController.startOfTheDate(runningDate);
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(runningDate);
+            c.add(Calendar.DATE, 6);
+
+            Date end = CommonController.endOfTheDate(c.getTime());
+            dtc.setDate(start);
+
+            c.add(Calendar.DATE, 1);
+            runningDate = c.getTime();
+
+            System.out.println("start = " + start);
+            System.out.println("end = " + end);
+
+            Long totalPcr;
+            Long totalRat;
+            Long positiveRat;
+            Long positivePcr;
+            Long totalPositives;
+            Long totalTests;
+
+            positivePcr = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getPcr(),
+                    null,
+                    itemApplicationController.getPcrPositive(),
+                    null);
+            positiveRat = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getRat(),
+                    null,
+                    itemApplicationController.getPcrPositive(),
+                    null);
+            totalPcr = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getPcr(),
+                    null,
+                    null,
+                    null);
+            totalRat = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getRat(),
+                    null,
+                    null,
+                    null);
+            totalPositives = positivePcr + positiveRat;
+            totalTests = totalPcr + totalRat;
+            dtc.setPositivePcr(positivePcr);
+            dtc.setPositiveRat(positiveRat);
+            dtc.setTotalPcr(totalPcr);
+            dtc.setTotalRat(totalRat);
+            dtc.setTotalPositives(totalPositives);
+            dtc.setTotalTests(totalTests);
+
+            dailyTestCounts.add(dtc);
+        }
+
     }
 
     public void processMonthlyCounts() {
@@ -1404,71 +1735,72 @@ public class NationalController implements Serializable {
         long diff = toDate.getTime() - fromDate.getTime();
 
         if (monthsInbetween < 1) {
-            JsfUtil.addErrorMessage("Check Dates");
-            return;
-        } else {
-            for (int i = 0; i <= monthsInbetween; i++) {
-                Date start = CommonController.startOfTheMonth(runningDate);
-                Date end = CommonController.endOfTheMonth(runningDate);
+            monthsInbetween = 1;
+        }
 
-                Calendar c = Calendar.getInstance();
-                c.setTime(start);
-                c.add(Calendar.MONTH, 1);
+        for (int i = 0; i <= monthsInbetween; i++) {
+            Date start = CommonController.startOfTheMonth(runningDate);
+            Date end = CommonController.endOfTheMonth(runningDate);
 
-                DailyTestCount dtc = new DailyTestCount();
+            Calendar c = Calendar.getInstance();
+            c.setTime(start);
+            c.add(Calendar.MONTH, 1);
 
-                dtc.setDate(start);
+            runningDate = c.getTime();
 
-                Long totalPcr;
-                Long totalRat;
-                Long positiveRat;
-                Long positivePcr;
-                Long totalPositives;
-                Long totalTests;
+            DailyTestCount dtc = new DailyTestCount();
 
-                positivePcr = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getPcr(),
-                        null,
-                        itemApplicationController.getPcrPositive(),
-                        null);
-                positiveRat = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getRat(),
-                        null,
-                        itemApplicationController.getPcrPositive(),
-                        null);
-                totalPcr = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getPcr(),
-                        null,
-                        null,
-                        null);
-                totalRat = dashboardApplicationController.getConfirmedCount(
-                        null,
-                        start,
-                        end,
-                        itemApplicationController.getRat(),
-                        null,
-                        null,
-                        null);
-                totalPositives = positivePcr + positiveRat;
-                totalTests = totalPcr + totalRat;
-                dtc.setPositivePcr(positivePcr);
-                dtc.setPositiveRat(positiveRat);
-                dtc.setTotalPcr(totalPcr);
-                dtc.setTotalRat(totalRat);
-                dtc.setTotalPositives(totalPositives);
-                dtc.setTotalTests(totalTests);
+            dtc.setDate(start);
 
-                dailyTestCounts.add(dtc);
-            }
+            Long totalPcr;
+            Long totalRat;
+            Long positiveRat;
+            Long positivePcr;
+            Long totalPositives;
+            Long totalTests;
+
+            positivePcr = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getPcr(),
+                    null,
+                    itemApplicationController.getPcrPositive(),
+                    null);
+            positiveRat = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getRat(),
+                    null,
+                    itemApplicationController.getPcrPositive(),
+                    null);
+            totalPcr = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getPcr(),
+                    null,
+                    null,
+                    null);
+            totalRat = dashboardApplicationController.getConfirmedCount(
+                    null,
+                    start,
+                    end,
+                    itemApplicationController.getRat(),
+                    null,
+                    null,
+                    null);
+            totalPositives = positivePcr + positiveRat;
+            totalTests = totalPcr + totalRat;
+            dtc.setPositivePcr(positivePcr);
+            dtc.setPositiveRat(positiveRat);
+            dtc.setTotalPcr(totalPcr);
+            dtc.setTotalRat(totalRat);
+            dtc.setTotalPositives(totalPositives);
+            dtc.setTotalTests(totalTests);
+
+            dailyTestCounts.add(dtc);
         }
     }
 
