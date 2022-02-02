@@ -5,14 +5,31 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<!-- INTERFACE -->
-<cc:interface>
-</cc:interface>
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
 
-<!-- IMPLEMENTATION -->
-<cc:implementation>
-    <h:form>
-       
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form>
+
+            <div class="row mx-4 my-4 ">
+                <div class="col">
+                    <h2>
+                        <h:outputText value="Last Updated at " ></h:outputText>
+                        <h:outputText value="#{dashboardApplicationController.lastUpdatedAt}" >
+                            <f:convertDateTime pattern="dd MMM yyyy hh:mm a" ></f:convertDateTime>
+                        </h:outputText>
+                        <small class="px-3" style="float: right">
+                            <h:commandLink action="#{dashboardApplicationController.updateDashboard}" 
+                                           value="Update the Dashboard"
+                                           class="d-print-none"></h:commandLink>
+                        </small> 
+                    </h2>
+                </div>
+            </div>
+
+
             <div class="row mx-4 my-4 ">
                 <div class="col">
                     <div class="d-flex bg-success px-3 py-2 align-items-center">
@@ -52,7 +69,7 @@
                     </div>
                     <div class="d-grid gap-2">
                         <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-success border-none" type="button">
+                                         class="btn text-white btn-small btn-dark-success border-none" type="button">
                         </h:commandButton>
                     </div>
                 </div>
@@ -94,7 +111,7 @@
                     </div>
                     <div class="d-grid gap-2">
                         <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-success border-none"></h:commandButton>
+                                         class="btn text-white btn-small btn-dark-success border-none"></h:commandButton>
                     </div>
                 </div>
                 <div class="col">
@@ -115,7 +132,7 @@
                                     <h5>
                                         #{dashboardApplicationController.todayPositivePcr}
                                         <small>
-                                        	(#{dashboardApplicationController.todayPcrPositiveRate})
+                                            (#{dashboardApplicationController.todayPcrPositiveRate})
                                         </small>
                                     </h5>
                                 </div>
@@ -134,7 +151,7 @@
                                 </div>
                             </div>
                             <hr/>
-                            
+
                             <div class="flex-grow-1 text-white text-center">
                                 <small>Positives could be from samples collected on a prior date<br/></small>
                             </div>
@@ -142,14 +159,14 @@
                     </div>
                     <div class="d-grid gap-2">
                         <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-danger border-none" type="button">
+                                         class="btn text-white btn-small btn-dark-danger border-none" type="button">
                         </h:commandButton>
                     </div>
                 </div>
                 <div class="col">
 
                     <div class="d-flex bg-danger px-3 py-2 align-items-center">
-                           <div class="flex-grow-1 text-white">
+                        <div class="flex-grow-1 text-white">
                             <h4 class="fw-bold text-center mb-1">
                                 <i class="bi bi-exclamation-circle-fill"></i>
                                 RAT POSITIVES
@@ -178,7 +195,7 @@
                                     <h5>
                                         #{dashboardApplicationController.yesterdayPositiveRat}
                                         <small>
-                                        	(#{dashboardApplicationController.yesterdayRatPositiveRate})
+                                            (#{dashboardApplicationController.yesterdayRatPositiveRate})
                                         </small>
                                     </h5>
                                 </div>
@@ -191,7 +208,7 @@
                     </div>
                     <div class="d-grid gap-2">
                         <h:commandButton value="More Information"
-                            class="btn btn-small text-white btn-dark-danger border-none" type="button">
+                                         class="btn btn-small text-white btn-dark-danger border-none" type="button">
                         </h:commandButton>
                     </div>
                 </div>
@@ -201,28 +218,28 @@
                     <ol class="list-group">
                         <li class="list-group-item active">Test By Category</li>
                         <h:commandLink action="#{dashboardController.toContactNational()}" class="list-group-item list-group-action-item d-flex justify-content-between align-items-start">
-                          <div class="ms-2 me-auto">
+                            <div class="ms-2 me-auto">
                                 First Contacts
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
-                            #{dashboardApplicationController.firstContactCount}
-                          </span>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                #{dashboardApplicationController.firstContactCount}
+                            </span>
                         </h:commandLink>
                         <h:commandLink action="#{dashboardController.toCommunityRandomNational()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
-                          <div class="ms-2 me-auto">
+                            <div class="ms-2 me-auto">
                                 Community Random
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
                                 #{dashboardApplicationController.communityRandomCount}
-                          </span>
+                            </span>
                         </h:commandLink>
                         <h:commandLink action="#{dashboardController.toForeign()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
-                          <div class="ms-2 me-auto">
+                            <div class="ms-2 me-auto">
                                 Foreign returnees and tourists
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
-                            #{dashboardApplicationController.foreignCount}
-                          </span>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                #{dashboardApplicationController.foreignCount}
+                            </span>
                         </h:commandLink>
                         <h:commandLink action="#{dashboardController.toHospital()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
                             <div class="ms-2 me-auto">
@@ -246,34 +263,25 @@
                         <h:commandLink action="#{mohController.toDistrictViceTestListForOrderingCategories()}" class="list-group-item d-flex list-group-action-item">
                             More details
                         </h:commandLink>
-                      </ol>
+                    </ol>
                 </div>
-                
+
                 <div class="col-9 accordion" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
-                      <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                            <strong>Last 30 Day Positive Cases Trend</strong> 
-                            <small class="px-3">
-                                <h:outputText value="Last Updated at " ></h:outputText>
-                                <h:outputText value="#{dashboardApplicationController.lastUpdatedAt}" >
-                                    <f:convertDateTime pattern="dd MMM yyyy hh:mm" ></f:convertDateTime>
-                                </h:outputText>
-                                <h:outputText value=" " ></h:outputText>
-                                <h:commandLink action="#{dashboardApplicationController.updateDashboard}" 
-                                               value="Reload the Dashboard"></h:commandLink>
-                            
-                            </small> 
-                        </button>
-                      </h2>
-                      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                        <div class="accordion-body">
-                            <h3 class="text-muted fw-bold" id="chartLoading">Chart loading, please refresh</h3>
-                            <canvas id="chart"></canvas>
+                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                <strong>Last 30 Day Positive Cases Trend</strong> 
+
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                            <div class="accordion-body">
+                                <h3 class="text-muted fw-bold" id="chartLoading">Chart loading, please refresh</h3>
+                                <canvas id="chart"></canvas>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
+                </div>
             </div>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -283,17 +291,18 @@
 
                 document.addEventListener('readystatechange', event => {
                     if (event.target.readyState === 'interactive') {
-                        if (pcrDataJson !== '' || ratDataJson !== '') drawChart();
+                        if (pcrDataJson !== '' || ratDataJson !== '')
+                            drawChart();
                     }
                 })
 
                 function parseDate(date) {
                     var date = new Date(date.replace('IST', ''));
                     let day = date.getDate();
-                    let month = date.getMonth()+1;
+                    let month = date.getMonth() + 1;
                     let year = date.getFullYear();
 
-                    return year+"/"+month+"/"+day
+                    return year + "/" + month + "/" + day
                 }
 
                 function drawChart() {
@@ -303,16 +312,16 @@
                     const arrayPcrData = Object.entries(parsePcrData)
                     const arrayRatData = Object.entries(parseRatData)
 
-                    arrayPcrData.sort((a,b) => {
+                    arrayPcrData.sort((a, b) => {
                         var aDate = new Date(a[0].replace('IST', ''));
                         var bDate = new Date(b[0].replace('IST', ''));
-                        return aDate-bDate
+                        return aDate - bDate
                     })
 
-                    arrayRatData.sort((a,b) => {
+                    arrayRatData.sort((a, b) => {
                         var aDate = new Date(a[0].replace('IST', ''));
                         var bDate = new Date(b[0].replace('IST', ''));
-                        return aDate-bDate
+                        return aDate - bDate
                     })
 
                     const ratDataLabels = Object.keys(parseRatData)
@@ -355,28 +364,28 @@
                     })
 
                     arrayRatData.map((value, index) => {
-                        totalDataset.data.push(parseInt(value[1])+parseInt(arrayPcrData[index][1]))
+                        totalDataset.data.push(parseInt(value[1]) + parseInt(arrayPcrData[index][1]))
                     })
 
                     const data = {
                         labels: parsedDates,
                         datasets: [
-                            ratDataset, pcrDataset,totalDataset
+                            ratDataset, pcrDataset, totalDataset
                         ]
                     }
 
                     const chart = document.querySelector("#chart").getContext('2d')
                     const myChart = new Chart(chart, {
-                            type: 'line',
-                            data: data
-                        }
+                        type: 'line',
+                        data: data
+                    }
                     )
                     document.querySelector("#chartLoading").classList.add('d-none')
                 }
             </script>
-       
 
-    </h:form>
-</cc:implementation>
+
+        </h:form>
+    </cc:implementation>
 
 </html>
