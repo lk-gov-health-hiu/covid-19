@@ -144,6 +144,13 @@
                                 <p:column headerText="BHT/OPD No/Clinic No"  sortBy="#{c.bht}" filterBy="#{c.bht}" filterMatchMode="contains">
                                     <p:outputLabel value="#{c.bht}" ></p:outputLabel>
                                 </p:column>
+                                <p:column headerText="Action" 
+                                          >
+                                    <p:commandButton value="Edit" action="/lab/result_edit_times" >
+                                        <f:setPropertyActionListener value="#{c}" target="#{labController.pcr}" >
+                                        </f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
                             </p:dataTable>
                         </div>
                     </div>
