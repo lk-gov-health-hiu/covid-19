@@ -2760,7 +2760,6 @@ public class LabController implements Serializable {
         return toAddNewRatWithResult();
     }
 
-
     public String saveRatAndToNewRatOrder() {
         if (saveRat() == null) {
             return "";
@@ -2918,6 +2917,21 @@ public class LabController implements Serializable {
 
         JsfUtil.addSuccessMessage("Saved.");
         return "/lab/rat_view";
+    }
+
+    public void updatePcr() {
+        if (pcr == null) {
+            JsfUtil.addErrorMessage("No pcr to save");
+            return ;
+        }
+        if(pcr.getId()==null){
+            JsfUtil.addErrorMessage("New PCR. Can't update");
+            return ;
+        }
+        pcr.setLastEditBy(webUserController.getLoggedUser());
+        pcr.setLastEditeAt(new Date());
+        encounterFacade.edit(pcr);
+        JsfUtil.addErrorMessage("Updated");
     }
 
     public String savePcr() {
