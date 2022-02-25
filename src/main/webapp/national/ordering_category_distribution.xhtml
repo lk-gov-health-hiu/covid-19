@@ -10,7 +10,7 @@
 
                 <h:panelGrid columns="1" styleClass="alignTop">
                     <f:facet name="header">
-                        <p:outputLabel value="National Daily Counts"></p:outputLabel>
+                        <p:outputLabel value="Ordering Category Distribution"></p:outputLabel>
                     </f:facet>
 
                     <h:form>
@@ -25,67 +25,52 @@
                                 <p:datePicker value="#{nationalController.toDate}" pattern="dd MMMM yyyy">
                                 </p:datePicker>
 
-                                <h:outputLabel class="h6 fw-bold" value="Ordering Category"></h:outputLabel>
-                                <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select">
+                                <h:outputLabel class="h6 fw-bold" value="Test"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.testType}" class="form-select">
                                     <f:selectItem itemLabel="All"></f:selectItem>
-                                    <f:selectItems value="#{nationalController.covidTestOrderingCategories}" var="c"
+                                    <f:selectItems value="#{nationalController.covidTestTypes}" var="c"
                                                    itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
                                 </h:selectOneMenu>
+
+                                <h:outputLabel class="h6 fw-bold" value="Result"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.result}" class="form-select">
+                                    <f:selectItem itemLabel="All"></f:selectItem>
+                                    <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}"></f:selectItems>
+                                </h:selectOneMenu>
+
 
                                 <f:facet name="footer">
                                     <h:commandButton value="Generate Excel" class="btn btn-success w-25">
                                         <p:dataExporter target="tbl" type="xlsx"
-                                                        fileName="national_daily_counts"></p:dataExporter>
+                                                        fileName="ordering_category_distribution"></p:dataExporter>
                                     </h:commandButton>
                                     <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
                                         <p:dataExporter type="pdf" target="tbl"
-                                                        fileName="National Daily Counts" />
+                                                        fileName="Ordering Category" />
                                     </h:commandButton>
                                     <h:commandButton value="Process" class="btn btn-warning w-25"
-                                                     action="#{nationalController.processDailyCounts()}">
+                                                     action="#{nationalController.processOrderingCategoryDistribution()}">
                                     </h:commandButton>
                                 </f:facet>
 
                             </h:panelGrid>
                         </div>
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
-                            <p:dataTable id="tbl" value="#{nationalController.dailyTestCounts}" rendered="true"
+                            <p:dataTable id="tbl" value="#{nationalController.institutionCounts}" 
+                                         rendered="true"
                                          rowIndexVar="n" var="c" paginator="true"
                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                          rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
-                               
-                                    
-                                <p:column headerText="Date" sortBy="#{c.date}">
-                                    <h:outputText value="#{c.date}" >
-                                        <f:convertDateTime parent="dd MMMM yyyy" ></f:convertDateTime>
+                                <p:column headerText="Sex" sortBy="#{c.itemValue.name}">
+                                    <h:outputText value="#{c.itemValue.name}" >
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="RAT Positives" sortBy="#{c.positiveRat}">
-                                    <h:outputText value="#{c.positiveRat}" >
+                                <p:column headerText="Count" sortBy="#{c.count}">
+                                    <h:outputText value="#{c.count}" >
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Total RAT" sortBy="#{c.totalRat}">
-                                    <h:outputText value="#{c.totalRat}" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="PCR Positives" sortBy="#{c.positivePcr}">
-                                    <h:outputText value="#{c.positivePcr}" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Total PCRs" sortBy="#{c.totalPcr}">
-                                    <h:outputText value="#{c.totalPcr}" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Total Positives" sortBy="#{c.totalPositives}">
-                                    <h:outputText value="#{c.totalPositives}" >
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Total Performed" sortBy="#{c.totalTests}">
-                                    <h:outputText value="#{c.totalTests}" >
-                                    </h:outputText>
-                                </p:column>
-                               
                             </p:dataTable>
                         </h:panelGrid>
                     </h:form>

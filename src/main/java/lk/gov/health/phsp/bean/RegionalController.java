@@ -152,11 +152,13 @@ public class RegionalController implements Serializable {
     private Institution referingInstitution;
     private Institution dispatchingLab;
     private Institution divertingLab;
+    private Institution assigningInstitution;
 
     private List<Encounter> listedToDispatch;
     private List<Encounter> listedToDivert;
     private List<Encounter> selectedToDivert;
     private List<Encounter> selectedToDispatch;
+    private List<Encounter> selectedToChangeInstitution;
 
     private List<InstitutionCount> labSummariesToReceive;
     private List<InstitutionCount> labSummariesReceived;
@@ -1647,6 +1649,84 @@ public class RegionalController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/regional/list_of_results";
     }
+    
+    
+    public String toListToAssignInstitution() {
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
+        m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
+        m.put("district", webUserController.getLoggedInstitution().getDistrict());
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+        if (institution != null) {
+            j += " and c.institution=:oi ";
+            m.put("oi", institution);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/regional/admin/change_institution";
+    }
+    
+    public void assignInstitution(){
+        if(assigningInstitution==null){
+            JsfUtil.addErrorMessage("No Institution");
+            return;
+        }
+        if(selectedToAssign==null||selectedToAssign.isEmpty()){
+            JsfUtil.addErrorMessage("No Tests Selected");
+            return;
+        }
+        int c=0;
+        for(Encounter e:selectedToAssign){
+            e.setInstitution(assigningInstitution);
+            e.setLastEditBy(webUserController.getLoggedUser());
+            e.setLastEditeAt(new Date());
+            encounterFacade.edit(e);
+            c++;
+        }
+        JsfUtil.addSuccessMessage("New Institution assigned to " + c + " institutions.");
+    }
 
     public String toListResultsByResidentMohArea() {
         Map m = new HashMap();
@@ -1983,8 +2063,7 @@ public class RegionalController implements Serializable {
         }
         return institutionPeformancesFiltered;
     }
-    
-    
+
     public void generateFilteredInstitutionPeformanceSummery() {
         Long p = 0l;
         Long r = 0l;
@@ -2013,8 +2092,7 @@ public class RegionalController implements Serializable {
         getInstitutionPeformancesSummery().setRatPositives(rp);
 
     }
-    
-    
+
     public void processInstitutionVicePeformanceReport() {
         institutionPeformances = new ArrayList<>();
         List<InstitutionType> types = new ArrayList<>();
@@ -2032,9 +2110,9 @@ public class RegionalController implements Serializable {
         types.add(InstitutionType.Private_Sector_Labatory);
         types.add(InstitutionType.Provincial_General_Hospital);
         types.add(InstitutionType.Teaching_Hospital);
-        
+
         rdhs = webUserController.getLoggedUser().getInstitution().getRdhsArea();
-        
+
         List<Institution> inss = institutionApplicationController.findRegionalInstitutions(types, rdhs);
         fromDate = CommonController.startOfTheDate(fromDate);
         toDate = CommonController.endOfTheDate(toDate);
@@ -2053,10 +2131,7 @@ public class RegionalController implements Serializable {
         }
         generateInstitutionPeformanceSummery();
     }
-    
-    
-    
-    
+
     public void generateInstitutionPeformanceSummery() {
         Long p = 0l;
         Long r = 0l;
@@ -2084,14 +2159,14 @@ public class RegionalController implements Serializable {
         getInstitutionPeformancesSummery().setRats(r);
         getInstitutionPeformancesSummery().setRatPositives(rp);
     }
-    
+
     public InstitutionPeformance getInstitutionPeformancesSummery() {
         if (institutionPeformancesSummery == null) {
             institutionPeformancesSummery = new InstitutionPeformance();
         }
         return institutionPeformancesSummery;
     }
-    
+
     public String toEnterResults() {
         System.out.println("toTestList");
         Map m = new HashMap();
@@ -2151,6 +2226,68 @@ public class RegionalController implements Serializable {
         List<InstitutionType> its = new ArrayList<>();
         its.add(InstitutionType.Lab);
         return institutionController.fillInstitutions(its, qry, null);
+    }
+
+    public List<Institution> completeRegionalInstitutions(String nameQry) {
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<InstitutionType> types = new ArrayList<>();
+        types.add(InstitutionType.Hospital);
+        types.add(InstitutionType.Base_Hospital);
+        types.add(InstitutionType.Clinic);
+        types.add(InstitutionType.District_General_Hospital);
+        types.add(InstitutionType.Divisional_Hospital);
+        types.add(InstitutionType.Intermediate_Care_Centre);
+        types.add(InstitutionType.MOH_Office);
+        types.add(InstitutionType.Mobile_Lab);
+        types.add(InstitutionType.OPD);
+        types.add(InstitutionType.Primary_Medical_Care_Unit);
+        types.add(InstitutionType.Teaching_Hospital);
+        types.add(InstitutionType.Regional_Department_of_Health_Department);
+        types.add(InstitutionType.Provincial_General_Hospital);
+        types.add(InstitutionType.Private_Sector_Labatory);
+        types.add(InstitutionType.Private_Sector_Institute);
+        Area tRdhs= webUserController.getLoggedInstitution().getRdhsArea();
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (tRdhs != null) {
+                if (i.getRdhsArea()== null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getRdhsArea().equals(tRdhs)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            boolean typeFound = false;
+            for (InstitutionType type : types) {
+                if (type != null) {
+                    if (i.getInstitutionType() != null && i.getInstitutionType().equals(type)) {
+                        typeFound = true;
+                    }
+                }
+            }
+            if (!typeFound) {
+                canInclude = false;
+            }
+            if (i.getName() == null || i.getName().trim().equals("")) {
+                canInclude = false;
+            } else {
+                if (!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())) {
+                    canInclude = false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
     }
 
 // </editor-fold>
@@ -2529,4 +2666,22 @@ public class RegionalController implements Serializable {
         this.vaccinationStatus = vStatus;
     }
 
+    public Institution getAssigningInstitution() {
+        return assigningInstitution;
+    }
+
+    public void setAssigningInstitution(Institution assigningInstitution) {
+        this.assigningInstitution = assigningInstitution;
+    }
+
+    public List<Encounter> getSelectedToChangeInstitution() {
+        return selectedToChangeInstitution;
+    }
+
+    public void setSelectedToChangeInstitution(List<Encounter> selectedToChangeInstitution) {
+        this.selectedToChangeInstitution = selectedToChangeInstitution;
+    }
+
+    
+    
 }

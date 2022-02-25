@@ -87,6 +87,7 @@ public class DashboardApplicationController {
     @Inject
     private AreaController areaController;
 
+    private Date lastUpdatedAt;
     private Long todayPcr;
     private Long todayRat;
     private Long todayPositivePcr;
@@ -136,6 +137,8 @@ public class DashboardApplicationController {
         Date now = c.getTime();
         Date todayStart = CommonController.startOfTheDate();
 
+        lastUpdatedAt = new Date();
+        
         c.add(Calendar.DATE, -1);
 
         Date yesterdayStart = CommonController.startOfTheDate(c.getTime());
@@ -1347,6 +1350,8 @@ public Map<String, String> getSeriesOfCases(
         return ics;
     }
 
+    
+    
     public List<InstitutionCount> countOfResultsByProvince(
             Date from,
             Date to,
@@ -1399,6 +1404,14 @@ public Map<String, String> getSeriesOfCases(
             }
         }
         return ics;
+    }
+
+    public Date getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
 }
