@@ -1,153 +1,272 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+  <body>
+    <ui:composition template="/template1.xhtml">
+      <ui:define name="title">List of Tests</ui:define>
 
-    <body>
+      <ui:define name="content">
+        <p:panelGrid
+          columns="1"
+          styleClass="alignTop w-100 bg-white border border-light"
+        >
+          <f:facet name="header">
+            <h:outputLabel
+              class="fs-5 fw-bold"
+              value="Test List"
+            ></h:outputLabel>
+          </f:facet>
 
-        <ui:composition template="/template1.xhtml">
+          <h:form>
+            <p:panelGrid columns="2" class="border border-light">
+              <h:outputLabel
+                class="fs-6 fw-bold"
+                value="Category"
+              ></h:outputLabel>
+              <h:selectOneMenu
+                value="#{labController.filter}"
+                class="form-select"
+              >
+                <f:selectItems
+                  value="#{labController.investigationFilters}"
+                  var="c"
+                  itemLabel="#{c.name}"
+                  itemValue="#{c.code}"
+                ></f:selectItems>
+              </h:selectOneMenu>
+              <h:outputLabel class="fs-6 fw-bold" value="From"></h:outputLabel>
+              <p:calendar
+                class="fs-6"
+                value="#{labController.fromDate}"
+                pattern="dd MMMM yyyy hh:mm a"
+              >
+              </p:calendar
+              ><!-- comment -->
 
-            <ui:define name="title">
-                List of Tests
-            </ui:define>
+              <h:outputLabel class="fs-6 fw-bold" value="To"></h:outputLabel>
+              <p:calendar
+                class="fs-6"
+                value="#{labController.toDate}"
+                pattern="dd MMMM yyyy hh:mm a"
+              >
+              </p:calendar>
 
-            <ui:define name="content">
-                <p:panelGrid columns="1" styleClass="alignTop w-100 bg-white border border-light" >
-                    <f:facet name="header" >
-                        <h:outputLabel class="fs-5 fw-bold" value="Test List" ></h:outputLabel>
-                    </f:facet>
+              <h:outputLabel
+                value="Institution"
+                class="fs-6 fw-bold"
+              ></h:outputLabel>
+              <p:autoComplete
+                class="fs-6"
+                id="acIns"
+                value="#{labController.institution}"
+                forceSelection="true"
+                tabindex="100"
+                completeMethod="#{institutionController.completeInstitutions}"
+                var="l"
+                itemLabel="#{l.name}"
+                itemValue="#{l}"
+              >
+                <p:ajax process="acIns" event="blur"></p:ajax>
+              </p:autoComplete>
 
-                    <h:form >
-                        <p:panelGrid columns="2"  class="border border-light">
-                            <h:outputLabel class="fs-6 fw-bold" value="Category" ></h:outputLabel>
-                            <h:selectOneMenu value="#{labController.filter}" class="form-select">
-                                <f:selectItems value="#{labController.investigationFilters}"
-                                               var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c.code}" ></f:selectItems>
-                            </h:selectOneMenu>
-                            <h:outputLabel class="fs-6 fw-bold" value="From" ></h:outputLabel>
-                            <p:calendar class="fs-6" value="#{labController.fromDate}"
-                                        pattern="dd MMMM yyyy hh:mm a">
-                            </p:calendar><!-- comment -->
+              <p:outputLabel class="fs-6 fw-bold" value="Test"></p:outputLabel>
+              <h:selectOneMenu
+                value="#{labController.testType}"
+                class="fs-6 form-select"
+              >
+                <f:selectItem itemLabel="All"></f:selectItem>
+                <f:selectItems
+                  value="#{labController.covidTestTypes}"
+                  var="c"
+                  itemLabel="#{c.name}"
+                  itemValue="#{c}"
+                ></f:selectItems>
+              </h:selectOneMenu>
 
-                            <h:outputLabel class="fs-6 fw-bold" value="To" ></h:outputLabel>
-                            <p:calendar class="fs-6" value="#{labController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+              <h:commandButton
+                class="btn btn-success my-2"
+                value="Generate Excel"
+              >
+                <p:dataExporter
+                  target="tbl"
+                  type="xlsx"
+                  fileName="tests"
+                ></p:dataExporter>
+              </h:commandButton>
+              <h:commandButton
+                class="btn btn-warning w-100"
+                value="Process"
+                action="#{labController.toTestListWithoutResults()}"
+              ></h:commandButton>
+            </p:panelGrid>
+          </h:form>
+        </p:panelGrid>
+        <h:form>
+          <div>
+            <p:commandButton
+              class="btn btn-sm btn-secondary"
+              id="toggler"
+              type="button"
+              value="Filter Columns"
+              icon="pi pi-align-justify"
+            />
+            <p:columnToggler datasource="tbl" trigger="toggler" />
+          </div>
 
+          <p:dataTable
+            id="tbl"
+            value="#{labController.tests}"
+            rendered="true"
+            rowIndexVar="n"
+            var="c"
+            reflow="true"
+            resizableColumns="true"
+            rowKey="#{c.id}"
+            paginator="true"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+            rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+            rows="10"
+          >
+            <p:column
+              headerText="Test No."
+              sortBy="#{c.encounterNumber}"
+              filterBy="#{c.encounterNumber}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.encounterNumber}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Test"
+              sortBy="#{c.pcrTestType.name}"
+              filterBy="#{c.pcrTestType.name}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.pcrTestType.name}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Name"
+              sortBy="#{c.client.person.name}"
+              filterBy="#{c.client.person.name}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.client.person.name}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Age"
+              sortBy="#{c.client.person.age}"
+              width="60"
+              filterBy="#{c.client.person.age}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.client.person.age}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Gender"
+              width="80"
+              sortBy="#{c.encounterNumber}"
+              filterBy="#{c.client.person.sex.name}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel
+                value="#{c.client.person.sex.name}"
+              ></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="NIC"
+              sortBy="#{c.client.person.nic}"
+              filterBy="#{c.client.person.nic}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.client.person.nic}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Phone"
+              sortBy="#{c.client.person.phone1}"
+              filterBy="#{c.client.person.phone1}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.client.person.phone1}"></h:outputLabel>
+              <h:outputLabel
+                rendered="#{c.client.person.phone2 ne null}"
+                value=", "
+              ></h:outputLabel>
+              <h:outputLabel
+                rendered="#{c.client.person.phone2 ne null}"
+                value="#{c.client.person.phone2}"
+              ></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Address"
+              sortBy="#{c.client.person.address}"
+              filterBy="#{c.client.person.address}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel value="#{c.client.person.address}"></h:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Unit / Ward"
+              sortBy="#{c.unitWard}"
+              filterBy="#{c.unitWard}"
+              filterMatchMode="contains"
+            >
+              <p:outputLabel value="#{c.unitWard}"></p:outputLabel>
+            </p:column>
+            <p:column
+              headerText="BHT"
+              sortBy="#{c.bht}"
+              filterBy="#{c.bht}"
+              filterMatchMode="contains"
+            >
+              <p:outputLabel value="#{c.bht}"></p:outputLabel>
+            </p:column>
+            <p:column
+              headerText="Ordering Category"
+              sortBy="#{c.pcrOrderingCategory.name}"
+              filterBy="#{c.pcrOrderingCategory.name}"
+              filterMatchMode="contains"
+            >
+              <h:outputLabel
+                value="#{c.pcrOrderingCategory.name}"
+              ></h:outputLabel>
+            </p:column>
 
-                            <h:outputLabel value="Institution" class="fs-6 fw-bold" ></h:outputLabel>
-                            <p:autoComplete class="fs-6"
-                                            id="acIns"
-                                            value="#{labController.institution}"
-                                            forceSelection="true" tabindex="100"
-                                            completeMethod="#{institutionController.completeInstitutions}"
-                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
-                                <p:ajax process="acIns" event="blur" ></p:ajax>
-                            </p:autoComplete>
+            <p:column headerText="Actions" exportable="false">
+              <h:commandButton
+                class="w-100 d-block btn btn-primary"
+                value="Edit Order"
+                action="#{labController.toEditTest()}"
+              >
+                <f:setPropertyActionListener
+                  value="#{c}"
+                  target="#{labController.test}"
+                >
+                </f:setPropertyActionListener>
+              </h:commandButton>
 
-                            <p:outputLabel  class="fs-6 fw-bold"  value="Test" ></p:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}" class="fs-6 form-select">
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </h:selectOneMenu>
-
-
-
-                            <h:commandButton class="btn btn-success my-2" value="Generate Excel">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton class="btn btn-warning w-100" value="Process"
-                                             action="#{labController.toTestListWithoutResults()}" ></h:commandButton>
-
-
-                        </p:panelGrid>
-
-                        <div>
-                            <p:commandButton class="btn btn-sm btn-secondary" id="toggler" type="button" value="Filter Columns" icon="pi pi-align-justify"/>
-                            <p:columnToggler datasource="tbl" trigger="toggler"/>
-                        </div>
-
-                        <p:dataTable id="tbl" value="#{labController.tests}" rendered="true"
-                                     rowIndexVar="n"
-                                     var="c"
-                                     reflow="true"
-                                     resizableColumns="true"
-                                     rowKey="#{c.id}"
-                                     paginator="true"
-                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
-                                     rows="10"
-                                     >
-                            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.pcrTestType.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
-                                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Gender"
-                                      width="80"
-                                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
-                                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></h:outputLabel>
-                                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Address"  sortBy="#{c.client.person.address}"
-                                      filterBy="#{c.client.person.address}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
-                            </p:column>
-                            <p:column headerText="Unit / Ward"  sortBy="#{c.unitWard}"
-                                      filterBy="#{c.unitWard}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.unitWard}" ></p:outputLabel>
-                            </p:column>
-                            <p:column headerText="BHT"  sortBy="#{c.bht}"
-                                      filterBy="#{c.bht}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.bht}" ></p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Ordering Category"  sortBy="#{c.pcrOrderingCategory.name}"
-                                      filterBy="#{c.pcrOrderingCategory.name}" filterMatchMode="contains">
-                                <h:outputLabel value="#{c.pcrOrderingCategory.name}" ></h:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="Actions" exportable="false">
-                                <p:panelGrid columns="1" >
-
-
-                                    <h:commandButton class="w-100" value="Edit Order" action="#{labController.toEditTest()}">
-                                        <f:setPropertyActionListener value="#{c}" target="#{labController.test}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
-
-                                    <h:commandButton class="w-100" value="Delete"  action="#{labController.deleteTest()}"
-                                                     onclick="if (!confirm('Are you sure you want to delete?'))
-                                                                 return false" >
-                                        <f:setPropertyActionListener value="#{c}" target="#{labController.deleting}" >
-                                        </f:setPropertyActionListener>
-                                    </h:commandButton>
-
-                                </p:panelGrid>
-                            </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </p:panelGrid>
-            </ui:define>
-
-        </ui:composition>
-
-    </body>
+              <h:commandButton
+                class="w-100 d-block btn btn-danger"
+                value="Delete"
+                action="#{labController.deleteTest()}"
+                onclick="if (!confirm('Are you sure you want to delete?'))
+                                                             return false"
+              >
+                <f:setPropertyActionListener
+                  value="#{c}"
+                  target="#{labController.deleting}"
+                >
+                </f:setPropertyActionListener>
+              </h:commandButton>
+            </p:column>
+          </p:dataTable>
+        </h:form>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
