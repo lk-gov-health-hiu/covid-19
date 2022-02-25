@@ -556,14 +556,14 @@ public class ClientController implements Serializable {
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
-        
+
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
-        
+
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
         m.put("rins", cis);
@@ -2583,7 +2583,13 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_comment_string}", "");
         }
         QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
-        html += "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        String qr_string =  "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        if (html.contains("{qr}") == true) {
+            html = html.replace("{qr}", qr_string);
+        } else {
+            html.replace("{qr}", "");
+            html += qr_string;
+        }
         return html;
     }
 
