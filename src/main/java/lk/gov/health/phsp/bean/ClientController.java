@@ -143,6 +143,8 @@ public class ClientController implements Serializable {
     private String resultCol;
     private String ct1Col;
     private String ct2Col;
+    private String ct3Col;
+    private String ct4Col;
 
     private Integer startRow = 1;
 
@@ -2701,12 +2703,22 @@ public class ClientController implements Serializable {
             String result;
             String ct1 = "";
             String ct2 = "";
+            String ct3 = "";
+            String ct4 = "";
+
             if (e.getCtValue() != null) {
                 ct1 = e.getCtValue() + "";
             }
             if (e.getCtValue2() != null) {
                 ct2 = e.getCtValue2() + "";
             }
+            if (e.getCtValue3() != null) {
+                ct3 = e.getCtValue3() + "";
+            }
+            if (e.getCtValue4 != null) {
+                ct4 = e.getCtValue4() + "";
+            }
+
             if (e.getPcrResultStr() != null && !e.getPcrResultStr().trim().equals("")) {
                 result = e.getPcrResultStr();
             } else if (e.getPcrResult() != null) {
@@ -2739,6 +2751,8 @@ public class ClientController implements Serializable {
             tblHtml += "<td>" + result + "</td>";
             tblHtml += "<td>" + ct1 + "</td>";
             tblHtml += "<td>" + ct2 + "</td>";
+            tblHtml += "<td>" + ct3 + "</td>";
+            tblHtml += "<td>" + ct4 + "</td>";
             tblHtml += "</tr>";
 
             html = html.replace("{institute}", rh.getIns().getName());
@@ -3475,6 +3489,9 @@ public class ClientController implements Serializable {
         Integer bhtColInt;
         Integer ct1ColInt;
         Integer ct2ColInt;
+        Integer ct3ColInt;
+        Integer ct4ColInt;
+
         Item sex = null;
         Item result = null;
 
@@ -3495,6 +3512,8 @@ public class ClientController implements Serializable {
         bhtColInt = CommonController.excelColFromHeader(bhtCol);
         ct2ColInt = CommonController.excelColFromHeader(ct2Col);
         ct1ColInt = CommonController.excelColFromHeader(ct1Col);
+        ct3ColInt = CommonController.excelColFromHeader(ct3Col);
+        ct4ColInt = CommonController.excelColFromHeader(ct4Col);
 
         JsfUtil.addSuccessMessage(file.getFileName());
         XSSFWorkbook myWorkBook;
@@ -3668,10 +3687,17 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
-                if (ptCt1 != null && ptCt1 < 1) {
-                    ptCt1 = null;
+                Double ptCt3 = null;
+                if (ct3ColInt != null) {
+                    ptCt3 = cellValueDouble(row.getCell(ct3ColInt));
+                    if (ptCt3 == null) {
+                        String ct = cellValue(row.getCell(ct3ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt3 = CommonController.getDoubleValue(ct);
+                        }
+                    }
                 }
-
+                
                 Double ptCt2 = null;
                 if (ct2ColInt != null) {
                     ptCt2 = cellValueDouble(row.getCell(ct2ColInt));
@@ -3682,6 +3708,22 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
+                Double ptCt4 = null;
+                if (ct4ColInt != null) {
+                    ptCt4 = cellValueDouble(row.getCell(ct4ColInt));
+                    if (ptCt2 == null) {
+                        String ct = cellValue(row.getCell(ct4ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt4 = CommonController.getDoubleValue(ct);
+                        }
+                    }
+                }
+                
+                if (ptCt1 != null && ptCt1 < 1) {
+                    ptCt1 = null;
+                }
+
+
                 if (ptCt2 != null && ptCt2 < 1) {
                     ptCt2 = null;
                 }
@@ -3693,6 +3735,20 @@ public class ClientController implements Serializable {
                     ci.setCt2(ptCt2);
                 }
 
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
+                }
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
+                }
+                
                 count++;
                 getClientImports().add(ci);
 
@@ -4232,7 +4288,12 @@ public class ClientController implements Serializable {
         if (ci.getCt2() != null && ci.getCt2() != 0.0) {
             pcr.setCtValue2(ci.getCt2());
         }
-
+        if (ci.getCt3() != null && ci.getCt3() != 0.0) {
+            pcr.setCtValue3(ci.getCt3());
+        } 
+        if (ci.getCt4() != null && ci.getCt4() != 0.0) {
+            pcr.setCtValue4(ci.getCt4());
+        }
         pcr.setPcrTestType(lastTestPcrOrRat);
 
         if (c.getId() == null) {
@@ -7339,6 +7400,22 @@ public class ClientController implements Serializable {
     public void setCt2Col(String ct2Col) {
         this.ct2Col = ct2Col;
     }
+
+    public String getCt3Col() {
+        return this.ct3Col;
+    }
+
+    public void setCt3Col(String value) {
+        this.ct3Col = value;
+    }
+
+    public String getCt4Col() {
+        return this.ct4Col;
+    }
+
+    public void setCt4Col(String value) {
+        this.ct4Col = value;
+    }    
 
     public String getLabNoCol() {
         return labNoCol;
