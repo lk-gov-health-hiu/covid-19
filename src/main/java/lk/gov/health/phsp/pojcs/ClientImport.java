@@ -54,11 +54,11 @@ public class ClientImport {
     private Double ct4;
     private Area district;
     private Area moh;
-    
-    
-    
-    
-    
+
+
+
+
+
 
     public String getTestNo() {
         return testNo;
@@ -160,8 +160,8 @@ public class ClientImport {
         return wardUnit;
     }
 
-    
-    
+
+
     public void setWardUnit(String wardUnit) {
         this.wardUnit = wardUnit;
     }
@@ -198,13 +198,13 @@ public class ClientImport {
         this.ct3 = value;
     }
 
-    public Doubple getCt4() {
+    public Double getCt4() {
         return this.ct4;
     }
 
     public void setCt4(Double value) {
         this.ct4 = value;
-    } 
+    }
 
     public Area getDistrict() {
         return district;
