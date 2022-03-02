@@ -2694,26 +2694,6 @@ public class ClientController implements Serializable {
         return html;
     }
 
-    //This function will send an email of the patient's PCR or RAT report to their Email address.
-    public void sendReportAsEmail() {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("https://api.mailgun.net/v3/sandbox009501bf490748fb98af6f33405ea345.mailgun.org/messages");
-        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-        params.add(new BasicNameValuePair("from", "Mailgun Sandbox <postmaster@sandbox009501bf490748fb98af6f33405ea345.mailgun.org>"));
-        params.add(new BasicNameValuePair("to", "Rukshan Ranatunge <arkruka@gmail.com>"));
-        params.add(new BasicNameValuePair("subject", "Hello Rukshan Ranatunge"));
-        params.add(new BasicNameValuePair("text", "Congratulations Rukshan Ranatunge"));
-        httpPost.addHeader("api", "df26735f22c929a58ff19703d1b61c51-b2f5ed24-efd11dcc");
-        try {
-            CloseableHttpResponse response = httpClient.execute(httpPost);
-            System.out.println("Email sent");
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String generateLabReportsBulk(List<Encounter> es) {
         Map<String, ReportHolder> rhs = new HashMap<>();
         List<ReportHolder> orhs = new ArrayList<>();
