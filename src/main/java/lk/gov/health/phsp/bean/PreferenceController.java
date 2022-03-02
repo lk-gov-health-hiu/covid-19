@@ -63,6 +63,8 @@ public class PreferenceController implements Serializable {
     private String pcrInvalidComment;
     private String ct1Term;
     private String ct2Term;
+    private String ct3Term;
+    private String ct4Term;
     private String bulkExcelTitle;
     private String bulkExcelSubtitle;
     private String bulkExcelLeftColTop;
@@ -172,6 +174,9 @@ public class PreferenceController implements Serializable {
 
         ct1Term = findPreferanceValue("ct1Term", webUserController.getLoggedInstitution(), "");
         ct2Term = findPreferanceValue("ct2Term", webUserController.getLoggedInstitution(), "");
+        ct3Term = findPreferanceValue("ct3Term", webUserController.getLoggedInstitution(), "");
+        ct4Term = findPreferanceValue("ct4Term", webUserController.getLoggedInstitution(), "");
+
         bulkExcelTitle = findPreferanceValue("bulkExcelTitle", webUserController.getLoggedInstitution(), "");
         bulkExcelSubtitle = findPreferanceValue("bulkExcelSubtitle", webUserController.getLoggedInstitution(), "");
         bulkExcelLeftColTop = findPreferanceValue("bulkExcelLeftColTop", webUserController.getLoggedInstitution(), "");
@@ -257,6 +262,9 @@ public class PreferenceController implements Serializable {
 
         savePreference("ct1Term", webUserController.getLoggedInstitution(), ct1Term);
         savePreference("ct2Term", webUserController.getLoggedInstitution(), ct2Term);
+        savePreference("ct3Term", webUserController.getLoggedInstitution(), ct3Term);
+        savePreference("ct4Term", webUserController.getLoggedInstitution(), ct4Term);
+
         savePreference("bulkExcelTitle", webUserController.getLoggedInstitution(), bulkExcelTitle);
         savePreference("bulkExcelSubtitle", webUserController.getLoggedInstitution(), bulkExcelSubtitle);
         savePreference("bulkExcelLeftColTop", webUserController.getLoggedInstitution(), bulkExcelLeftColTop);
@@ -594,6 +602,28 @@ public class PreferenceController implements Serializable {
 
     public void setCt2Term(String ct2Term) {
         this.ct2Term = ct2Term;
+    }
+
+    public String getCt3Term() {
+        if (ct3Term == null) {
+            loadPreferencesInstitution();
+        }
+        return ct3Term;
+    }
+
+    public void setCt3Term(String value) {
+        this.ct3Term = value;
+    }
+
+    public String getCt4Term() {
+        if (ct4Term == null) {
+            loadPreferencesInstitution();
+        }
+        return ct4Term;
+    }
+
+    public void setCt4Term(String value) {
+        this.ct4Term = value;
     }
 
     public String getBulkExcelTitle() {
