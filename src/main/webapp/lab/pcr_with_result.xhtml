@@ -466,6 +466,17 @@
                   ></h:inputText>
                   <h:message class="text-danger small" for="phone"></h:message>
                 </div>
+                <div class="col-md-3">
+                  <label for="email" class="form-label fw-bold"
+                    >Email Address</label
+                  >
+                  <h:inputText
+                    id="email"
+                    class="form-control"
+                    value="#{labController.pcr.client.person.email}"
+                    autocomplete="off"
+                  ></h:inputText>
+                </div>
               </div>
               <div class="mb-4 row">
                 <h5 class="text-muted fw-bold">Workplace Details</h5>
