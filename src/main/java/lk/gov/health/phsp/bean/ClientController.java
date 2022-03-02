@@ -2834,7 +2834,7 @@ public class ClientController implements Serializable {
             if (e.getCtValue3() != null) {
                 ct3 = e.getCtValue3() + "";
             }
-            if (e.getCtValue4 != null) {
+            if (e.getCtValue4() != null) {
                 ct4 = e.getCtValue4() + "";
             }
 
@@ -3816,7 +3816,7 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
-                
+
                 Double ptCt2 = null;
                 if (ct2ColInt != null) {
                     ptCt2 = cellValueDouble(row.getCell(ct2ColInt));
@@ -3837,7 +3837,7 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
-                
+
                 if (ptCt1 != null && ptCt1 < 1) {
                     ptCt1 = null;
                 }
@@ -3867,7 +3867,7 @@ public class ClientController implements Serializable {
                 if (ptCt4 != null && ptCt4 != 0.0) {
                     ci.setCt4(ptCt4);
                 }
-                
+
                 count++;
                 getClientImports().add(ci);
 
@@ -4409,7 +4409,7 @@ public class ClientController implements Serializable {
         }
         if (ci.getCt3() != null && ci.getCt3() != 0.0) {
             pcr.setCtValue3(ci.getCt3());
-        } 
+        }
         if (ci.getCt4() != null && ci.getCt4() != 0.0) {
             pcr.setCtValue4(ci.getCt4());
         }
@@ -7534,7 +7534,7 @@ public class ClientController implements Serializable {
 
     public void setCt4Col(String value) {
         this.ct4Col = value;
-    }    
+    }
 
     public String getLabNoCol() {
         return labNoCol;
