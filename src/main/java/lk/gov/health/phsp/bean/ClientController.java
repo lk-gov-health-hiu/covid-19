@@ -8,6 +8,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.http.HttpClient;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -24,6 +27,17 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -31,6 +45,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
+import javax.security.enterprise.credential.Password;
+
+import com.mashape.unirest.http.HttpResponse;
+
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -55,10 +73,19 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.client.ClientResponse;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+
 import io.nayuki.qrcodegen.*;
 
 // </editor-fold>
@@ -1775,6 +1802,53 @@ public class ClientController implements Serializable {
         return "/lab/print_preview";
     }
 
+    // This will send email of the investigation to the user
+    public String toLabEmailSelected() {
+        String from = "nchis@health.gov.lk";
+        String subject = "National Covid Health Information System - PCR | RAT Report";
+        String to = "arkruka@gmail.com";
+        String host = "mail.health.gov.lk";
+        Properties properties = System.getProperties();
+        // properties.put("mail.transport.protocol", "smtps");
+        // properties.put("mail.smtp.ssl.enable", "true");
+        properties.setProperty("mail.smtp.ssl.enable", "true");
+        properties.setProperty("mail.transport.protocol", "smtps");
+        properties.put("mail.smtp.host", "mail.health.gov.lk");
+        properties.put("mail.smtp.port", 465);
+        properties.put("mail.smtp.auth", true);
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("nchis@health.gov.lk", "Nchis@0987650");
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+
+            String msg = "Your PCR report is accessible via the following link - ";
+
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(mimeBodyPart);
+
+            message.setContent(multipart);
+
+            Transport.send(message);
+
+            System.out.println("message sent successfully....");
+        } catch (Exception e) {
+            System.out.println("Error sending email");
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public String toHospitalPrintSelected() {
         for (Encounter e : selectedToPrint) {
             Long encounterId = e.getId();
@@ -2162,14 +2236,32 @@ public class ClientController implements Serializable {
                 html = html.replace("{pcr_ct2}", "");
             }
 
+            if (e.getCtValue3() != null) {
+                html = html.replace("{pcr_ct3}", e.getCtValue3().toString());
+            } else {
+                html = html.replace("{pcr_ct3}", "");
+            }
+
+            if (e.getCtValue4() != null) {
+                html = html.replace("{pcr_ct4}", e.getCtValue4().toString());
+            } else {
+                html = html.replace("{pcr_ct4}", "");
+            }
+
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct3_term}", getPreferenceController().findPreferanceValue("ct3Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct4_term}", getPreferenceController().findPreferanceValue("ct4Term", webUserController.getLoggedInstitution()));
 
         } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
             html = html.replace("{ct1_term}", "");
             html = html.replace("{ct2_term}", "");
+            html = html.replace("{ct3_term}", "");
+            html = html.replace("{ct4_term}", "");
             html = html.replace("{pcr_ct1}", "");
             html = html.replace("{pcr_ct2}", "");
+            html = html.replace("{pcr_ct3}", "");
+            html = html.replace("{pcr_ct4}", "");
         }
 
         if (getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()) != null) {
@@ -2591,6 +2683,26 @@ public class ClientController implements Serializable {
             html += qr_string;
         }
         return html;
+    }
+
+    //This function will send an email of the patient's PCR or RAT report to their Email address.
+    public void sendReportAsEmail() {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost("https://api.mailgun.net/v3/sandbox009501bf490748fb98af6f33405ea345.mailgun.org/messages");
+        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+        params.add(new BasicNameValuePair("from", "Mailgun Sandbox <postmaster@sandbox009501bf490748fb98af6f33405ea345.mailgun.org>"));
+        params.add(new BasicNameValuePair("to", "Rukshan Ranatunge <arkruka@gmail.com>"));
+        params.add(new BasicNameValuePair("subject", "Hello Rukshan Ranatunge"));
+        params.add(new BasicNameValuePair("text", "Congratulations Rukshan Ranatunge"));
+        httpPost.addHeader("api", "df26735f22c929a58ff19703d1b61c51-b2f5ed24-efd11dcc");
+        try {
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            System.out.println("Email sent");
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String generateLabReportsBulk(List<Encounter> es) {
