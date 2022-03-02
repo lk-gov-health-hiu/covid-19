@@ -86,6 +86,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.nayuki.qrcodegen.*;
 
 // </editor-fold>
@@ -1804,44 +1805,50 @@ public class ClientController implements Serializable {
 
     // This will send email of the investigation to the user
     public String toLabEmailSelected() {
+        Dotenv dotenv = Dotenv.load();
+        String password = dotenv.get("SMTP_PASSWORD");
+        String host = dotenv.get("SMTP_HOST");
+
         String from = "nchis@health.gov.lk";
         String subject = "National Covid Health Information System - PCR | RAT Report";
-        String to = "arkruka@gmail.com";
-        String host = "mail.health.gov.lk";
+
         Properties properties = System.getProperties();
-        // properties.put("mail.transport.protocol", "smtps");
-        // properties.put("mail.smtp.ssl.enable", "true");
-        properties.setProperty("mail.smtp.ssl.enable", "true");
-        properties.setProperty("mail.transport.protocol", "smtps");
-        properties.put("mail.smtp.host", "mail.health.gov.lk");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.trust", "*");
+        properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", 465);
         properties.put("mail.smtp.auth", true);
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("nchis@health.gov.lk", "Nchis@0987650");
+                return new PasswordAuthentication("nchis@health.gov.lk", password);
             }
         });
 
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
+            for (Encounter e: selectedToPrint) {
+                if(e.getClient().getPerson().getEmail() != null) {
+                    String to = e.getClient().getPerson().getEmail();
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(from));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                    message.setSubject(subject);
 
-            String msg = "Your PCR report is accessible via the following link - ";
+                    String msg = "Your PCR report is accessible via the following link - https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash();
 
-            MimeBodyPart mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                    mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(mimeBodyPart);
+                    Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(mimeBodyPart);
 
-            message.setContent(multipart);
+                    message.setContent(multipart);
 
-            Transport.send(message);
+                    Transport.send(message);
 
-            System.out.println("message sent successfully....");
+                    System.out.println("message sent successfully....");
+                }
+            }
         } catch (Exception e) {
             System.out.println("Error sending email");
             e.printStackTrace();
