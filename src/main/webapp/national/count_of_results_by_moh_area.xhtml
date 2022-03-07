@@ -82,19 +82,19 @@
                             rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
                             <p:columnGroup type="header">
                                 <p:row>
-                                    <p:column colspan="2"
+                                    <p:column colspan="4"
                                         headerText="#{webUserController.loggedUser.institution.name} - Result Count By MOH Areas - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}">
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column headerText="MOH Area" sortBy="#{c.institution.name}"
-                                        filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                    <p:column headerText="MOH Area" sortBy="#{c.area.name}"
+                                        filterBy="#{c.area.name}" filterMatchMode="contains">
                                     </p:column>
-                                    <p:column headerText="RDHS Area" sortBy="#{c.institution.rdhsArea.name}"
-                                        filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains">
+                                    <p:column headerText="RDHS Area" sortBy="#{c.area.rdhsArea.name}"
+                                        filterBy="#{c.area.rdhsArea.name}" filterMatchMode="contains">
                                     </p:column>
-                                    <p:column headerText="PDHS Area" sortBy="#{c.institution.pdhsArea.name}"
-                                        filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains">
+                                    <p:column headerText="PDHS Area" sortBy="#{c.area.pdhsArea.name}"
+                                        filterBy="#{c.area.pdhsArea.name}" filterMatchMode="contains">
                                     </p:column>
                                     <p:column headerText="Count" sortBy="#{c.count}">
                                     </p:column>
