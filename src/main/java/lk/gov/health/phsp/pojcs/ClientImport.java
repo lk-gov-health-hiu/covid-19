@@ -50,13 +50,15 @@ public class ClientImport {
     private String bhtNo;
     private Double ct1;
     private Double ct2;
+    private Double ct3;
+    private Double ct4;
     private Area district;
     private Area moh;
-    
-    
-    
-    
-    
+
+
+
+
+
 
     public String getTestNo() {
         return testNo;
@@ -158,8 +160,8 @@ public class ClientImport {
         return wardUnit;
     }
 
-    
-    
+
+
     public void setWardUnit(String wardUnit) {
         this.wardUnit = wardUnit;
     }
@@ -186,6 +188,22 @@ public class ClientImport {
 
     public void setCt2(Double ct2) {
         this.ct2 = ct2;
+    }
+
+    public Double getCt3() {
+        return this.ct3;
+    }
+
+    public void setCt3(Double value) {
+        this.ct3 = value;
+    }
+
+    public Double getCt4() {
+        return this.ct4;
+    }
+
+    public void setCt4(Double value) {
+        this.ct4 = value;
     }
 
     public Area getDistrict() {

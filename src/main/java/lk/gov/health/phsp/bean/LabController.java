@@ -2212,7 +2212,7 @@ public class LabController implements Serializable {
             JsfUtil.addErrorMessage("Not a PCR");
             return "";
         }
-        return "/lab/pcr";
+        return "/lab/pcr_with_result";
     }
 
     public List<Area> completeDistricts(String qry) {

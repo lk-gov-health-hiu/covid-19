@@ -8,6 +8,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.http.HttpClient;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -24,6 +27,17 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -31,6 +45,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
+import javax.security.enterprise.credential.Password;
+
+import com.mashape.unirest.http.HttpResponse;
+
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -55,10 +73,20 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.client.ClientResponse;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import io.nayuki.qrcodegen.*;
 
 // </editor-fold>
@@ -143,6 +171,8 @@ public class ClientController implements Serializable {
     private String resultCol;
     private String ct1Col;
     private String ct2Col;
+    private String ct3Col;
+    private String ct4Col;
 
     private Integer startRow = 1;
 
@@ -556,14 +586,14 @@ public class ClientController implements Serializable {
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
-        
+
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
-        
+
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
         m.put("rins", cis);
@@ -1775,6 +1805,59 @@ public class ClientController implements Serializable {
         return "/lab/print_preview";
     }
 
+    // This will send email of the investigation to the user
+    public String toLabEmailSelected() {
+        Dotenv dotenv = Dotenv.load();
+        String password = dotenv.get("SMTP_PASSWORD");
+        String host = dotenv.get("SMTP_HOST");
+
+        String from = "nchis@health.gov.lk";
+        String subject = "National Covid Health Information System - PCR | RAT Report";
+
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.trust", "*");
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", 465);
+        properties.put("mail.smtp.auth", true);
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("nchis@health.gov.lk", password);
+            }
+        });
+
+        try {
+            for (Encounter e: selectedToPrint) {
+                if(e.getClient().getPerson().getEmail() != null) {
+                    String to = e.getClient().getPerson().getEmail();
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(from));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                    message.setSubject(subject);
+
+                    String msg = "Your PCR report is accessible via the following link - https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash();
+
+                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                    mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+
+                    Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(mimeBodyPart);
+
+                    message.setContent(multipart);
+
+                    Transport.send(message);
+
+                    System.out.println("message sent successfully....");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error sending email");
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public String toHospitalPrintSelected() {
         for (Encounter e : selectedToPrint) {
             Long encounterId = e.getId();
@@ -2162,14 +2245,32 @@ public class ClientController implements Serializable {
                 html = html.replace("{pcr_ct2}", "");
             }
 
+            if (e.getCtValue3() != null) {
+                html = html.replace("{pcr_ct3}", e.getCtValue3().toString());
+            } else {
+                html = html.replace("{pcr_ct3}", "");
+            }
+
+            if (e.getCtValue4() != null) {
+                html = html.replace("{pcr_ct4}", e.getCtValue4().toString());
+            } else {
+                html = html.replace("{pcr_ct4}", "");
+            }
+
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct3_term}", getPreferenceController().findPreferanceValue("ct3Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct4_term}", getPreferenceController().findPreferanceValue("ct4Term", webUserController.getLoggedInstitution()));
 
         } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
             html = html.replace("{ct1_term}", "");
             html = html.replace("{ct2_term}", "");
+            html = html.replace("{ct3_term}", "");
+            html = html.replace("{ct4_term}", "");
             html = html.replace("{pcr_ct1}", "");
             html = html.replace("{pcr_ct2}", "");
+            html = html.replace("{pcr_ct3}", "");
+            html = html.replace("{pcr_ct4}", "");
         }
 
         if (getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()) != null) {
@@ -2583,7 +2684,13 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_comment_string}", "");
         }
         QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
-        html += "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        String qr_string =  "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        if (html.contains("{qr}") == true) {
+            html = html.replace("{qr}", qr_string);
+        } else {
+            html.replace("{qr}", "");
+            html += qr_string;
+        }
         return html;
     }
 
@@ -2695,12 +2802,22 @@ public class ClientController implements Serializable {
             String result;
             String ct1 = "";
             String ct2 = "";
+            String ct3 = "";
+            String ct4 = "";
+
             if (e.getCtValue() != null) {
                 ct1 = e.getCtValue() + "";
             }
             if (e.getCtValue2() != null) {
                 ct2 = e.getCtValue2() + "";
             }
+            if (e.getCtValue3() != null) {
+                ct3 = e.getCtValue3() + "";
+            }
+            if (e.getCtValue4() != null) {
+                ct4 = e.getCtValue4() + "";
+            }
+
             if (e.getPcrResultStr() != null && !e.getPcrResultStr().trim().equals("")) {
                 result = e.getPcrResultStr();
             } else if (e.getPcrResult() != null) {
@@ -2733,6 +2850,8 @@ public class ClientController implements Serializable {
             tblHtml += "<td>" + result + "</td>";
             tblHtml += "<td>" + ct1 + "</td>";
             tblHtml += "<td>" + ct2 + "</td>";
+            tblHtml += "<td>" + ct3 + "</td>";
+            tblHtml += "<td>" + ct4 + "</td>";
             tblHtml += "</tr>";
 
             html = html.replace("{institute}", rh.getIns().getName());
@@ -3469,6 +3588,9 @@ public class ClientController implements Serializable {
         Integer bhtColInt;
         Integer ct1ColInt;
         Integer ct2ColInt;
+        Integer ct3ColInt;
+        Integer ct4ColInt;
+
         Item sex = null;
         Item result = null;
 
@@ -3489,6 +3611,8 @@ public class ClientController implements Serializable {
         bhtColInt = CommonController.excelColFromHeader(bhtCol);
         ct2ColInt = CommonController.excelColFromHeader(ct2Col);
         ct1ColInt = CommonController.excelColFromHeader(ct1Col);
+        ct3ColInt = CommonController.excelColFromHeader(ct3Col);
+        ct4ColInt = CommonController.excelColFromHeader(ct4Col);
 
         JsfUtil.addSuccessMessage(file.getFileName());
         XSSFWorkbook myWorkBook;
@@ -3662,8 +3786,15 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
-                if (ptCt1 != null && ptCt1 < 1) {
-                    ptCt1 = null;
+                Double ptCt3 = null;
+                if (ct3ColInt != null) {
+                    ptCt3 = cellValueDouble(row.getCell(ct3ColInt));
+                    if (ptCt3 == null) {
+                        String ct = cellValue(row.getCell(ct3ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt3 = CommonController.getDoubleValue(ct);
+                        }
+                    }
                 }
 
                 Double ptCt2 = null;
@@ -3676,6 +3807,22 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
+                Double ptCt4 = null;
+                if (ct4ColInt != null) {
+                    ptCt4 = cellValueDouble(row.getCell(ct4ColInt));
+                    if (ptCt2 == null) {
+                        String ct = cellValue(row.getCell(ct4ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt4 = CommonController.getDoubleValue(ct);
+                        }
+                    }
+                }
+
+                if (ptCt1 != null && ptCt1 < 1) {
+                    ptCt1 = null;
+                }
+
+
                 if (ptCt2 != null && ptCt2 < 1) {
                     ptCt2 = null;
                 }
@@ -3685,6 +3832,20 @@ public class ClientController implements Serializable {
                 }
                 if (ptCt2 != null && ptCt2 != 0.0) {
                     ci.setCt2(ptCt2);
+                }
+
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
+                }
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
                 }
 
                 count++;
@@ -4226,7 +4387,12 @@ public class ClientController implements Serializable {
         if (ci.getCt2() != null && ci.getCt2() != 0.0) {
             pcr.setCtValue2(ci.getCt2());
         }
-
+        if (ci.getCt3() != null && ci.getCt3() != 0.0) {
+            pcr.setCtValue3(ci.getCt3());
+        }
+        if (ci.getCt4() != null && ci.getCt4() != 0.0) {
+            pcr.setCtValue4(ci.getCt4());
+        }
         pcr.setPcrTestType(lastTestPcrOrRat);
 
         if (c.getId() == null) {
@@ -7332,6 +7498,22 @@ public class ClientController implements Serializable {
 
     public void setCt2Col(String ct2Col) {
         this.ct2Col = ct2Col;
+    }
+
+    public String getCt3Col() {
+        return this.ct3Col;
+    }
+
+    public void setCt3Col(String value) {
+        this.ct3Col = value;
+    }
+
+    public String getCt4Col() {
+        return this.ct4Col;
+    }
+
+    public void setCt4Col(String value) {
+        this.ct4Col = value;
     }
 
     public String getLabNoCol() {

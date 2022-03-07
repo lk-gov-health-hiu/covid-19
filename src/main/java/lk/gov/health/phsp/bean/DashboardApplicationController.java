@@ -80,6 +80,8 @@ public class DashboardApplicationController {
     AreaApplicationController areaApplicationController;
     @Inject
     CovidDataHolder covidDataHolder;
+    @Inject
+    WebUserController webuserController;
 
 //    AreaController
     @Inject
@@ -187,15 +189,18 @@ public class DashboardApplicationController {
                 now,
                 30,
                 this.itemApplicationController.getPcr(),
-                this.itemApplicationController.getPcrPositive()
+                this.itemApplicationController.getPcrPositive(),
+                null
+
         );
 
-//        Get the RAT positive cases within the last 14 dats
+//        Get the RAT positive cases within the last 14 days
         Map<String, String> ratPositiveSeries = this.getSeriesOfCases(
                 now,
                 30,
                 this.itemApplicationController.getRat(),
-                this.itemApplicationController.getPcrPositive()
+                this.itemApplicationController.getPcrPositive(),
+                null
         );
 
 
@@ -497,7 +502,8 @@ public Map<String, String> getSeriesOfCases(
         Date fromDate,
         int duration,
         Item testType,
-        Item result
+        Item result,
+        Institution institution
 ) {
     int MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
@@ -518,7 +524,7 @@ public Map<String, String> getSeriesOfCases(
                     testType,
                     null,
                     result,
-                    null);
+                    institution);
             hashMap.put(currentDate.toString(), Long.toString(positive_cases));
         }
     }

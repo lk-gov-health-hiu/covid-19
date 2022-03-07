@@ -151,6 +151,9 @@ public class Encounter implements Serializable {
 
     private Double ctValue;
     private Double ctValue2;
+    private Double ctValue3;
+    private Double ctValue4;
+
     private String ctValueStr;
     @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrResult;
@@ -1080,7 +1083,19 @@ public class Encounter implements Serializable {
         this.sampleMissingBy = sampleMissingBy;
     }
 
+    public Double getCtValue3() {
+        return this.ctValue3;
+    }
 
+    public void setCtValue3(Double value) {
+        this.ctValue3 = value;
+    }
 
+    public Double getCtValue4() {
+        return this.ctValue4;
+    }
 
+    public void setCtValue4(Double value) {
+        this.ctValue4 = value;
+    }
 }

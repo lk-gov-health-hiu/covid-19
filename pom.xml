@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>pro1</artifactId>
+    <artifactId>dev</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>pro1</name>
+    <name>dev</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -301,6 +301,13 @@
             <groupId>io.fusionauth</groupId>
             <artifactId>fusionauth-jwt</artifactId>
             <version>4.3.1</version>
+        </dependency>
+
+        <!-- .env dependancy -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.2.2</version>
         </dependency>
     </dependencies>
 
