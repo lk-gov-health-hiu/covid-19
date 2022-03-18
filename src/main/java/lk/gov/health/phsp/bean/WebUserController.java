@@ -906,7 +906,7 @@ public class WebUserController implements Serializable {
             loggedInstitution = loggedUser.getInstitution();
         }
         System.out.println("loged Institution completed - " + new Date());
-        executeSuccessfulLoginActions();
+//        executeSuccessfulLoginActions();
         System.out.println("Executed Successful Login Actions - " + new Date());
         fillUsersForMyInstitute();
         System.out.println("Filled Users for my institutions - " + new Date());
