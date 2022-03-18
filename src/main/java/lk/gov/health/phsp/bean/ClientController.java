@@ -1820,7 +1820,7 @@ public class ClientController implements Serializable {
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", 465);
         properties.put("mail.smtp.auth", true);
-        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+        Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("nchis@health.gov.lk", password);
