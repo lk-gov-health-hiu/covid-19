@@ -1811,11 +1811,11 @@ public class ClientController implements Serializable {
         String password = dotenv.get("SMTP_PASSWORD");
         String host = dotenv.get("SMTP_HOST");
 
-        String from = "nchis@health.gov.lk";
+        String from = "nchis@gogrubit.com";
         String subject = "National Covid Health Information System - PCR | RAT Report";
 
         Properties properties = System.getProperties();
-        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.enable", true);
         properties.put("mail.smtp.ssl.trust", "*");
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", 465);
@@ -1823,12 +1823,13 @@ public class ClientController implements Serializable {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("nchis@health.gov.lk", password);
+                return new PasswordAuthentication("nchis@gogrubit.com", password);
             }
         });
 
         try {
             for (Encounter e: selectedToPrint) {
+                System.out.println(e.getClient().getPerson().getEmail());
                 if(e.getClient().getPerson().getEmail() != null) {
                     String to = e.getClient().getPerson().getEmail();
                     MimeMessage message = new MimeMessage(session);
