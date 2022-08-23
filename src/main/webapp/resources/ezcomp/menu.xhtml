@@ -42,7 +42,7 @@
                     <p:menuitem ajax="false" value="Cases Awaiting Investigation" action="#{mohController.toStartInvestigation()}" />
                 </p:submenu>
 
-                <p:submenu class="submenu mx-2" label="Aggregates"  >
+                <p:submenu class="submenu mx-2" label="Aggregates" rendered="false" >
                     <p:menuitem ajax="false" value="Total Daily RAT Count" action="#{clientEncounterComponentItemController.toEnterDailyRatCount()}" />
                 </p:submenu>
 
@@ -81,7 +81,9 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Print Results" action="#{hospitalController.toPrintResults()}"/>
                 </p:submenu>
                 <p:submenu class="submenu mx-2" label="Requests from Lab" rendered="#{webUserController.hasPrivilege('Lab_Management')}">
-                    <p:menuitem ajax="false" value="New RAT Request" rendered="false" action="#{labController.toAddNewRatOrderWithNewClient()}"  />
+                    <p:menuitem ajax="false" class="text-waring" value="New RAT Request" 
+                                rendered="false" 
+                                action="#{labController.toAddNewRatOrderWithNewClient()}"  />
                     <p:menuitem ajax="false" value="New PCR Request" action="#{labController.toAddNewPcrWithNewClient()}" />
                     <p:menuitem ajax="false" value="New RAT Request With Result" action="#{labController.toAddNewRatWithResult()}" />
                     <p:menuitem ajax="false" value="New PCR Request With Result"  action="#{labController.toAddNewPcrWithResult()}" />

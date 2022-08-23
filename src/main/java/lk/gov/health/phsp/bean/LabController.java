@@ -2251,7 +2251,7 @@ public class LabController implements Serializable {
                 rat.setInstitution(webUserController.getLoggedInstitution());
             }
         }
-        rat.setInstitutionUnit(sessionController.getLastInstitutionUnit());
+//        rat.setInstitutionUnit(sessionController.getLastInstitutionUnit());
         rat.setCreatedInstitution(webUserController.getLoggedInstitution());
         rat.setReferalInstitution(webUserController.getLoggedInstitution());
 
@@ -2384,7 +2384,7 @@ public class LabController implements Serializable {
                 pcr.setInstitution(webUserController.getLoggedInstitution());
             }
         }
-        pcr.setInstitution(sessionController.getLastInstitution());
+//        pcr.setInstitution(sessionController.getLastInstitution());
         pcr.setUnitWard(sessionController.getLastWardUnit());
         pcr.setInstitutionUnit(sessionController.getLastInstitutionUnit());
         pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
@@ -2860,17 +2860,20 @@ public class LabController implements Serializable {
             createdIns = rat.getClient().getCreateInstitution();
         }
 
+        Institution poiins;
+        Institution moh = institutionApplicationController.findMinistryOfHealth();
         if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
-            JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
-            return "";
+            poiins = moh;
+        }else{
+            poiins=createdIns;
         }
 
         if (rat.getClient().getPhn() == null || rat.getClient().getPhn().trim().equals("")) {
-            String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+            String newPhn = applicationController.createNewPersonalHealthNumberformat(poiins);
 
             int count = 0;
             while (clientApplicationController.checkPhnExists(newPhn, null)) {
-                newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+                newPhn = applicationController.createNewPersonalHealthNumberformat(poiins);
                 count++;
                 if (count > 100) {
                     JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
@@ -2922,11 +2925,11 @@ public class LabController implements Serializable {
     public void updatePcr() {
         if (pcr == null) {
             JsfUtil.addErrorMessage("No pcr to save");
-            return ;
+            return;
         }
-        if(pcr.getId()==null){
+        if (pcr.getId() == null) {
             JsfUtil.addErrorMessage("New PCR. Can't update");
-            return ;
+            return;
         }
         pcr.setLastEditBy(webUserController.getLoggedUser());
         pcr.setLastEditeAt(new Date());
@@ -2960,17 +2963,19 @@ public class LabController implements Serializable {
             createdIns = pcr.getClient().getCreateInstitution();
         }
 
+        Institution poiins;
         if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
-            JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
-            return "";
+            poiins = moh;
+        } else {
+            poiins = createdIns;
         }
 
         if (pcr.getClient().getPhn() == null || pcr.getClient().getPhn().trim().equals("")) {
-            String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+            String newPhn = applicationController.createNewPersonalHealthNumberformat(poiins);
 
             int count = 0;
             while (clientApplicationController.checkPhnExists(newPhn, null)) {
-                newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+                newPhn = applicationController.createNewPersonalHealthNumberformat(poiins);
                 count++;
                 if (count > 100) {
                     JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
