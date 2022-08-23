@@ -127,11 +127,16 @@ public class ProvincialController implements Serializable {
     private Item result;
     private Item testType;
     private Item managementType;
+    
+    
     private Institution lab;
     private Institution mohOrHospital;
+    private Institution institution;
+    private Institution assigningInstitution;
 
     private List<Institution> regionalMohsAndHospitals;
     private List<InstitutionCount> institutionCounts;
+    private List<Encounter> selectedToChangeInstitution;
 
     private Area district;
     private Area mohArea;
@@ -1815,5 +1820,169 @@ public class ProvincialController implements Serializable {
 
     public List<Item> getInvestigationFilters() {
         return itemApplicationController.getInvestigationFilters();
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Institution getAssigningInstitution() {
+        return assigningInstitution;
+    }
+
+    public void setAssigningInstitution(Institution assigningInstitution) {
+        this.assigningInstitution = assigningInstitution;
+    }
+
+    public List<Encounter> getSelectedToChangeInstitution() {
+        return selectedToChangeInstitution;
+    }
+
+    public void setSelectedToChangeInstitution(List<Encounter> selectedToChangeInstitution) {
+        this.selectedToChangeInstitution = selectedToChangeInstitution;
+    }
+    
+    public List<Institution> completeProvincialInstitutions(String nameQry) {
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<InstitutionType> types = new ArrayList<>();
+        types.add(InstitutionType.Hospital);
+        types.add(InstitutionType.Base_Hospital);
+        types.add(InstitutionType.Clinic);
+        types.add(InstitutionType.District_General_Hospital);
+        types.add(InstitutionType.Divisional_Hospital);
+        types.add(InstitutionType.Intermediate_Care_Centre);
+        types.add(InstitutionType.MOH_Office);
+        types.add(InstitutionType.Mobile_Lab);
+        types.add(InstitutionType.OPD);
+        types.add(InstitutionType.Primary_Medical_Care_Unit);
+        types.add(InstitutionType.Teaching_Hospital);
+        types.add(InstitutionType.Regional_Department_of_Health_Department);
+        types.add(InstitutionType.Provincial_General_Hospital);
+        types.add(InstitutionType.Private_Sector_Labatory);
+        types.add(InstitutionType.Private_Sector_Institute);
+        Area tPdhs= webUserController.getLoggedInstitution().getPdhsArea();
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (tPdhs != null) {
+                if (i.getPdhsArea()== null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getPdhsArea().equals(tPdhs)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            boolean typeFound = false;
+            for (InstitutionType type : types) {
+                if (type != null) {
+                    if (i.getInstitutionType() != null && i.getInstitutionType().equals(type)) {
+                        typeFound = true;
+                    }
+                }
+            }
+            if (!typeFound) {
+                canInclude = false;
+            }
+            if (i.getName() == null || i.getName().trim().equals("")) {
+                canInclude = false;
+            } else {
+                if (!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())) {
+                    canInclude = false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
+    }
+    
+    public void assignInstitution(){
+        if(assigningInstitution==null){
+            JsfUtil.addErrorMessage("No Institution");
+            return;
+        }
+        if(selectedToAssign==null||selectedToAssign.isEmpty()){
+            JsfUtil.addErrorMessage("No Tests Selected");
+            return;
+        }
+        int c=0;
+        for(Encounter e:selectedToAssign){
+            e.setInstitution(assigningInstitution);
+            e.setLastEditBy(webUserController.getLoggedUser());
+            e.setLastEditeAt(new Date());
+            encounterFacade.edit(e);
+            c++;
+        }
+        JsfUtil.addSuccessMessage("New Institution assigned to " + c + " institutions.");
+    }
+    
+    
+    public String toListToAssignInstitution() {
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.institution.pdhsArea=:pdhs or c.institution.province=:province) ";
+        m.put("pdhs", webUserController.getLoggedInstitution().getRdhsArea());
+        m.put("province", webUserController.getLoggedInstitution().getProvince());
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+        if (institution != null) {
+            j += " and c.institution=:oi ";
+            m.put("oi", institution);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/provincial/admin/change_institution";
     }
 }

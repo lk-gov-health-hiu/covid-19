@@ -42,11 +42,17 @@
                             <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                 itemValue="#{c}"></f:selectItems>
                         </p:selectOneMenu>
-                        <p:commandButton ajax="false" value="Generate Excel">
-                            <p:dataExporter target="tbl" type="xlsx" fileName="tests"></p:dataExporter>
-                        </p:commandButton>
-                        <p:commandButton ajax="false" value="Process"
-                            action="#{nationalController.toCountOfTestsByOrderedInstitution()}"></p:commandButton>
+                        <f:facet name="footer">
+                            <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="tests"></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Generate PDF" class="btn btn-warning">
+                                <p:dataExporter target="tbl" type="pdf" fileName="tests"></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                action="#{nationalController.toCountOfTestsByOrderedInstitution()}"></p:commandButton>
+
+                        </f:facet>
                     </p:panelGrid>
                     <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl"
                         value="#{nationalController.institutionCounts}" rendered="true" rowIndexVar="n" var="c"

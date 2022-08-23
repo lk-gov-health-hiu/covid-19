@@ -27,12 +27,29 @@
             <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
                 <div class="container-fluid">
                     <div class="row bg-primary">
-                        <div class="col-auto" >
+                        <div class="col-auto d-sm-none d-md-block">
                             <ez:menu/>
                         </div>
-<!--                        <div class="col-12 text-danger h1" >
-                            Server will be down for 5 minutes from 6:30 pm. Extremely sorry
-                        </div>-->
+                        <div class="d-none d-sm-block d-md-none">
+                            <div rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Lab' }">
+                                <h:commandLink action="#{labController.toAddNewPcrWithNewClient()}" class="btn btn-primary d-block">New PCR Request</h:commandLink>
+                                <h:commandLink action="#{labController.toAddNewRatOrderWithNewClient()}" class="btn btn-primary d-block">New RAT Request</h:commandLink>
+                                <h:commandLink action="#{labController.toAddNewPcrWithResult()}"  class="d-block btn btn-primary">New PCR Request With Result</h:commandLink>
+                                <h:commandLink action="#{labController.toAddNewRatWithResult()}" class="d-block btn btn-primary">New RAT Request With Result</h:commandLink>
+                            </div>
+                            <div rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital' }">
+                                <h:commandLink class="d-block btn btn-primary" action="#{hospitalController.toAddNewPcrWithNewClient()}">New PCR Request</h:commandLink>
+                                <h:commandLink class="d-block btn btn-primary" action="#{hospitalController.toAddNewRatOrderWithNewClient()}">New RAT Request</h:commandLink>
+                                <h:commandLink class="d-block btn btn-primary" action="#{hospitalController.toAddNewPcrWithNewClient()}">New PCR Request With Result</h:commandLink>
+                                <h:commandLink class="d-block btn btn-primary" action="#{hospitalController.toAddNewRatWithNewClient()}">New RAT Request With Result</h:commandLink>
+                            </div>
+                            <div rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Moh'}">
+                                <h:commandLink class="btn btn-primary d-block" action="#{mohController.toAddNewPcrWithNewClient()}">New PCR Request</h:commandLink>
+                                <h:commandLink class="btn btn-primary d-block" action="#{mohController.toAddNewRatOrderWithNewClient()}">New RAT Request</h:commandLink>
+                                <h:commandLink class="btn btn-primary d-block" action="#{mohController.toAddNewPCRWithResult()}">New PCR Request With Result</h:commandLink>
+                                <h:commandLink class="btn btn-primary d-block" action="#{mohController.toAddNewRatWithNewClient()}">New RAT Request With Result</h:commandLink>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="container-fluid w-100" >

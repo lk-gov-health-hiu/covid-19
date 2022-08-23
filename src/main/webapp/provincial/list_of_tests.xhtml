@@ -73,6 +73,10 @@
 
                         </p:panelGrid>
 
+                        <div>
+                            <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Columns" icon="pi pi-align-justify"/>
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                        </div>
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{provincialController.tests}" rendered="true"
                                      rowIndexVar="n"

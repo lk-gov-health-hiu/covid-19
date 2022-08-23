@@ -584,14 +584,35 @@ public class InstitutionController implements Serializable {
         selected = new Institution();
     }
 
+    public void fixPdAreas() {
+        for (Institution i : institutionApplicationController.getInstitutions()) {
+            if (i.getPdhsArea() == null) {
+                System.out.println("Institution without PDHS = " + i.getName());
+                if (i.getRdhsArea() != null) {
+                    System.out.println("Institution without RDHS = " + i.getName());
+                    if (i.getRdhsArea().getPdhsArea() != null) {
+                        i.setPdhsArea(i.getRdhsArea().getPdhsArea());
+                    }else if(i.getRdhsArea().getParentArea()!=null){
+                        i.setPdhsArea(i.getRdhsArea().getParentArea());
+                    }else{
+                        System.out.println("PDHS NOT Fixed");
+                    }
+                    getFacade().edit(i);
+                    System.out.println("PDHS Fixed");
+                }
+            }
+        }
+        institutionApplicationController.resetAllInstitutions();
+    }
+
     public void prepareToListInstitution() {
-        if(webUserController.getLoggedUser()==null){
+        if (webUserController.getLoggedUser() == null) {
             items = null;
         }
         if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.National
                 || webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.National_Lab) {
             items = institutionApplicationController.getInstitutions();
-        }else{
+        } else {
             items = webUserController.findAutherizedInstitutions();
         }
     }

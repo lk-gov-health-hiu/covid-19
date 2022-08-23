@@ -44,6 +44,9 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.SmsFacade;
 import javax.inject.Named;
 import javax.persistence.TemporalType;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.WebUser;
@@ -147,6 +150,8 @@ public class LabController implements Serializable {
     private List<Encounter> selectedToAssign;
     private List<Encounter> listedToDispatch;
     private List<Encounter> selectedToDispatch;
+    private List<Encounter> selectedToPrint;
+
     private Date fromDate;
     private Date toDate;
 
@@ -451,14 +456,24 @@ public class LabController implements Serializable {
             j = "select count(e) "
                     + " from Encounter e "
                     + " where  (e.retired is null or e.retired=:pf) "
-                    + " and e.createdAt between :fd and :td "
+                    + " and (e.createdAt > :fd and e.createdAt< :td) "
                     + " and e.referalInstitution in :rins "
                     + " and e.institution=:ins "
                     + " and e.sentToLab=:pt "
                     + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
                     + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
                     + " and (e.receivedAtLab is null or e.receivedAtLab=:pf) ";
-            ls.setToReceive(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+            System.err.println("m = " + m);
+            System.out.println("j = " + j);
+            for (Object o : m.values()) {
+                System.err.println("o = " + o);
+            }
+            for (Object k : m.keySet()) {
+                System.err.println("k = " + k);
+            }
+            Long toReceiveCount = encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            System.out.println("toReceiveCount = " + toReceiveCount);
+            ls.setToReceive(toReceiveCount);
 
             j = "select count(e) "
                     + " from Encounter e "
@@ -496,6 +511,138 @@ public class LabController implements Serializable {
                     + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
             ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
 
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.resultReviewed=:pt "
+                    + " or e.sampleRejectedAtLab=:pt "
+                    + " or e.sampleMissing=:pt "
+                    + " or e.resultConfirmed=:pt)";
+            ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+            labSummaries.add(ls);
+        }
+    }
+
+    public void processLabSummary1() {
+        labSummaries = new ArrayList<>();
+        String j;
+        Map m = new HashMap();
+        Map<LabSummary, Long> labSummeriesMap = new HashMap<>();
+        //Institutions
+        j = "select i "
+                + " from Encounter e join e.institution i "
+                + " where (e.retired is null or e.retired=:pf) "
+                + " and e.createdAt between :fd and :td "
+                + " and e.referalInstitution in :rins "
+                + " group by i"
+                + " order by i.name";
+        m = new HashMap();
+        m.put("pf", false);
+        m.put("rins", webUserController.getLoggableInstitutions());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Institution> tins = institutionFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        for (Institution ti : tins) {
+            LabSummary ls = new LabSummary();
+
+            ls.setInstitution(ti);
+
+            m = new HashMap();
+            m.put("rins", webUserController.getLoggableInstitutions());
+            m.put("ins", ti);
+
+            m.put("pf", false);
+            m.put("ins", ti);
+            m.put("fd", getFromDate());
+            m.put("td", getToDate());
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.sentToLab is null or e.sentToLab=:pf) ";
+
+            ls.setToDispatch(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            m.put("pt", true);
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and (e.createdAt > :fd and e.createdAt< :td) "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.sentToLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.receivedAtLab is null or e.receivedAtLab=:pf) ";
+            System.err.println("m = " + m);
+            System.out.println("j = " + j);
+            for (Object o : m.values()) {
+                System.err.println("o = " + o);
+            }
+            for (Object k : m.keySet()) {
+                System.err.println("k = " + k);
+            }
+            Long toReceiveCount = encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            System.out.println("toReceiveCount = " + toReceiveCount);
+            ls.setToReceive(toReceiveCount);
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.receivedAtLab=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultEntered is null or e.resultEntered=:pf) ";
+            ls.setToEnterData(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultEntered=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultReviewed is null or e.resultReviewed=:pf) ";
+            ls.setToReview(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and e.resultReviewed=:pt "
+                    + " and (e.sampleRejectedAtLab is null or e.sampleRejectedAtLab=:pf) "
+                    + " and (e.sampleMissing is null or e.sampleMissing=:pf) "
+                    + " and (e.resultConfirmed is null or e.resultConfirmed=:pf) ";
+            ls.setToConfirm(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
+
+            j = "select count(e) "
+                    + " from Encounter e "
+                    + " where  (e.retired is null or e.retired=:pf) "
+                    + " and e.createdAt between :fd and :td "
+                    + " and e.referalInstitution in :rins "
+                    + " and e.institution=:ins "
+                    + " and (e.resultReviewed=:pt "
+                    + " or e.sampleRejectedAtLab=:pt "
+                    + " or e.sampleMissing=:pt "
+                    + " or e.resultConfirmed=:pt)";
+            ls.setConfirmed(encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP));
             labSummaries.add(ls);
         }
     }
@@ -661,7 +808,6 @@ public class LabController implements Serializable {
 
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
-
 
         if (this.filter == null) {
             this.filter = "createdat";
@@ -1310,7 +1456,7 @@ public class LabController implements Serializable {
         m.put("ins", institution);
         m.put("rins", webUserController.getLoggableInstitutions());
         listedToDispatch = encounterFacade.findByJpql(j, m, TemporalType.DATE);
-        return "/lab/dispatch_samples";
+        return "/lab/dispatch_samples_external_lab";
     }
 
     public String toAssignInvestigation() {
@@ -2066,7 +2212,7 @@ public class LabController implements Serializable {
             JsfUtil.addErrorMessage("Not a PCR");
             return "";
         }
-        return "/lab/pcr";
+        return "/lab/pcr_with_result";
     }
 
     public List<Area> completeDistricts(String qry) {
@@ -2085,7 +2231,7 @@ public class LabController implements Serializable {
         return itemApplicationController.getSexes();
     }
 
-    public String toAddNewRatWithNewClient() {
+    public String toAddNewRatWithResult() {
         rat = new Encounter();
         nicExistsForRat = null;
         Date d = new Date();
@@ -2125,9 +2271,63 @@ public class LabController implements Serializable {
         rat.setResultConfirmedBy(webUserController.getLoggedUser());
 
         rat.setCreatedAt(new Date());
-        return "/lab/rat";
+        return "/lab/rat_with_result";
     }
 
+    public String toAddNewPcrWithResult() {
+        pcr = new Encounter();
+        nicExistsForPcr = null;
+        Date date = new Date();
+        Client client = new Client();
+
+        client.getPerson().setDistrict(webUserController.getLoggedUser().getInstitution().getDistrict());
+        client.getPerson().setMohArea(webUserController.getLoggedUser().getInstitution().getMohArea());
+        client.getPerson().setPhiArea(webUserController.getLoggedUser().getInstitution().getPhiArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+        pcr.setClient(client);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(date);
+        pcr.setEncounterFrom(date);
+        pcr.setEncounterMonth(CommonController.getMonth(date));
+        pcr.setEncounterQuarter(CommonController.getQuarter(date));
+        pcr.setEncounterYear(CommonController.getYear(date));
+
+        if (sessionController.getLastLab() == null) {
+            pcr.setReferalInstitution(sessionController.getLastLab());
+        } else {
+            pcr.setReferalInstitution(webUserController.getLoggedInstitution());
+        }
+
+        pcr.setCreatedAt(date);
+        pcr.setCreatedBy(webUserController.getLoggedUser());
+
+        pcr.setSampled(true);
+        pcr.setSampledAt(date);
+        pcr.setSampledBy(webUserController.getLoggedUser());
+
+        pcr.setResultConfirmedAt(date);
+
+        if (sessionController.getLastWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkPlace(sessionController.getLastWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkplaceContact(sessionController.getLastContactOfWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplaceDetails() != null) {
+            pcr.getClient().getPerson().setWorkplaceContactDetails(sessionController.getLastContactOfWorkplaceDetails());
+        }
+
+        pcr.setCreatedAt(date);
+
+        return "/lab/pcr_with_result";
+    }
+
+    //This function is defunct
     public String toAddNewRatOrderWithNewClient() {
         rat = new Encounter();
         nicExistsForRat = null;
@@ -2202,7 +2402,28 @@ public class LabController implements Serializable {
         pcr.setSentToLabAt(new Date());
         pcr.setSentToLabBy(webUserController.getLoggedUser());
         pcr.setCreatedAt(new Date());
-        return "/lab/pcr";
+        return "/lab/pcr_order";
+    }
+
+    public String savePcrAndToTestList() {
+        boolean newOne = false;
+        if (pcr != null) {
+            if (pcr.getId() == null) {
+                newOne = true;
+            }
+        }
+        if (savePcr() != null) {
+            if (newOne) {
+                return toTestList();
+            }
+            return toTestListNoProcess();
+        } else {
+            return "";
+        }
+    }
+
+    public String toTestListNoProcess() {
+        return "/moh/list_of_tests";
     }
 
     public String toAddNewPcrWithExistingNic() {
@@ -2219,6 +2440,7 @@ public class LabController implements Serializable {
             return "";
         }
         Client nicClient = lastClientWithNic(pcr.getClient().getPerson().getNic(), pcr.getClient());
+        System.out.println(nicClient);
         if (nicClient == null) {
             return "";
         }
@@ -2255,7 +2477,109 @@ public class LabController implements Serializable {
         pcr.setSampledAt(new Date());
         pcr.setSampledBy(webUserController.getLoggedUser());
         pcr.setCreatedAt(new Date());
-        return "/lab/pcr";
+        return "/lab/pcr_order";
+    }
+
+    public String toAddNewPcrWithResultWithExistingNic() {
+        if (pcr == null) {
+            return "";
+        }
+        if (pcr.getClient() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson() == null) {
+            return "";
+        }
+        if (pcr.getClient().getPerson().getNic() == null || pcr.getClient().getPerson().getNic().trim().equals("")) {
+            return "";
+        }
+        Client nicClient = lastClientWithNic(pcr.getClient().getPerson().getNic(), pcr.getClient());
+
+        if (nicClient == null) {
+            return "";
+        }
+        nicExistsForPcr = null;
+        Encounter tmpEnc = pcr;
+        pcr = new Encounter();
+        pcr.setEncounterNumber(tmpEnc.getEncounterNumber());
+        Date d = new Date();
+        Client c = nicClient;
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+        pcr.setClient(c);
+        if (sessionController.getLastInstitution() != null) {
+            pcr.setInstitution(sessionController.getLastInstitution());
+        } else {
+            if (webUserController.getLoggedInstitution().getParent() != null) {
+                pcr.setInstitution(webUserController.getLoggedInstitution().getParent());
+            } else {
+                pcr.setInstitution(webUserController.getLoggedInstitution());
+            }
+        }
+        pcr.setInstitutionUnit(sessionController.getLastInstitutionUnit());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(webUserController.getLoggedInstitution());
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+        return "/lab/pcr_with_result";
+    }
+
+    public String toAddNewPcrResultWithNewClient() {
+        pcr = new Encounter();
+        nicExistsForPcr = null;
+        Date d = new Date();
+        Client c = new Client();
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        pcr.setPcrTestType(itemApplicationController.getPcr());
+        pcr.setPcrOrderingCategory(sessionController.getLastPcrOrdringCategory());
+
+        pcr.setClient(c);
+        pcr.setInstitution(webUserController.getLoggedInstitution());
+        pcr.setCreatedInstitution(webUserController.getLoggedInstitution());
+        pcr.setReferalInstitution(lab);
+        pcr.setEncounterType(EncounterType.Test_Enrollment);
+        pcr.setEncounterDate(d);
+        pcr.setEncounterFrom(d);
+        pcr.setEncounterMonth(CommonController.getMonth(d));
+        pcr.setEncounterQuarter(CommonController.getQuarter(d));
+        pcr.setEncounterYear(CommonController.getYear(d));
+        pcr.setSampled(true);
+        pcr.setSampledAt(new Date());
+        pcr.setSampledBy(webUserController.getLoggedUser());
+        pcr.setCreatedAt(new Date());
+
+        if (sessionController.getLastWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkPlace(sessionController.getLastWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplace() != null) {
+            pcr.getClient().getPerson().setWorkplaceContact(sessionController.getLastContactOfWorkplace());
+        }
+
+        if (sessionController.getLastContactOfWorkplaceDetails() != null) {
+            pcr.getClient().getPerson().setWorkplaceContactDetails(sessionController.getLastContactOfWorkplaceDetails());
+        }
+
+        return "/lab/pcr_with_result";
+    }
+
+    public String toSaveAndNewPcrWithResult() {
+        if (savePcr() != null) {
+            return toAddNewPcrResultWithNewClient();
+        } else {
+            return "";
+        }
     }
 
     public String toAddNewRatOrderWithExistingNic() {
@@ -2310,6 +2634,64 @@ public class LabController implements Serializable {
         rat.setSampledBy(webUserController.getLoggedUser());
         rat.setCreatedAt(new Date());
         return "/lab/rat_order";
+    }
+
+    public String toAddNewRatWithResultWithExistingNic() {
+        if (rat == null) {
+            return "";
+        }
+        if (rat.getClient() == null) {
+            return "";
+        }
+        if (rat.getClient().getPerson() == null) {
+            return "";
+        }
+        if (rat.getClient().getPerson().getNic() == null || rat.getClient().getPerson().getNic().trim().equals("")) {
+            return "";
+        }
+        Client nicClient = lastClientWithNic(rat.getClient().getPerson().getNic(), rat.getClient());
+        if (nicClient == null) {
+            return "";
+        }
+        nicExistsForRat = null;
+        Encounter tmpEnc = rat;
+        rat = new Encounter();
+        rat.setEncounterNumber(tmpEnc.getEncounterNumber());
+        Date d = new Date();
+        Client c = nicClient;
+        c.getPerson().setDistrict(webUserController.getLoggedInstitution().getDistrict());
+        c.getPerson().setMohArea(webUserController.getLoggedInstitution().getMohArea());
+        rat.setPcrTestType(itemApplicationController.getRat());
+        rat.setPcrOrderingCategory(sessionController.getLastRatOrderingCategory());
+        rat.setClient(c);
+        if (sessionController.getLastInstitution() != null) {
+            rat.setInstitution(sessionController.getLastInstitution());
+        } else {
+            if (webUserController.getLoggedInstitution().getParent() != null) {
+                rat.setInstitution(webUserController.getLoggedInstitution().getParent());
+            } else {
+                rat.setInstitution(webUserController.getLoggedInstitution());
+            }
+        }
+        rat.setInstitutionUnit(sessionController.getLastInstitutionUnit());
+        rat.setCreatedInstitution(webUserController.getLoggedInstitution());
+        rat.setReferalInstitution(webUserController.getLoggedInstitution());
+        rat.setEncounterType(EncounterType.Test_Enrollment);
+        rat.setEncounterDate(d);
+        rat.setEncounterFrom(d);
+        rat.setEncounterMonth(CommonController.getMonth(d));
+        rat.setEncounterQuarter(CommonController.getQuarter(d));
+        rat.setEncounterYear(CommonController.getYear(d));
+
+        rat.setSampled(true);
+        rat.setSampledAt(new Date());
+        rat.setSampledBy(webUserController.getLoggedUser());
+        rat.setResultConfirmed(Boolean.TRUE);
+        rat.setResultConfirmedAt(d);
+        rat.setResultConfirmedBy(webUserController.getLoggedUser());
+
+        rat.setCreatedAt(new Date());
+        return "/lab/rat_with_result";
     }
 
     public String toAddNewRatWithExistingNic() {
@@ -2375,7 +2757,7 @@ public class LabController implements Serializable {
             return "";
         }
         JsfUtil.addSuccessMessage("Ready to enter a new RAT");
-        return toAddNewRatWithNewClient();
+        return toAddNewRatWithResult();
     }
 
     public String saveRatAndToNewRatOrder() {
@@ -2389,6 +2771,48 @@ public class LabController implements Serializable {
     public String saveRatAndToRatView() {
         if (saveRat() != null) {
             return toRatView();
+        } else {
+            return "";
+        }
+    }
+
+    // This function will redirect user to printing a rat after entring a result
+    public String saveRatAndPrintResult() {
+        if (saveRat() != null) {
+            Long eid = rat.getId();
+            String hash = DigestUtils.sha1Hex(eid.toString());
+            rat.setEncounterIdHash(hash);
+            rat.setResultPrinted(true);
+            rat.setResultPrintedAt(new Date());
+            rat.setResultPrintedBy(webUserController.getLoggedUser());
+            rat.setResultPrintHtml(clientController.generateLabReport(rat));
+            rat.setQurantineReportHtml(clientController.generateQurantineReport(rat));
+            encounterFacade.edit(rat);
+            List<Encounter> elist = new ArrayList<Encounter>();
+            elist.add(rat);
+            clientController.setSelectedToPrint(elist);
+            return "/lab/print_preview";
+        } else {
+            return "";
+        }
+    }
+
+    // This will redirect user to printing a pcr after entering a result
+    public String savePcrAndPrintResult() {
+        if (savePcr() != null) {;
+            List<Encounter> elist = new ArrayList<Encounter>();
+            Long eid = pcr.getId();
+            String hash = DigestUtils.sha1Hex(eid.toString());
+            pcr.setEncounterIdHash(hash);
+            pcr.setResultPrinted(true);
+            pcr.setResultPrintedBy(webUserController.getLoggedUser());
+            pcr.setResultPrintedAt(new Date());
+            pcr.setResultPrintHtml(clientController.generateLabReport(pcr));
+            pcr.setQurantineReportHtml(clientController.generateQurantineReport(pcr));
+            encounterFacade.edit(pcr);
+            elist.add(pcr);
+            clientController.setSelectedToPrint(elist);
+            return "/lab/print_preview";
         } else {
             return "";
         }
@@ -2493,6 +2917,21 @@ public class LabController implements Serializable {
 
         JsfUtil.addSuccessMessage("Saved.");
         return "/lab/rat_view";
+    }
+
+    public void updatePcr() {
+        if (pcr == null) {
+            JsfUtil.addErrorMessage("No pcr to save");
+            return ;
+        }
+        if(pcr.getId()==null){
+            JsfUtil.addErrorMessage("New PCR. Can't update");
+            return ;
+        }
+        pcr.setLastEditBy(webUserController.getLoggedUser());
+        pcr.setLastEditeAt(new Date());
+        encounterFacade.edit(pcr);
+        JsfUtil.addErrorMessage("Updated");
     }
 
     public String savePcr() {
@@ -3156,7 +3595,7 @@ public class LabController implements Serializable {
         j += " and c.encounterType=:etype ";
         m.put("etype", EncounterType.Test_Enrollment);
 
-        j += " and c.resultConfirmed between :fd and :td ";
+        j += " and c.resultConfirmedAt between :fd and :td ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         if (testType != null) {
@@ -3838,6 +4277,14 @@ public class LabController implements Serializable {
 
     public String getSearchingBhtno() {
         return searchingBhtno;
+    }
+
+    public List<Encounter> getSelectedToPrint() {
+        return this.selectedToPrint;
+    }
+
+    public void setSelectedToPrint(List<Encounter> selectedToPrint) {
+        this.selectedToPrint = selectedToPrint;
     }
 
     public void setSearchingBhtno(String searchingBhtno) {

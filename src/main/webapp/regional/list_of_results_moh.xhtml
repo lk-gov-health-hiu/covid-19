@@ -21,7 +21,7 @@
                         <p:panelGrid columns="2" >
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="From" ></p:outputLabel>
-                                <p:calendar value="#{regionalController.fromDate}" 
+                                <p:calendar value="#{regionalController.fromDate}"
                                             pattern="dd MMMM yyyy hh:mm a">
                                 </p:calendar>
 
@@ -31,7 +31,7 @@
                                 <p:outputLabel value="Ordering Category" ></p:outputLabel>
                                 <p:selectOneMenu value="#{regionalController.orderingCategory}" >
                                     <f:selectItem itemLabel="All" ></f:selectItem>
-                                    <f:selectItems value="#{regionalController.covidTestOrderingCategories}" 
+                                    <f:selectItems value="#{regionalController.covidTestOrderingCategories}"
                                                    var="c" itemLabel="#{c.name}"
                                                    itemValue="#{c}" ></f:selectItems>
                                 </p:selectOneMenu>
@@ -54,16 +54,22 @@
                                 <p:autoComplete style="width: 100%;"
                                                 inputStyleClass="autocomplete"
                                                 value="#{regionalController.lab}"
-                                                forceSelection="true" tabindex="100" 
-                                                completeMethod="#{regionalController.completeLab}" 
+                                                forceSelection="true" tabindex="100"
+                                                completeMethod="#{regionalController.completeLab}"
                                                 var="l" itemLabel="#{l.name}" itemValue="#{l}">
                                 </p:autoComplete>
 
-                                <p:commandButton ajax="false" value="Generate Excel">
-                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
-                                </p:commandButton>
-                                <p:commandButton ajax="false" value="Process" 
-                                                 action="#{regionalController.toListResults()}" ></p:commandButton>
+                                <f:facet name="footer">
+                                    <p:commandButton class="btn btn-success" ajax="false" value="Generate Excel">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" class="btn btn-danger" value="Generate PDF">
+                                        <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                                     action="#{regionalController.toListResults()}" ></p:commandButton>
+
+                                </f:facet>
 
 
                             </p:panelGrid>
@@ -72,10 +78,10 @@
 
 
 
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}" 
-                                     var="c" rowKey="#{c.id}" 
-                                     rows="10" 
-                                     paginator="true" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{regionalController.tests}"
+                                     var="c" rowKey="#{c.id}"
+                                     rows="10"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,50,100,{ShowAll|'All'}"

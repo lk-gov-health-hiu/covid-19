@@ -55,6 +55,7 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
+import lk.gov.health.phsp.pojcs.InstitutionPeformance;
 // </editor-fold>
 
 /**
@@ -151,11 +152,13 @@ public class RegionalController implements Serializable {
     private Institution referingInstitution;
     private Institution dispatchingLab;
     private Institution divertingLab;
+    private Institution assigningInstitution;
 
     private List<Encounter> listedToDispatch;
     private List<Encounter> listedToDivert;
     private List<Encounter> selectedToDivert;
     private List<Encounter> selectedToDispatch;
+    private List<Encounter> selectedToChangeInstitution;
 
     private List<InstitutionCount> labSummariesToReceive;
     private List<InstitutionCount> labSummariesReceived;
@@ -163,6 +166,10 @@ public class RegionalController implements Serializable {
     private List<InstitutionCount> labSummariesReviewed;
     private List<InstitutionCount> labSummariesConfirmed;
     private List<InstitutionCount> labSummariesPositive;
+
+    private List<InstitutionPeformance> institutionPeformances;
+    private List<InstitutionPeformance> institutionPeformancesFiltered;
+    private InstitutionPeformance institutionPeformancesSummery;
 
     private Item vaccinationStatus;
 
@@ -179,8 +186,6 @@ public class RegionalController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Functions">
-
-
     public String toSummaryByOrderedInstitutionVsLabToReceive() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -209,7 +214,6 @@ public class RegionalController implements Serializable {
         return "/regional/summary_lab_vs_ordered_to_receive";
     }
 
-
     public void processSummaryReceivedAtLab() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, c.referalInstitution, count(c)) "
                 + " from Encounter c "
@@ -236,12 +240,11 @@ public class RegionalController implements Serializable {
         j += " group by c.institution, c.referalInstitution";
         institutionCounts = new ArrayList<>();
 
-
         List<Object> obs = encounterFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
-        Long c=1l;
+        Long c = 1l;
         for (Object o : obs) {
             if (o instanceof InstitutionCount) {
-                InstitutionCount ic=(InstitutionCount) o;
+                InstitutionCount ic = (InstitutionCount) o;
                 ic.setId(c);
                 c++;
                 institutionCounts.add(ic);
@@ -300,7 +303,7 @@ public class RegionalController implements Serializable {
         m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
         List<Object> os = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         awaitingDispatch = new ArrayList<>();
-        Long c=0l;
+        Long c = 0l;
         for (Object o : os) {
             if (o instanceof InstitutionCount) {
                 InstitutionCount ic = (InstitutionCount) o;
@@ -529,7 +532,6 @@ public class RegionalController implements Serializable {
         j += " and c.institution.rdhsArea=:rd ";
         m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
 
-
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
             m.put("tt", testType);
@@ -577,10 +579,8 @@ public class RegionalController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-
         j += " and c.institution.rdhsArea=:rd";
         m.put("rd", webUserController.getLoggedInstitution().getRdhsArea());
-
 
         if (testType != null) {
             j += " and c.pcrTestType=:tt ";
@@ -591,7 +591,6 @@ public class RegionalController implements Serializable {
             j += " and c.pcrOrderingCategory=:oc ";
             m.put("oc", orderingCategory);
         }
-
 
         j += " and c.pcrResult=:result ";
         m.put("result", itemApplicationController.getPcrPositive());
@@ -604,19 +603,17 @@ public class RegionalController implements Serializable {
         j += " group by c.institution.mohArea "
                 + " order by count(c) desc ";
 
-
         List<Object> objPositives = encounterFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
-
 
         if (objCounts == null || objCounts.isEmpty()) {
             return "/regional/positivity_rate_by_moh";
         }
 
-        for (int index = 0; index <= objPositives.size()-1; index++) {
+        for (int index = 0; index <= objPositives.size() - 1; index++) {
             InstitutionCount incPositive = (InstitutionCount) objPositives.get(index);
             InstitutionCount incCounts = (InstitutionCount) objCounts.get(index);
-            double tempPositiveRate = ((double) incPositive.getCount()/incCounts.getCount()*100);
+            double tempPositiveRate = ((double) incPositive.getCount() / incCounts.getCount() * 100);
             String tempRate = df.format(tempPositiveRate) + "%";
             InstitutionCount rateCount = new InstitutionCount();
             rateCount.setArea(incPositive.getArea());
@@ -627,6 +624,17 @@ public class RegionalController implements Serializable {
         }
 
         return "/regional/positivity_rate_by_moh";
+    }
+
+    public List<InstitutionPeformance> getInstitutionPeformances() {
+        if (institutionPeformances == null) {
+            institutionPeformances = new ArrayList<>();
+        }
+        return institutionPeformances;
+    }
+
+    public String toInstitutionvicePeformanceReport() {
+        return "/regional/institution_vice_peformance_report";
     }
 
     public String toMohAreaResultList() {
@@ -1237,7 +1245,6 @@ public class RegionalController implements Serializable {
                 break;
         }
 
-
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
@@ -1642,6 +1649,139 @@ public class RegionalController implements Serializable {
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/regional/list_of_results";
     }
+    
+    
+    public String toListToAssignInstitution() {
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.institution.rdhsArea=:rdhs or c.institution.district=:district) ";
+        m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
+        m.put("district", webUserController.getLoggedInstitution().getDistrict());
+
+        if (this.filter == null) {
+            this.filter = "resultsat";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+            default:
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+        if (institution != null) {
+            j += " and c.institution=:oi ";
+            m.put("oi", institution);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/regional/admin/change_institution";
+    }
+    
+    public void assignInstitution(){
+        if(assigningInstitution==null){
+            JsfUtil.addErrorMessage("No Institution");
+            return;
+        }
+        if(selectedToAssign==null||selectedToAssign.isEmpty()){
+            JsfUtil.addErrorMessage("No Tests Selected");
+            return;
+        }
+        int c=0;
+        for(Encounter e:selectedToAssign){
+            e.setInstitution(assigningInstitution);
+            e.setLastEditBy(webUserController.getLoggedUser());
+            e.setLastEditeAt(new Date());
+            encounterFacade.edit(e);
+            c++;
+        }
+        JsfUtil.addSuccessMessage("New Institution assigned to " + c + " institutions.");
+    }
+
+    public String toListResultsByResidentMohArea() {
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Encounter c "
+                + " where (c.retired is null or c.retired=:ret) ";
+        m.put("ret", false);
+        j += " and c.encounterType=:etype ";
+        m.put("etype", EncounterType.Test_Enrollment);
+        j += " and (c.client.person.district=:district) ";
+//        m.put("rdhs", webUserController.getLoggedInstitution().getRdhsArea());
+        m.put("district", webUserController.getLoggedInstitution().getDistrict());
+        if (this.filter == null) {
+            this.filter = "createdAt";
+        }
+
+        switch (this.filter.toUpperCase()) {
+            case "CREATEDAT":
+                j += " and c.createdAt between :fd and :td ";
+                break;
+
+            case "SAMPLEDAT":
+                j += " and c.sampledAt between :fd and :td ";
+                break;
+
+            case "RESULTSAT":
+                j += " and c.resultConfirmedAt between :fd and :td ";
+                break;
+
+            default:
+                j += " and c.createdAt between :fd and :td ";
+                break;
+        }
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (testType != null) {
+            j += " and c.pcrTestType=:tt ";
+            m.put("tt", testType);
+        }
+        if (orderingCategory != null) {
+            j += " and c.pcrOrderingCategory=:oc ";
+            m.put("oc", orderingCategory);
+        }
+        if (result != null) {
+            j += " and c.pcrResult=:result ";
+            m.put("result", result);
+        }
+        if (lab != null) {
+            j += " and c.referalInstitution=:ri ";
+            m.put("ri", lab);
+        }
+
+        tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/regional/list_of_results_moh";
+    }
 
     public String toDistrictViceTestListForOrderingCategories() {
         Map m = new HashMap();
@@ -1881,7 +2021,6 @@ public class RegionalController implements Serializable {
 
         j += " group by c";
 
-
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/regional/list_of_cases_by_management_plan";
@@ -1913,10 +2052,119 @@ public class RegionalController implements Serializable {
 
         j += " group by c";
 
-
         tests = encounterFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
 
         return "/national/list_of_cases_by_management_plan";
+    }
+
+    public List<InstitutionPeformance> getInstitutionPeformancesFiltered() {
+        if (institutionPeformancesFiltered == null) {
+            institutionPeformancesFiltered = new ArrayList<>();
+        }
+        return institutionPeformancesFiltered;
+    }
+
+    public void generateFilteredInstitutionPeformanceSummery() {
+        Long p = 0l;
+        Long r = 0l;
+        Long pp = 0l;
+        Long rp = 0l;
+        if (getInstitutionPeformancesFiltered() != null && !getInstitutionPeformancesFiltered().isEmpty()) {
+            for (InstitutionPeformance ip : getInstitutionPeformancesFiltered()) {
+                if (ip.getPcrPositives() != null) {
+                    pp += ip.getPcrPositives();
+                }
+                if (ip.getRatPositives() != null) {
+                    rp += ip.getRatPositives();
+                }
+                if (ip.getPcrs() != null) {
+                    p += ip.getPcrs();
+                }
+                if (ip.getRats() != null) {
+                    r += ip.getRats();
+                }
+            }
+        }
+        getInstitutionPeformancesSummery().setId(0l);
+        getInstitutionPeformancesSummery().setPcrPositives(pp);
+        getInstitutionPeformancesSummery().setPcrs(p);
+        getInstitutionPeformancesSummery().setRats(r);
+        getInstitutionPeformancesSummery().setRatPositives(rp);
+
+    }
+
+    public void processInstitutionVicePeformanceReport() {
+        institutionPeformances = new ArrayList<>();
+        List<InstitutionType> types = new ArrayList<>();
+        types.add(InstitutionType.Base_Hospital);
+        types.add(InstitutionType.District_General_Hospital);
+        types.add(InstitutionType.Divisional_Hospital);
+        types.add(InstitutionType.Hospital);
+        types.add(InstitutionType.Intermediate_Care_Centre);
+        types.add(InstitutionType.Lab);
+        types.add(InstitutionType.MOH_Office);
+        types.add(InstitutionType.Mobile_Lab);
+        types.add(InstitutionType.National_Hospital);
+        types.add(InstitutionType.Private_Sector_Institute);
+        types.add(InstitutionType.Primary_Medical_Care_Unit);
+        types.add(InstitutionType.Private_Sector_Labatory);
+        types.add(InstitutionType.Provincial_General_Hospital);
+        types.add(InstitutionType.Teaching_Hospital);
+
+        rdhs = webUserController.getLoggedUser().getInstitution().getRdhsArea();
+
+        List<Institution> inss = institutionApplicationController.findRegionalInstitutions(types, rdhs);
+        fromDate = CommonController.startOfTheDate(fromDate);
+        toDate = CommonController.endOfTheDate(toDate);
+        for (Institution ins : inss) {
+            InstitutionPeformance ip = new InstitutionPeformance();
+            ip.setInstitution(ins);
+            ip.setPcrs(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getPcr(), orderingCategory, null, null));
+            ip.setRats(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getRat(), orderingCategory, null, null));
+            ip.setPcrPositives(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getPcr(), orderingCategory, itemApplicationController.getPcrPositive(), null));
+            ip.setRatPositives(dashboardApplicationController.getOrderCount(ins, fromDate, toDate,
+                    itemApplicationController.getRat(), orderingCategory, itemApplicationController.getPcrPositive(), null));
+            institutionPeformances.add(ip);
+        }
+        generateInstitutionPeformanceSummery();
+    }
+
+    public void generateInstitutionPeformanceSummery() {
+        Long p = 0l;
+        Long r = 0l;
+        Long pp = 0l;
+        Long rp = 0l;
+        if (getInstitutionPeformances() != null && !getInstitutionPeformances().isEmpty()) {
+            for (InstitutionPeformance ip : getInstitutionPeformances()) {
+                if (ip.getPcrPositives() != null) {
+                    pp += ip.getPcrPositives();
+                }
+                if (ip.getRatPositives() != null) {
+                    rp += ip.getRatPositives();
+                }
+                if (ip.getPcrs() != null) {
+                    p += ip.getPcrs();
+                }
+                if (ip.getRats() != null) {
+                    r += ip.getRats();
+                }
+            }
+        }
+        getInstitutionPeformancesSummery().setId(0l);
+        getInstitutionPeformancesSummery().setPcrPositives(pp);
+        getInstitutionPeformancesSummery().setPcrs(p);
+        getInstitutionPeformancesSummery().setRats(r);
+        getInstitutionPeformancesSummery().setRatPositives(rp);
+    }
+
+    public InstitutionPeformance getInstitutionPeformancesSummery() {
+        if (institutionPeformancesSummery == null) {
+            institutionPeformancesSummery = new InstitutionPeformance();
+        }
+        return institutionPeformancesSummery;
     }
 
     public String toEnterResults() {
@@ -1978,6 +2226,68 @@ public class RegionalController implements Serializable {
         List<InstitutionType> its = new ArrayList<>();
         its.add(InstitutionType.Lab);
         return institutionController.fillInstitutions(its, qry, null);
+    }
+
+    public List<Institution> completeRegionalInstitutions(String nameQry) {
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<InstitutionType> types = new ArrayList<>();
+        types.add(InstitutionType.Hospital);
+        types.add(InstitutionType.Base_Hospital);
+        types.add(InstitutionType.Clinic);
+        types.add(InstitutionType.District_General_Hospital);
+        types.add(InstitutionType.Divisional_Hospital);
+        types.add(InstitutionType.Intermediate_Care_Centre);
+        types.add(InstitutionType.MOH_Office);
+        types.add(InstitutionType.Mobile_Lab);
+        types.add(InstitutionType.OPD);
+        types.add(InstitutionType.Primary_Medical_Care_Unit);
+        types.add(InstitutionType.Teaching_Hospital);
+        types.add(InstitutionType.Regional_Department_of_Health_Department);
+        types.add(InstitutionType.Provincial_General_Hospital);
+        types.add(InstitutionType.Private_Sector_Labatory);
+        types.add(InstitutionType.Private_Sector_Institute);
+        Area tRdhs= webUserController.getLoggedInstitution().getRdhsArea();
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (tRdhs != null) {
+                if (i.getRdhsArea()== null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getRdhsArea().equals(tRdhs)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            boolean typeFound = false;
+            for (InstitutionType type : types) {
+                if (type != null) {
+                    if (i.getInstitutionType() != null && i.getInstitutionType().equals(type)) {
+                        typeFound = true;
+                    }
+                }
+            }
+            if (!typeFound) {
+                canInclude = false;
+            }
+            if (i.getName() == null || i.getName().trim().equals("")) {
+                canInclude = false;
+            } else {
+                if (!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())) {
+                    canInclude = false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
     }
 
 // </editor-fold>
@@ -2356,4 +2666,22 @@ public class RegionalController implements Serializable {
         this.vaccinationStatus = vStatus;
     }
 
+    public Institution getAssigningInstitution() {
+        return assigningInstitution;
+    }
+
+    public void setAssigningInstitution(Institution assigningInstitution) {
+        this.assigningInstitution = assigningInstitution;
+    }
+
+    public List<Encounter> getSelectedToChangeInstitution() {
+        return selectedToChangeInstitution;
+    }
+
+    public void setSelectedToChangeInstitution(List<Encounter> selectedToChangeInstitution) {
+        this.selectedToChangeInstitution = selectedToChangeInstitution;
+    }
+
+    
+    
 }

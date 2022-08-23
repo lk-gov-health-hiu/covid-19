@@ -38,6 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -70,85 +71,91 @@ public class Encounter implements Serializable {
     private String comments;
 
     private boolean firstEncounter;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter referenceTest;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter referenceCase;
 
     private Boolean sampled;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampledAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampledBy;
 
     private Boolean sentToLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sentToLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sentToLabBy;
-    
+
     private Boolean sampleMissing;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampleMissingAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampleMissingBy;
 
     private Boolean receivedAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date receivedAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser receivedAtLabBy;
 
     private Boolean sampleRejectedAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date sampleRejectedAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser sampleRejectedAtLabBy;
 
     private Boolean resultEntered;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultEnteredAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultEnteredBy;
 
     private Boolean pendingAtLab;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date pendingAtLabAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser pendingAtLabBy;
 
     private Boolean resultReviewed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultReviewedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultReviewedBy;
 
     private Boolean resultConfirmed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultConfirmedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultConfirmedBy;
 
     private Boolean resultPrinted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultPrintedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultPrintedBy;
 
     @Lob
     private String resultPrintHtml;
+    @Lob
+    @Column(name="QCERTHTML",columnDefinition="LONGTEXT")
+    private String qurantineReportHtml;
 
     private Boolean resultNoted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date resultNotedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser resultNotedBy;
 
     private Double ctValue;
     private Double ctValue2;
+    private Double ctValue3;
+    private Double ctValue4;
+
     private String ctValueStr;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrResult;
     private String pcrResultStr;
     private String resultComments;
@@ -177,16 +184,16 @@ public class Encounter implements Serializable {
     private EncounterType encounterType;
 
     private String encounterNumber;
+    private String encounterIdHash;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrTestType;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item pcrOrderingCategory;
-    @ManyToOne
-   
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item vaccinationStatus;
-    
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item symptomaticStatus;
     private String pcrOrderingCategoryOther;
      @Deprecated
@@ -229,13 +236,13 @@ public class Encounter implements Serializable {
     /*
     Last Edit Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
 
     private boolean completed;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
@@ -454,6 +461,14 @@ public class Encounter implements Serializable {
 
     public void setLastEditeAt(Date lastEditeAt) {
         this.lastEditeAt = lastEditeAt;
+    }
+
+    public String getEncounterIdHash() {
+        return this.encounterIdHash;
+    }
+
+    public void setEncounterIdHash(String hash) {
+        this.encounterIdHash = hash;
     }
 
     public Integer getEncounterYear() {
@@ -827,8 +842,8 @@ public class Encounter implements Serializable {
     public Item getPcrTestType() {
         return pcrTestType;
     }
-    
-    
+
+
 
     public void setPcrTestType(Item pcrTestType) {
         this.pcrTestType = pcrTestType;
@@ -865,8 +880,8 @@ public class Encounter implements Serializable {
     public Double getCtValue2() {
         return ctValue2;
     }
-    
-    
+
+
 
     public void setCtValue2(Double ctValue2) {
         this.ctValue2 = ctValue2;
@@ -876,8 +891,15 @@ public class Encounter implements Serializable {
         return sampleRejectedAtLab;
     }
 
-    
-    
+    public String getQurantineReportHtml() {
+        return this.qurantineReportHtml;
+    }
+
+    public void setQurantineReportHtml(String html) {
+        this.qurantineReportHtml = html;
+    }
+
+
     public void setSampleRejectedAtLab(Boolean sampleRejectedAtLab) {
         this.sampleRejectedAtLab = sampleRejectedAtLab;
     }
@@ -914,8 +936,8 @@ public class Encounter implements Serializable {
         this.pendingAtLabAt = pendingAtLabAt;
     }
 
-    
-    
+
+
     public WebUser getPendingAtLabBy() {
         return pendingAtLabBy;
     }
@@ -1060,8 +1082,20 @@ public class Encounter implements Serializable {
     public void setSampleMissingBy(WebUser sampleMissingBy) {
         this.sampleMissingBy = sampleMissingBy;
     }
-    
-    
-    
 
+    public Double getCtValue3() {
+        return this.ctValue3;
+    }
+
+    public void setCtValue3(Double value) {
+        this.ctValue3 = value;
+    }
+
+    public Double getCtValue4() {
+        return this.ctValue4;
+    }
+
+    public void setCtValue4(Double value) {
+        this.ctValue4 = value;
+    }
 }

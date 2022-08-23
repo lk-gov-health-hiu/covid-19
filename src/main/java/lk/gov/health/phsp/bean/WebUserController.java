@@ -41,12 +41,10 @@ import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
-import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.WebUserRoleLevel;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.event.ColumnResizeEvent;
 import org.primefaces.model.StreamedContent;
@@ -939,7 +937,7 @@ public class WebUserController implements Serializable {
                     break;
                 case National:
                 case National_Lab:
-                    dashboardApplicationController.updateDashboard();
+//                    dashboardApplicationController.updateDashboard();
                     break;
                 case Moh:
                     dashboardController.prepareMohDashboard();
@@ -1296,7 +1294,11 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Monitoring_and_evaluation_reports);
                 wups.add(Privilege.View_individual_data);
                 wups.add(Privilege.View_aggragate_date);
-
+                wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Users);
+                wups.add(Privilege.Manage_Metadata);
+                wups.add(Privilege.Manage_Area);
+                wups.add(Privilege.Manage_Institutions);
                 break;
             case Lab_National:
             case Super_User:
@@ -1359,6 +1361,7 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Review_Results);
                 wups.add(Privilege.Print_Results);
                 break;
+            case Doctor:
             case Hospital_Admin:
                 wups.add(Privilege.Add_Client);
                 wups.add(Privilege.Add_Tests);

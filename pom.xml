@@ -282,6 +282,12 @@
             <version>2.2.6</version>
         </dependency>
 
+        <!-- https://search.maven.org/artifact/io.nayuki/qrcodegen/1.5.0/jar -->
+        <dependency>
+            <groupId>io.nayuki</groupId>
+            <artifactId>qrcodegen</artifactId>
+            <version>1.5.0</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
         <dependency>
@@ -296,6 +302,14 @@
             <artifactId>fusionauth-jwt</artifactId>
             <version>4.3.1</version>
         </dependency>
+
+        <!-- .env dependancy -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        
     </dependencies>
 
     <build>

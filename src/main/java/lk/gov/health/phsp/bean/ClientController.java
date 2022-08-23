@@ -1,16 +1,15 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.http.HttpClient;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -27,6 +27,17 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -34,6 +45,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
+import javax.security.enterprise.credential.Password;
+
+import com.mashape.unirest.http.HttpResponse;
+
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -41,7 +56,6 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Sms;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -55,16 +69,25 @@ import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.ReportHolder;
 import lk.gov.health.phsp.pojcs.SlNic;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.runners.Parameterized;
+import org.glassfish.jersey.client.ClientResponse;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+
+import io.github.cdimascio.dotenv.Dotenv;
+import io.nayuki.qrcodegen.*;
 
 // </editor-fold>
 @Named
@@ -148,6 +171,8 @@ public class ClientController implements Serializable {
     private String resultCol;
     private String ct1Col;
     private String ct2Col;
+    private String ct3Col;
+    private String ct4Col;
 
     private Integer startRow = 1;
 
@@ -551,24 +576,29 @@ public class ClientController implements Serializable {
         referingInstitution = webUserController.getLoggedInstitution();
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c)) "
                 + " from Encounter c "
-                + " where c.retired=false "
+                + " where c.retired=:pf "
                 + " and c.encounterType=:type "
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution in :rins "
-                + " and c.sentToLab is not null "
+                + " and (c.sentToLab=:sl) "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
+
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("rl", false);
         m.put("rej", false);
         m.put("sm", false);
+
         List<Institution> cis = institutionApplicationController.findChildrenInstitutions(webUserController.getLoggedInstitution());
         cis.add(webUserController.getLoggedInstitution());
         m.put("rins", cis);
+        m.put("sl", true);
+        m.put("pf", false);
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
         // // System.out.println("getFromDate() = " + getFromDate());
@@ -594,12 +624,13 @@ public class ClientController implements Serializable {
                 + " and c.encounterDate between :fd and :td "
                 + " and c.referalInstitution=:rins "
                 + " and c.sentToLab is not null "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " group by c.institution";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("rl", false);
         m.put("rins", referingInstitution);
         // // System.out.println("j = " + j);
         // // System.out.println("m = " + m);
@@ -979,12 +1010,13 @@ public class ClientController implements Serializable {
                 + " and c.sentToLab is not null "
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
-                + " and c.receivedAtLab is null "
+                + " and (c.receivedAtLab is null or c.receivedAtLab=:rl) "
                 + " order by c.encounterNumber";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("rej", false);
         m.put("sm", false);
+        m.put("rl", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("ins", institution);
@@ -1013,12 +1045,13 @@ public class ClientController implements Serializable {
                 + " and (c.sampleRejectedAtLab is null or c.sampleRejectedAtLab=:rej) "
                 + " and (c.sampleMissing is null or c.sampleMissing=:sm) "
                 + " and c.referalInstitution in :rins "
-                + " and c.sentToLab is not null "
+                + " and c.sentToLab=:sl "
                 + " and (c.receivedAtLab is null or c.receivedAtLab=:rat) ";
         Map m = new HashMap();
         m.put("type", EncounterType.Test_Enrollment);
         m.put("rej", false);
         m.put("sm", false);
+        m.put("sl", true);
         m.put("rat", false);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
@@ -1029,7 +1062,18 @@ public class ClientController implements Serializable {
         }
 
         j += " order by c.encounterNumber";
+        System.err.println("m = " + m);
+        System.err.println("m = " + m);
+        System.out.println("j = " + j);
+        for (Object o : m.values()) {
+            System.err.println("o = " + o);
+        }
+        for (Object k : m.keySet()) {
+            System.err.println("k = " + k);
+        }
+        System.out.println("j = " + j);
         listedToReceive = encounterFacade.findByJpql(j, m);
+        System.out.println("listedToReceive = " + listedToReceive.size());
         return "/lab/receive_orders";
     }
 
@@ -1721,10 +1765,9 @@ public class ClientController implements Serializable {
         selectedToReceive = null;
         return toLabReceiveAll();
     }
-    
-    
+
     public String divertSamplesFromLab() {
-        if(divertingLab==null){
+        if (divertingLab == null) {
             JsfUtil.addErrorMessage("Select a Lab to divert");
             return "";
         }
@@ -1748,15 +1791,86 @@ public class ClientController implements Serializable {
 
     public String toLabPrintSelected() {
         for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
             e.setResultPrintHtml(generateLabReport(e));
-//            selectedToPrint = null;
+            e.setQurantineReportHtml(generateQurantineReport(e));
             encounterFacade.edit(e);
         }
 //        selectedToPrint = null;
         return "/lab/print_preview";
+    }
+
+    // This will send email of the investigation to the user
+    public String toLabEmailSelected() {
+        Dotenv dotenv = Dotenv.load();
+        String password = dotenv.get("SMTP_PASSWORD");
+        String host = dotenv.get("SMTP_HOST");
+
+        String from = "nchis@health.gov.lk";
+        String subject = "National Covid Health Information System - PCR | RAT Report";
+
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.trust", "*");
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", 465);
+        properties.put("mail.smtp.auth", true);
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("nchis@health.gov.lk", password);
+            }
+        });
+
+        try {
+            for (Encounter e: selectedToPrint) {
+                if(e.getClient().getPerson().getEmail() != null) {
+                    String to = e.getClient().getPerson().getEmail();
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(from));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                    message.setSubject(subject);
+
+                    String msg = "Your PCR report is accessible via the following link - https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash();
+
+                    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+                    mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+
+                    Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(mimeBodyPart);
+
+                    message.setContent(multipart);
+
+                    Transport.send(message);
+
+                    System.out.println("message sent successfully....");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error sending email");
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public String toHospitalPrintSelected() {
+        for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            e.setResultPrintHtml(generateLabReport(e));
+            e.setQurantineReportHtml(generateQurantineReport(e));
+            encounterFacade.edit(e);
+        }
+        return "/hospital/print_preview";
     }
 
     public String toLabSendSmsForSelected() {
@@ -1790,6 +1904,18 @@ public class ClientController implements Serializable {
         return "";
     }
 
+    public String toMohPrintSelectedBulk() {
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            encounterFacade.edit(e);
+        }
+        bulkPrintReport = generateLabReportsBulk(selectedToPrint);
+        selectedToPrint = null;
+        return "/moh/print_results_bulk";
+    }
+
     public String toLabPrintSelectedBulk() {
         for (Encounter e : selectedToPrint) {
             e.setResultPrinted(true);
@@ -1800,6 +1926,18 @@ public class ClientController implements Serializable {
         bulkPrintReport = generateLabReportsBulk(selectedToPrint);
         selectedToPrint = null;
         return "/lab/printing_results_bulk";
+    }
+
+    public String toHospitalPrintSelectedBulk() {
+        for (Encounter e : selectedToPrint) {
+            e.setResultPrinted(true);
+            e.setResultPrintedAt(new Date());
+            e.setResultPrintedBy(webUserController.getLoggedUser());
+            encounterFacade.edit(e);
+        }
+        bulkPrintReport = generateLabReportsBulk(selectedToPrint);
+        selectedToPrint = null;
+        return "/hospital/printing_results_bulk";
     }
 
     public String toSelectedToEnterResults() {
@@ -1817,32 +1955,49 @@ public class ClientController implements Serializable {
 
     public String toMohPrintSelected() {
         for (Encounter e : selectedToPrint) {
+            Long encounterId = e.getId();
+            String hash = DigestUtils.sha1Hex(encounterId.toString());
+            e.setEncounterIdHash(hash);
             e.setResultPrinted(true);
             e.setResultPrintedAt(new Date());
             e.setResultPrintedBy(webUserController.getLoggedUser());
+            e.setResultPrintHtml(generateLabReport(e));
+            e.setQurantineReportHtml(generateQurantineReport(e));
             encounterFacade.edit(e);
         }
-        return "/moh/printing_results";
+        return "/moh/print_preview";
     }
 
-    public String generateLabReport(Encounter e) {
+    public String generateQurantineReport(Encounter e) {
         if (e == null) {
             return "No Encounter";
         }
-        String html = getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution());
+
+        String html = new String();
+
+        if (getPreferenceController().findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution()) != null) {
+            html = getPreferenceController().findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution());
+        }
+
         if (html == null || html.trim().equals("")) {
             return "No Report Format";
         }
         //Patient Properties
-        html = html.replace("{name}", e.getClient().getPerson().getName());
+        if (e.getClient().getPerson().getName() != null) {
+            html = html.replace("{name}", e.getClient().getPerson().getName());
+        } else {
+            html = html.replace("{name}", "Unknown");
+        }
         if (e.getClient().getPerson().getNic() != null) {
             html = html.replace("{nic}", e.getClient().getPerson().getNic());
         } else {
             html = html.replace("{nic}", "");
         }
-        e.getClient().getPerson().calAgeFromDob();
+        if (e.getClient().getPerson().getDateOfBirth() != null) {
+            e.getClient().getPerson().calAgeFromDob();
+        }
 
-        if (e.getClient().getPerson().getAgeDays() > 2) {
+        if (e.getClient().getPerson().getAgeDays() > 2 || e.getClient().getPerson().getAgeInDays() != null) {
             html = html.replace("{age}", e.getClient().getPerson().getAge());
         } else {
             html = html.replace("{age}", "");
@@ -1854,7 +2009,11 @@ public class ClientController implements Serializable {
             html = html.replace("{sex}", "");
         }
 
-        html = html.replace("{address}", e.getClient().getPerson().getAddress());
+        if (e.getClient().getPerson().getAddress() != null) {
+            html = html.replace("{address}", e.getClient().getPerson().getAddress());
+        } else {
+            html = html.replace("{address}", "");
+        }
         if (e.getClient().getPerson().getPhone1() != null) {
             html = html.replace("{phone1}", e.getClient().getPerson().getPhone1());
         } else {
@@ -1884,6 +2043,12 @@ public class ClientController implements Serializable {
             html = html.replace("{phi}", e.getClient().getPerson().getPhiArea().getName());
         } else {
             html = html.replace("{phi}", "");
+        }
+
+        if (e.getInstitution().getMohArea() != null) {
+            html = html.replace("{moh}", e.getInstitution().getMohArea().getName());
+        } else {
+            html = html.replace("{moh}", "");
         }
 
         //Institute Properties
@@ -1927,6 +2092,12 @@ public class ClientController implements Serializable {
 
         //Institute Properties
         if (e.getReferalInstitution() != null) {
+            if (e.getReferalInstitution().getMohArea() != null) {
+                html.replace("{r_moh}", e.getReferalInstitution().getMohArea().getName());
+            } else {
+                html.replace("{r_moh}", "");
+            }
+
             if (e.getReferalInstitution().getName() != null) {
                 html = html.replace("{lab}", e.getReferalInstitution().getName());
                 html = html.replace("{lab_name}", e.getReferalInstitution().getName());
@@ -2018,14 +2189,14 @@ public class ClientController implements Serializable {
             html = html.replace("{confirmed_date}", "");
             html = html.replace("{confirmed_time}", "");
         }
-        
-         if (e.getCreatedBy()!= null) {
+
+        if (e.getCreatedBy() != null) {
             html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
         } else {
             html = html.replace("{created_by}", "");
         }
 
-        if (e.getSampledBy()!= null) {
+        if (e.getSampledBy() != null) {
             html = html.replace("{sampled_by}", e.getSampledBy().getPerson().getName());
         } else {
             html = html.replace("{sampled_by}", "");
@@ -2068,15 +2239,46 @@ public class ClientController implements Serializable {
                 html = html.replace("{pcr_ct1}", "");
             }
 
+            if (e.getCtValue2() != null) {
+                html = html.replace("{pcr_ct2}", e.getCtValue2().toString());
+            } else {
+                html = html.replace("{pcr_ct2}", "");
+            }
+
+            if (e.getCtValue3() != null) {
+                html = html.replace("{pcr_ct3}", e.getCtValue3().toString());
+            } else {
+                html = html.replace("{pcr_ct3}", "");
+            }
+
+            if (e.getCtValue4() != null) {
+                html = html.replace("{pcr_ct4}", e.getCtValue4().toString());
+            } else {
+                html = html.replace("{pcr_ct4}", "");
+            }
+
             html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
             html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct3_term}", getPreferenceController().findPreferanceValue("ct3Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct4_term}", getPreferenceController().findPreferanceValue("ct4Term", webUserController.getLoggedInstitution()));
+
+        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+            html = html.replace("{ct1_term}", "");
+            html = html.replace("{ct2_term}", "");
+            html = html.replace("{ct3_term}", "");
+            html = html.replace("{ct4_term}", "");
+            html = html.replace("{pcr_ct1}", "");
+            html = html.replace("{pcr_ct2}", "");
+            html = html.replace("{pcr_ct3}", "");
+            html = html.replace("{pcr_ct4}", "");
         }
 
-        if (e.getCtValue2() != null) {
-            html = html.replace("{pcr_ct2}", e.getCtValue2().toString());
+        if (getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()) != null) {
+            html = html.replace("{custom_lab_name}", getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()));
         } else {
-            html = html.replace("{pcr_ct2}", "");
+            html = html.replace("{custom_lab_name}", "");
         }
+
         if (e.getResultComments() != null) {
             html = html.replace("{pcr_comments}", e.getResultComments());
         } else {
@@ -2096,25 +2298,399 @@ public class ClientController implements Serializable {
         if (e.getPcrResult() != null) {
             if (e.getPcrResult().equals(itemApplicationController.getPcrPositive())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrPositiveTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrPositiveComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrPositiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratPositiveComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrNegative())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrNegativeTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrNegativeComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrNegativeComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratNegativeComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrInvalid())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInvalidTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInvalidComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInvalidComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInvalidComment", webUserController.getLoggedInstitution()));
+                }
             } else if (e.getPcrResult().equals(itemApplicationController.getPcrInconclusive())) {
                 html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveTerm", webUserController.getLoggedInstitution()));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInconclusiveComment", webUserController.getLoggedInstitution()));
+                }
             } else {
-                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue(""));
-                html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue(""));
+                html = html.replace("{pcr_result_string}", "");
+                html = html.replace("{pcr_comment_string}", "");
             }
         } else {
-            html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue(""));
-            html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue(""));
+            html = html.replace("{pcr_result_string}", "");
+            html = html.replace("{pcr_comment_string}", "");
         }
 
+        return html;
+    }
+
+    public String generateLabReport(Encounter e) {
+        if (e == null) {
+            return "No Encounter";
+        }
+
+        String html = new String();
+
+        if (getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution()) != null) {
+            html = getPreferenceController().findPreferanceValue("labReportHeader", webUserController.getLoggedInstitution());
+        }
+
+        if (html == null || html.trim().equals("")) {
+            return "No Report Format";
+        }
+        //Patient Properties
+        if (e.getClient().getPerson().getName() != null) {
+            html = html.replace("{name}", e.getClient().getPerson().getName());
+        } else {
+            html = html.replace("{name}", "Unknown");
+        }
+        if (e.getClient().getPerson().getNic() != null) {
+            html = html.replace("{nic}", e.getClient().getPerson().getNic());
+        } else {
+            html = html.replace("{nic}", "");
+        }
+        if (e.getClient().getPerson().getDateOfBirth() != null) {
+            e.getClient().getPerson().calAgeFromDob();
+        }
+
+        if (e.getClient().getPerson().getAgeDays() > 2 || e.getClient().getPerson().getAgeInDays() != null) {
+            html = html.replace("{age}", e.getClient().getPerson().getAge());
+        } else {
+            html = html.replace("{age}", "");
+        }
+
+        if (e.getClient().getPerson().getSex() != null) {
+            html = html.replace("{sex}", e.getClient().getPerson().getSex().getName());
+        } else {
+            html = html.replace("{sex}", "");
+        }
+
+        if (e.getClient().getPerson().getAddress() != null) {
+            html = html.replace("{address}", e.getClient().getPerson().getAddress());
+        } else {
+            html = html.replace("{address}", "");
+        }
+        if (e.getClient().getPerson().getPhone1() != null) {
+            html = html.replace("{phone1}", e.getClient().getPerson().getPhone1());
+        } else {
+            html = html.replace("{phone1}", "");
+        }
+        if (e.getClient().getPerson().getPhone2() != null) {
+            html = html.replace("{phone2}", e.getClient().getPerson().getPhone2());
+        } else {
+            html = html.replace("{phone2}", "");
+        }
+        if (e.getLabNumber() != null) {
+            html = html.replace("{lab_no}", e.getLabNumber());
+        } else {
+            html = html.replace("{lab_no}", "");
+        }
+        if (e.getEncounterNumber() != null) {
+            html = html.replace("{ref_no}", e.getEncounterNumber());
+        } else {
+            html = html.replace("{ref_no}", "");
+        }
+        if (e.getClient().getPerson().getGnArea() != null) {
+            html = html.replace("{gn}", e.getClient().getPerson().getGnArea().getName());
+        } else {
+            html = html.replace("{gn}", "");
+        }
+        if (e.getClient().getPerson().getPhiArea() != null) {
+            html = html.replace("{phi}", e.getClient().getPerson().getPhiArea().getName());
+        } else {
+            html = html.replace("{phi}", "");
+        }
+
+        //Institute Properties
+        if (e.getInstitution() != null) {
+            if (e.getInstitution().getName() != null) {
+                html = html.replace("{institute}", e.getInstitution().getName());
+                html = html.replace("{institute_name}", e.getInstitution().getName());
+            } else {
+                html = html.replace("{institute}", "");
+                html = html.replace("{institute_name}", "");
+            }
+            if (e.getInstitution().getAddress() != null) {
+                html = html.replace("{institute_address}", e.getInstitution().getAddress());
+            } else {
+                html = html.replace("{institute_address}", "");
+            }
+            if (e.getInstitution().getPhone() != null) {
+                html = html.replace("{institute_phone}", e.getInstitution().getPhone());
+            } else {
+                html = html.replace("{institute_phone}", "");
+            }
+            if (e.getInstitution().getFax() != null) {
+                html = html.replace("{institute_fax}", e.getInstitution().getFax());
+            } else {
+                html = html.replace("{institute_fax}", "");
+            }
+            if (e.getInstitution().getEmail() != null) {
+                html = html.replace("{institute_email}", e.getInstitution().getEmail());
+            } else {
+                html = html.replace("{institute_email}", "");
+            }
+        } else {
+            html = html.replace("{institute}", "");
+            html = html.replace("{institute_name}", "");
+            html = html.replace("{institute_address}", "");
+            html = html.replace("{institute_phone}", "");
+            html = html.replace("{institute_fax}", "");
+            html = html.replace("{institute_email}", "");
+
+        }
+
+        //Institute Properties
+        if (e.getReferalInstitution() != null) {
+
+            if (e.getReferalInstitution().getMohArea() != null) {
+                html.replace("{r_moh}", e.getReferalInstitution().getMohArea().getName());
+            } else {
+                html.replace("{r_moh}", "");
+            }
+
+            if (e.getReferalInstitution().getName() != null) {
+                html = html.replace("{lab}", e.getReferalInstitution().getName());
+                html = html.replace("{lab_name}", e.getReferalInstitution().getName());
+            } else {
+                html = html.replace("{lab}", "");
+                html = html.replace("{lab_name}", "");
+            }
+            if (e.getReferalInstitution().getAddress() != null) {
+                html = html.replace("{lab_address}", e.getReferalInstitution().getAddress());
+            } else {
+                html = html.replace("{lab_address}", "");
+            }
+            if (e.getReferalInstitution().getPhone() != null) {
+                html = html.replace("{lab_phone}", e.getReferalInstitution().getPhone());
+            } else {
+                html = html.replace("{lab_phone}", "");
+            }
+            if (e.getReferalInstitution().getFax() != null) {
+                html = html.replace("{lab_fax}", e.getReferalInstitution().getFax());
+            } else {
+                html = html.replace("{lab_fax}", "");
+            }
+            if (e.getReferalInstitution().getEmail() != null) {
+                html = html.replace("{lab_email}", e.getReferalInstitution().getEmail());
+            } else {
+                html = html.replace("{lab_email}", "");
+            }
+        } else {
+            html = html.replace("{lab}", "");
+            html = html.replace("{lab_name}", "");
+            html = html.replace("{lab_address}", "");
+            html = html.replace("{lab_phone}", "");
+            html = html.replace("{lab_fax}", "");
+            html = html.replace("{lab_email}", "");
+        }
+
+        if (e.getInstitution().getMohArea() != null) {
+            html = html.replace("{moh}", e.getInstitution().getMohArea().getName());
+        } else {
+            html = html.replace("{moh}", "");
+        }
+
+        if (e.getCreatedAt() != null) {
+            html = html.replace("{requested_date}", CommonController.dateTimeToString(e.getCreatedAt()));
+            html = html.replace("{requested_time}", CommonController.dateTimeToString(e.getCreatedAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{requested_date}", "");
+            html = html.replace("{requested_time}", "");
+        }
+
+        if (e.getSampledAt() != null) {
+            html = html.replace("{sampled_date}", CommonController.dateTimeToString(e.getSampledAt()));
+            html = html.replace("{sampled_time}", CommonController.dateTimeToString(e.getSampledAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{sampled_date}", "");
+            html = html.replace("{sampled_time}", "");
+        }
+
+        if (e.getSentToLabAt() != null) {
+            html = html.replace("{dispatched_date}", CommonController.dateTimeToString(e.getSentToLabAt()));
+            html = html.replace("{dispatched_time}", CommonController.dateTimeToString(e.getSentToLabAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{dispatched_date}", "");
+            html = html.replace("{dispatched_time}", "");
+        }
+
+        if (e.getReceivedAtLabAt() != null) {
+            html = html.replace("{received_date}", CommonController.dateTimeToString(e.getReceivedAtLabAt()));
+            html = html.replace("{received_time}", CommonController.dateTimeToString(e.getReceivedAtLabAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{received_date}", "");
+            html = html.replace("{received_time}", "");
+        }
+
+        if (e.getResultEnteredAt() != null) {
+            html = html.replace("{entered_date}", CommonController.dateTimeToString(e.getResultEnteredAt()));
+            html = html.replace("{entered_time}", CommonController.dateTimeToString(e.getResultEnteredAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{entered_date}", "");
+            html = html.replace("{entered_time}", "");
+        }
+
+        if (e.getResultReviewedAt() != null) {
+            html = html.replace("{reviewed_date}", CommonController.dateTimeToString(e.getResultReviewedAt()));
+            html = html.replace("{reviewed_time}", CommonController.dateTimeToString(e.getResultReviewedAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{reviewed_date}", "");
+            html = html.replace("{reviewed_time}", "");
+        }
+
+        if (e.getResultConfirmedAt() != null) {
+            html = html.replace("{confirmed_date}", CommonController.dateTimeToString(e.getResultConfirmedAt()));
+            html = html.replace("{confirmed_time}", CommonController.dateTimeToString(e.getResultConfirmedAt(), "dd-MMM-yyyy hh:mm"));
+        } else {
+            html = html.replace("{confirmed_date}", "");
+            html = html.replace("{confirmed_time}", "");
+        }
+
+        if (e.getCreatedBy() != null) {
+            html = html.replace("{created_by}", e.getCreatedBy().getPerson().getName());
+        } else {
+            html = html.replace("{created_by}", "");
+        }
+
+        if (e.getSampledBy() != null) {
+            html = html.replace("{sampled_by}", e.getSampledBy().getPerson().getName());
+        } else {
+            html = html.replace("{sampled_by}", "");
+        }
+
+        if (e.getResultEnteredBy() != null) {
+            html = html.replace("{entered_by}", e.getResultEnteredBy().getPerson().getName());
+        } else {
+            html = html.replace("{entered_by}", "");
+        }
+
+        if (e.getResultReviewedBy() != null) {
+            html = html.replace("{reviewed_by}", e.getResultReviewedBy().getPerson().getName());
+        } else {
+            html = html.replace("{reviewed_by}", "");
+        }
+
+        if (e.getResultConfirmedBy() != null) {
+            html = html.replace("{approved_by}", e.getResultConfirmedBy().getPerson().getName());
+        } else {
+            html = html.replace("{approved_by}", "");
+        }
+
+        if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+            html = html.replace("{test}", getPreferenceController().findPreferanceValue("pcrTestTerm", webUserController.getLoggedInstitution()));
+        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+            html = html.replace("{test}", getPreferenceController().findPreferanceValue("ratTestTerm", webUserController.getLoggedInstitution()));
+        }
+
+        if (e.getPcrResult() != null) {
+            html = html.replace("{pcr_result}", e.getPcrResult().getName());
+        } else {
+            html = html.replace("{pcr_result}", "");
+        }
+
+        if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+            if (e.getCtValue() != null) {
+                html = html.replace("{pcr_ct1}", e.getCtValue().toString());
+            } else {
+                html = html.replace("{pcr_ct1}", "");
+            }
+
+            if (e.getCtValue2() != null) {
+                html = html.replace("{pcr_ct2}", e.getCtValue2().toString());
+            } else {
+                html = html.replace("{pcr_ct2}", "");
+            }
+
+            html = html.replace("{ct1_term}", getPreferenceController().findPreferanceValue("ct1Term", webUserController.getLoggedInstitution()));
+            html = html.replace("{ct2_term}", getPreferenceController().findPreferanceValue("ct2Term", webUserController.getLoggedInstitution()));
+
+        } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+            html = html.replace("{ct1_term}", "");
+            html = html.replace("{ct2_term}", "");
+            html = html.replace("{pcr_ct1}", "");
+            html = html.replace("{pcr_ct2}", "");
+        }
+
+        if (getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()) != null) {
+            html = html.replace("{custom_lab_name}", getPreferenceController().findPreferanceValue("customLabName", webUserController.getLoggedInstitution()));
+        } else {
+            html = html.replace("{custom_lab_name}", "");
+        }
+
+        if (e.getResultComments() != null) {
+            html = html.replace("{pcr_comments}", e.getResultComments());
+        } else {
+            html = html.replace("{pcr_comments}", "");
+        }
+        if (e.getUnitWard() != null) {
+            html = html.replace("{unit_or_ward}", e.getUnitWard());
+        } else {
+            html = html.replace("{unit_or_ward}", "");
+        }
+        if (e.getBht() != null) {
+            html = html.replace("{bht}", e.getBht());
+        } else {
+            html = html.replace("{bht}", "");
+        }
+
+        if (e.getPcrResult() != null) {
+            if (e.getPcrResult().equals(itemApplicationController.getPcrPositive())) {
+                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrPositiveTerm", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrPositiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratPositiveComment", webUserController.getLoggedInstitution()));
+                }
+            } else if (e.getPcrResult().equals(itemApplicationController.getPcrNegative())) {
+                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrNegativeTerm", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrNegativeComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratNegativeComment", webUserController.getLoggedInstitution()));
+                }
+            } else if (e.getPcrResult().equals(itemApplicationController.getPcrInvalid())) {
+                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInvalidTerm", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInvalidComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInvalidComment", webUserController.getLoggedInstitution()));
+                }
+            } else if (e.getPcrResult().equals(itemApplicationController.getPcrInconclusive())) {
+                html = html.replace("{pcr_result_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveTerm", webUserController.getLoggedInstitution()));
+                if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_pcr_test")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("pcrInconclusiveComment", webUserController.getLoggedInstitution()));
+                } else if (e.getPcrTestType().getCode().equalsIgnoreCase("covid19_rat")) {
+                    html = html.replace("{pcr_comment_string}", getPreferenceController().findPreferanceValue("ratInconclusiveComment", webUserController.getLoggedInstitution()));
+                }
+            } else {
+                html = html.replace("{pcr_result_string}", "");
+                html = html.replace("{pcr_comment_string}", "");
+            }
+        } else {
+            html = html.replace("{pcr_result_string}", "");
+            html = html.replace("{pcr_comment_string}", "");
+        }
+        QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
+        String qr_string =  "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        if (html.contains("{qr}") == true) {
+            html = html.replace("{qr}", qr_string);
+        } else {
+            html.replace("{qr}", "");
+            html += qr_string;
+        }
         return html;
     }
 
@@ -2226,12 +2802,22 @@ public class ClientController implements Serializable {
             String result;
             String ct1 = "";
             String ct2 = "";
+            String ct3 = "";
+            String ct4 = "";
+
             if (e.getCtValue() != null) {
                 ct1 = e.getCtValue() + "";
             }
             if (e.getCtValue2() != null) {
                 ct2 = e.getCtValue2() + "";
             }
+            if (e.getCtValue3() != null) {
+                ct3 = e.getCtValue3() + "";
+            }
+            if (e.getCtValue4() != null) {
+                ct4 = e.getCtValue4() + "";
+            }
+
             if (e.getPcrResultStr() != null && !e.getPcrResultStr().trim().equals("")) {
                 result = e.getPcrResultStr();
             } else if (e.getPcrResult() != null) {
@@ -2264,6 +2850,8 @@ public class ClientController implements Serializable {
             tblHtml += "<td>" + result + "</td>";
             tblHtml += "<td>" + ct1 + "</td>";
             tblHtml += "<td>" + ct2 + "</td>";
+            tblHtml += "<td>" + ct3 + "</td>";
+            tblHtml += "<td>" + ct4 + "</td>";
             tblHtml += "</tr>";
 
             html = html.replace("{institute}", rh.getIns().getName());
@@ -2871,7 +3459,7 @@ public class ClientController implements Serializable {
     }
 
 //    This function will search for a test under the test tube number
-// Moved to Lab Controller    
+// Moved to Lab Controller
     @Deprecated
     public String searchByLabNo() {
         if (this.searchingLabNo == null || this.searchingLabNo.trim().length() == 0) {
@@ -2921,7 +3509,7 @@ public class ClientController implements Serializable {
         return "/hospital/upload_results";
     }
 
-// This is a common search patient by name. It will list clients, not encounters. 
+// This is a common search patient by name. It will list clients, not encounters.
     public String searchByName() {
         if (searchingName == null && searchingName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a name to search");
@@ -3000,6 +3588,9 @@ public class ClientController implements Serializable {
         Integer bhtColInt;
         Integer ct1ColInt;
         Integer ct2ColInt;
+        Integer ct3ColInt;
+        Integer ct4ColInt;
+
         Item sex = null;
         Item result = null;
 
@@ -3020,6 +3611,8 @@ public class ClientController implements Serializable {
         bhtColInt = CommonController.excelColFromHeader(bhtCol);
         ct2ColInt = CommonController.excelColFromHeader(ct2Col);
         ct1ColInt = CommonController.excelColFromHeader(ct1Col);
+        ct3ColInt = CommonController.excelColFromHeader(ct3Col);
+        ct4ColInt = CommonController.excelColFromHeader(ct4Col);
 
         JsfUtil.addSuccessMessage(file.getFileName());
         XSSFWorkbook myWorkBook;
@@ -3093,9 +3686,9 @@ public class ClientController implements Serializable {
                 if (resultColInt != null) {
                     strResult = cellValue(row.getCell(resultColInt));
                     if (strResult != null) {
-                        if(strResult.equalsIgnoreCase("p")){
+                        if (strResult.equalsIgnoreCase("p")) {
                             result = itemApplicationController.getPcrPositive();
-                        }else if(strResult.equalsIgnoreCase("n")){
+                        } else if (strResult.equalsIgnoreCase("n")) {
                             result = itemApplicationController.getPcrNegative();
                         } else if (strResult.toLowerCase().contains("invalid")) {
                             result = itemApplicationController.getPcrInvalid();
@@ -3193,8 +3786,15 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
-                if (ptCt1 != null && ptCt1 < 1) {
-                    ptCt1 = null;
+                Double ptCt3 = null;
+                if (ct3ColInt != null) {
+                    ptCt3 = cellValueDouble(row.getCell(ct3ColInt));
+                    if (ptCt3 == null) {
+                        String ct = cellValue(row.getCell(ct3ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt3 = CommonController.getDoubleValue(ct);
+                        }
+                    }
                 }
 
                 Double ptCt2 = null;
@@ -3207,6 +3807,22 @@ public class ClientController implements Serializable {
                         }
                     }
                 }
+                Double ptCt4 = null;
+                if (ct4ColInt != null) {
+                    ptCt4 = cellValueDouble(row.getCell(ct4ColInt));
+                    if (ptCt2 == null) {
+                        String ct = cellValue(row.getCell(ct4ColInt));
+                        if (ct != null && !ct.trim().equals("")) {
+                            ptCt4 = CommonController.getDoubleValue(ct);
+                        }
+                    }
+                }
+
+                if (ptCt1 != null && ptCt1 < 1) {
+                    ptCt1 = null;
+                }
+
+
                 if (ptCt2 != null && ptCt2 < 1) {
                     ptCt2 = null;
                 }
@@ -3216,6 +3832,20 @@ public class ClientController implements Serializable {
                 }
                 if (ptCt2 != null && ptCt2 != 0.0) {
                     ci.setCt2(ptCt2);
+                }
+
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+                if (ptCt3 != null && ptCt3 != 0.0) {
+                    ci.setCt3(ptCt3);
+                }
+
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
+                }
+                if (ptCt4 != null && ptCt4 != 0.0) {
+                    ci.setCt4(ptCt4);
                 }
 
                 count++;
@@ -3757,7 +4387,12 @@ public class ClientController implements Serializable {
         if (ci.getCt2() != null && ci.getCt2() != 0.0) {
             pcr.setCtValue2(ci.getCt2());
         }
-
+        if (ci.getCt3() != null && ci.getCt3() != 0.0) {
+            pcr.setCtValue3(ci.getCt3());
+        }
+        if (ci.getCt4() != null && ci.getCt4() != 0.0) {
+            pcr.setCtValue4(ci.getCt4());
+        }
         pcr.setPcrTestType(lastTestPcrOrRat);
 
         if (c.getId() == null) {
@@ -6863,6 +7498,22 @@ public class ClientController implements Serializable {
 
     public void setCt2Col(String ct2Col) {
         this.ct2Col = ct2Col;
+    }
+
+    public String getCt3Col() {
+        return this.ct3Col;
+    }
+
+    public void setCt3Col(String value) {
+        this.ct3Col = value;
+    }
+
+    public String getCt4Col() {
+        return this.ct4Col;
+    }
+
+    public void setCt4Col(String value) {
+        this.ct4Col = value;
     }
 
     public String getLabNoCol() {

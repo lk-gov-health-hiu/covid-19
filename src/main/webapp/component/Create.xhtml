@@ -51,7 +51,7 @@
                                            itemValue="#{createdByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{componentController.selected.createdAt}" title="#{bundleClinical.EditComponentTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{componentController.selected.createdAt}" title="#{bundleClinical.EditComponentTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_lastEditBy}" for="lastEditBy" />
                         <p:selectOneMenu id="lastEditBy" value="#{componentController.selected.lastEditBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -59,7 +59,7 @@
                                            itemValue="#{lastEditByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_lastEditeAt}" for="lastEditeAt" />
-                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{componentController.selected.lastEditeAt}" title="#{bundleClinical.EditComponentTitle_lastEditeAt}"  showOn="button"/>
+                        <p:calendar id="lastEditeAt" pattern="dd MMMM yyyy HH:mm" value="#{componentController.selected.lastEditeAt}" title="#{bundleClinical.EditComponentTitle_lastEditeAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_retiredReversedBy}" for="retiredReversedBy" />
                         <p:selectOneMenu id="retiredReversedBy" value="#{componentController.selected.retiredReversedBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -67,7 +67,7 @@
                                            itemValue="#{retiredReversedByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_retiredReversedAt}" for="retiredReversedAt" />
-                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{componentController.selected.retiredReversedAt}" title="#{bundleClinical.EditComponentTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:calendar id="retiredReversedAt" pattern="dd MMMM yyyy HH:mm" value="#{componentController.selected.retiredReversedAt}" title="#{bundleClinical.EditComponentTitle_retiredReversedAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_retiredBy}" for="retiredBy" />
                         <p:selectOneMenu id="retiredBy" value="#{componentController.selected.retiredBy}" >
                             <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
@@ -75,7 +75,7 @@
                                            itemValue="#{retiredByItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{componentController.selected.retiredAt}" title="#{bundleClinical.EditComponentTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{componentController.selected.retiredAt}" title="#{bundleClinical.EditComponentTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{componentController.selected.retireComments}" title="#{bundleClinical.CreateComponentTitle_retireComments}" />
                         <p:outputLabel value="#{bundleClinical.CreateComponentLabel_html}" for="html" />

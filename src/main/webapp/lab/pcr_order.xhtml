@@ -30,7 +30,7 @@
                                                   pattern="dd MMMM yyyy hh:mm">
                                     </p:datePicker>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <label for="orderingCat" class="form-label fw-bold">Ordering Category <small
                                             class="px-2 text-muted">Required</small></label>
                                     <h:selectOneMenu id="orderingCat" required="true"
@@ -75,7 +75,7 @@
                             </div>
                             <div class="row mb-4">
                                 <h5 class="text-muted fw-bold">Regional Details</h5>
-                                <div class="col md-3">
+                                <div class="col-md-3">
                                     <label class="form-label fw-bold" for="district">District</label>
                                     <p:autoComplete required="true" requiredMessage="Please select a district" id="district"
                                                     value="#{labController.pcr.client.person.district}"
@@ -86,7 +86,7 @@
                                     </p:autoComplete>
                                     <h:message for="district" class="text-danger small"></h:message>
                                 </div>
-                                <div class="col md-3">
+                                <div class="col-md-3">
                                     <label for="mohArea" class="form-label fw-bold">MOH Area</label>
                                     <p:autoComplete id="mohAre" value="#{labController.pcr.client.person.mohArea}"
                                                     completeMethod="#{labController.completeMohAreas}" var="m" itemLabel="#{m.name}" itemValue="#{m}"
@@ -95,7 +95,7 @@
                                         <f:ajax event="blur" execute="moh"></f:ajax>
                                     </p:autoComplete>
                                 </div>
-                                <div class="col md-3">
+                                <div class="col-md-3">
                                     <label for="gnArea" class="form-label fw-bold">GN Division</label>
                                     <p:commandLink id="gnArea1" action="#{labController.retrieveLastGnPcr()}" process="gnArea1"
                                                    update="gnArea1">
@@ -106,7 +106,7 @@
                                                     itemValue="#{gn}" maxResults="20" forceSelection="true" minQueryLength="2">
                                     </p:autoComplete>
                                 </div>
-                                <div class="col md-3">
+                                <div class="col-md-3">
                                     <label for="phiArea" class="form-label fw-bold">PHI Area</label>
                                     <p:autoComplete id="phiArea" value="#{labController.pcr.client.person.phiArea}"
                                                     completeMethod="#{labController.completePhiAreasForPcr}" var="gn" itemLabel="#{gn.name}"

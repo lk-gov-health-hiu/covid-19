@@ -13,7 +13,7 @@
             <ui:define name="reports">
                 <p:panelGrid columns="1" styleClass="alignTop w-100 bg-white border border-light" >
                     <f:facet name="header" >
-                        <h:outputLabel class="fs-5 fw-bold" value="Requests by Ordered Date" ></h:outputLabel>
+                        <h:outputLabel class="fs-5 fw-bold" value="Requests by Received Date" ></h:outputLabel>
                     </f:facet>
 
                     <h:form >
@@ -37,7 +37,7 @@
                             </p:autoComplete>
 
                             <p:outputLabel value="Test"  class="fs-6 fw-bold"></p:outputLabel>
-                            <h:selectOneMenu value="#{labController.testType}"  class="fs-6 w-100">
+                            <h:selectOneMenu value="#{labController.testType}"  class="fs-6 w-100 form-select">
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{labController.covidTestTypes}" var="c" itemLabel="#{c.name}"
                                                itemValue="#{c}" ></f:selectItems>
@@ -54,7 +54,8 @@
 
                         </p:panelGrid>
 
-                        <ez:lab_request_datatable/>
+                        <ez:lab_request_datatable_edit rendered="true"/>
+                        <ez:lab_request_datatable rendered="false"/>
                         
                     </h:form>
                 </p:panelGrid>

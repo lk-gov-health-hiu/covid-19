@@ -7,17 +7,24 @@
 <h:body>
     <ui:composition template="/national/reports_index.xhtml">
         <ui:define name="title">
-            National | Reports - Result Count By MOH Areas
+            National | Reports - Result Count By Resident MOH Areas
         </ui:define>
         <ui:define name="reports">
             <h:panelGrid columns="1" styleClass="alignTop">
                 <f:facet name="header">
-                    <p:outputLabel value="Result Counts by MOH Area"></p:outputLabel>
+                    <p:outputLabel value="Result Counts by Resident MOH Area"></p:outputLabel>
                 </f:facet>
 
                 <h:form>
                     <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center">
                         <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                <f:selectItems value="#{nationalController.investigationFilters}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c.code}"></f:selectItems>
+                            </h:selectOneMenu>
+
                             <h:outputLabel class="h6 fw-bold" value="Ordered From"></h:outputLabel>
                             <p:calendar value="#{nationalController.fromDate}" pattern="dd MMMM yyyy hh:mm">
                             </p:calendar><!-- comment -->
@@ -75,26 +82,45 @@
                             rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
                             <p:columnGroup type="header">
                                 <p:row>
-                                    <p:column colspan="2"
-                                        headerText="#{webUserController.loggedUser.institution.name} - Result Count By MOH Area- #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}">
+                                    <p:column colspan="4"
+                                        headerText="#{webUserController.loggedUser.institution.name} - Result Count By MOH Areas - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}">
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column headerText="MOH" sortBy="#{c.area.name}" filterBy="#{c.area.name}"
-                                        filterMatchMode="contains">
+                                    <p:column headerText="MOH Area" sortBy="#{c.area.name}"
+                                        filterBy="#{c.area.name}" filterMatchMode="contains">
                                     </p:column>
-                                    <p:column headerText="Count" sortBy="#{c.count}"></p:column>
+                                    <p:column headerText="RDHS Area" sortBy="#{c.area.rdhsArea.name}"
+                                        filterBy="#{c.area.rdhsArea.name}" filterMatchMode="contains">
+                                    </p:column>
+                                    <p:column headerText="PDHS Area" sortBy="#{c.area.pdhsArea.name}"
+                                        filterBy="#{c.area.pdhsArea.name}" filterMatchMode="contains">
+                                    </p:column>
+                                    <p:column headerText="Count" sortBy="#{c.count}">
+                                    </p:column>
                                 </p:row>
                             </p:columnGroup>
-                            <p:column>
-                                <h:outputText value="#{c.area.name}"></h:outputText>
+                            <p:column headerText="MOH" sortBy="#{c.area.name}" filterBy="#{c.area.name}"
+                                filterMatchMode="contains">
+                                <h:outputLabel value="#{c.area.name}"></h:outputLabel>
                             </p:column>
-                            <p:column>
-                                <h:outputText value="#{c.count}"></h:outputText>
+                            <p:column headerText="RDHS" 
+                                      sortBy="#{c.area.rdhsArea.name}" 
+                                      filterBy="#{c.area.rdhsArea.name}"
+                                filterMatchMode="contains">
+                                <h:outputLabel value="#{c.area.rdhsArea.name}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="PDHS" sortBy="#{c.area.pdhsArea.name}" 
+                                      filterBy="#{c.area.pdhsArea.name}"
+                                filterMatchMode="contains">
+                                <h:outputLabel value="#{c.area.pdhsArea.name}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Count" sortBy="#{c.count}">
+                                <h:outputLabel value="#{c.count}"></h:outputLabel>
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="2" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                                    <p:column colspan="4" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
                                 </p:row>
                             </p:columnGroup>
                         </p:dataTable>

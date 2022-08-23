@@ -31,16 +31,22 @@
                             <h:outputLabel class="fs-6 fw-bold" value="To" ></h:outputLabel>
                             <p:calendar class="fs-6" value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
 
-                            <h:commandButton class="btn btn-warning w-100 my-2" value="Process" 
-                                             action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
-                            <h:commandButton class="btn btn-success w-100 my-2" value="Generate Excel" >
+                            <f:facet name="footer">
+
+                            <h:commandButton class="btn btn-success " value="Generate Excel" >
                                 <p:dataExporter type="xlsx" fileName="Lab Order Summery" target="tbl" ></p:dataExporter>
                             </h:commandButton>
+                            <h:commandButton class="btn btn-danger" value="Generate PDF" >
+                                <p:dataExporter type="pdf" fileName="Lab Order Summery" target="tbl" ></p:dataExporter>
+                            </h:commandButton>
+                                <h:commandButton class="btn btn-warning " value="Process"
+                                                 action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" ></h:commandButton>
+                            </f:facet>
 
                         </h:panelGrid>
                         </div>
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
-                        <p:dataTable id="tbl" value="#{clientController.labSummariesToReceive}" 
+                        <p:dataTable id="tbl" value="#{clientController.labSummariesToReceive}"
                                      rowIndexVar="n"
                                      var="c" paginator="true" rowKey="#{c.id}" rows="10">
                             <p:column headerText="No" width="50" >
@@ -51,7 +57,7 @@
                                 <h:outputLabel class="fs-6" value="#{c.institution.name}" ></h:outputLabel>
                             </p:column>
                              <p:column headerText="District"
-                                      sortBy="#{c.institution.district.name}" 
+                                      sortBy="#{c.institution.district.name}"
                                       filterBy="#{c.institution.district.name}" filterMatchMode="contains">
                                 <h:outputLabel class="fs-6" value="#{c.institution.district.name}" ></h:outputLabel>
                             </p:column>

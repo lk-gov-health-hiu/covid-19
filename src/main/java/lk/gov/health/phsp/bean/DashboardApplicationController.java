@@ -80,11 +80,14 @@ public class DashboardApplicationController {
     AreaApplicationController areaApplicationController;
     @Inject
     CovidDataHolder covidDataHolder;
+    @Inject
+    WebUserController webuserController;
 
 //    AreaController
     @Inject
     private AreaController areaController;
 
+    private Date lastUpdatedAt;
     private Long todayPcr;
     private Long todayRat;
     private Long todayPositivePcr;
@@ -134,6 +137,8 @@ public class DashboardApplicationController {
         Date now = c.getTime();
         Date todayStart = CommonController.startOfTheDate();
 
+        lastUpdatedAt = new Date();
+        
         c.add(Calendar.DATE, -1);
 
         Date yesterdayStart = CommonController.startOfTheDate(c.getTime());
@@ -182,17 +187,20 @@ public class DashboardApplicationController {
 //        Get the PCR Positive cases within the last 14 days
         Map<String, String> pcrPositiveSeries = this.getSeriesOfCases(
                 now,
-                14,
+                30,
                 this.itemApplicationController.getPcr(),
-                this.itemApplicationController.getPcrPositive()
+                this.itemApplicationController.getPcrPositive(),
+                null
+
         );
 
-//        Get the RAT positive cases within the last 14 dats
+//        Get the RAT positive cases within the last 14 days
         Map<String, String> ratPositiveSeries = this.getSeriesOfCases(
                 now,
-                14,
+                30,
                 this.itemApplicationController.getRat(),
-                this.itemApplicationController.getPcrPositive()
+                this.itemApplicationController.getPcrPositive(),
+                null
         );
 
 
@@ -494,7 +502,8 @@ public Map<String, String> getSeriesOfCases(
         Date fromDate,
         int duration,
         Item testType,
-        Item result
+        Item result,
+        Institution institution
 ) {
     int MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
@@ -505,7 +514,8 @@ public Map<String, String> getSeriesOfCases(
         hashMap.put("", "");
     } else {
         for (int i = 0; i <= duration; i++) {
-            Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * i);
+            int dayCount = i +1;
+            Date currentDate = new Date(startOfTheDate.getTime() - (long) MILLIS_IN_A_DAY * dayCount);
             Date endDate = CommonController.endOfTheDate(currentDate);
             Long positive_cases = this.getConfirmedCount(
                     null,
@@ -514,7 +524,7 @@ public Map<String, String> getSeriesOfCases(
                     testType,
                     null,
                     result,
-                    null);
+                    institution);
             hashMap.put(currentDate.toString(), Long.toString(positive_cases));
         }
     }
@@ -1340,6 +1350,8 @@ public Map<String, String> getSeriesOfCases(
         return ics;
     }
 
+    
+    
     public List<InstitutionCount> countOfResultsByProvince(
             Date from,
             Date to,
@@ -1392,6 +1404,14 @@ public Map<String, String> getSeriesOfCases(
             }
         }
         return ics;
+    }
+
+    public Date getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(Date lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
 }

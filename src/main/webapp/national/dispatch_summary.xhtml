@@ -11,7 +11,7 @@
              <ui:define name="title">
                 National Dispatch Summary
             </ui:define>
-             <ui:define name="content"> 
+             <ui:define name="content">
                 <h:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
                         <h:outputLabel value="Dispatch Summary" ></h:outputLabel>
@@ -20,7 +20,7 @@
                     <h:form >
                         <h:panelGrid columns="2" styleClass="border border-light bg-white"  >
                             <h:outputLabel class="fs-6 fw-bold" value="Ordered From" ></h:outputLabel>
-                            <p:calendar value="#{nationalController.fromDate}" 
+                            <p:calendar value="#{nationalController.fromDate}"
                                         pattern="dd MMMM yyyy hh:mm">
                             </p:calendar><!-- comment -->
 
@@ -34,14 +34,21 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </h:selectOneMenu>
 
-                            <h:commandButton value="Generate Excel"
-                                             class="btn btn-success">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="Dispatch Summary" ></p:dataExporter>
-                            </h:commandButton>
-                            <h:commandButton value="Process"
-                                             class="btn btn-warning w-100"
-                                             action="#{nationalController.prepareDispatchSummery()}" >
-                            </h:commandButton>
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel"
+                                                class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="Dispatch Summary" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF"
+                                                 class="btn btn-danger">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="Dispatch Summary" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process"
+                                                 class="btn btn-warning"
+                                                 action="#{nationalController.prepareDispatchSummery()}" >
+                                </h:commandButton>
+
+                            </f:facet>
 
 
                         </h:panelGrid>
@@ -49,8 +56,8 @@
 
                         <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{nationalController.awaitingDispatch}" rendered="true"
                                      rowIndexVar="n"
-                                     var="c" 
-                                     paginator="true" 
+                                     var="c"
+                                     paginator="true"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"

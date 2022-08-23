@@ -31,7 +31,7 @@
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_id}" for="id" />
                         <p:inputText id="id" value="#{personController.selected.id}" title="#{bundleClinical.EditPersonTitle_id}" />
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.createdAt}" title="#{bundleClinical.EditPersonTitle_createdAt}"  showOn="button"/>
+                        <p:calendar id="createdAt" pattern="dd MMMM yyyy HH:mm" value="#{personController.selected.createdAt}" title="#{bundleClinical.EditPersonTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_editer}" for="editer" />
                         <p:selectOneMenu id="editer" value="#{personController.selected.editer}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -40,7 +40,7 @@
                                            itemValue="#{editerItem}"/>
                         </p:selectOneMenu>
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_editedAt}" for="editedAt" />
-                        <p:calendar id="editedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.editedAt}" title="#{bundleClinical.EditPersonTitle_editedAt}"  showOn="button"/>
+                        <p:calendar id="editedAt" pattern="dd MMMM yyyy HH:mm" value="#{personController.selected.editedAt}" title="#{bundleClinical.EditPersonTitle_editedAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_createdBy}" for="createdBy" />
                         <p:selectOneMenu id="createdBy" value="#{personController.selected.createdBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -53,7 +53,7 @@
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_name}" for="name" />
                         <p:inputText id="name" value="#{personController.selected.name}" title="#{bundleClinical.EditPersonTitle_name}" />
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.retiredAt}" title="#{bundleClinical.EditPersonTitle_retiredAt}"  showOn="button"/>
+                        <p:calendar id="retiredAt" pattern="dd MMMM yyyy HH:mm" value="#{personController.selected.retiredAt}" title="#{bundleClinical.EditPersonTitle_retiredAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_retiredBy}" for="retiredBy" />
                         <p:selectOneMenu id="retiredBy" value="#{personController.selected.retiredBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
@@ -74,7 +74,7 @@
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_title}" for="title" />
                         <p:inputText id="title" value="#{personController.selected.title}" title="#{bundleClinical.EditPersonTitle_title}" />
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_dateOfBirth}" for="dateOfBirth" />
-                        <p:calendar id="dateOfBirth" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.dateOfBirth}" title="#{bundleClinical.EditPersonTitle_dateOfBirth}"  showOn="button"/>
+                        <p:calendar id="dateOfBirth" pattern="dd MMMM yyyy HH:mm" value="#{personController.selected.dateOfBirth}" title="#{bundleClinical.EditPersonTitle_dateOfBirth}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_phone1}" for="phone1" />
                         <p:inputText id="phone1" value="#{personController.selected.phone1}" title="#{bundleClinical.EditPersonTitle_phone1}" />
                         <p:outputLabel value="#{bundleClinical.EditPersonLabel_nic}" for="nic" />

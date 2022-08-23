@@ -104,6 +104,8 @@ public class DashboardController implements Serializable {
 //    HashMap to generate investigation chart at MOH dashboard
     private JSONObject investigationHashmap;
 
+//  to draw an epi curve on the dashboard
+    private JSONObject posiveCasesJSON;
 
     private CovidData myCovidData;
 
@@ -377,6 +379,11 @@ public class DashboardController implements Serializable {
                 null,
                 itemApplicationController.getPcr()
         );
+    // generate epi curve for moh
+        Map<String, String> positiveSeries = dashboardApplicationController.getSeriesOfCases(now,
+        180, null, this.itemApplicationController.getPcrPositive(), webUserController.getLoggedInstitution());
+
+        this.posiveCasesJSON = new JSONObject(positiveSeries);
     }
 
     public void prepareHospitalDashboard() {
@@ -457,6 +464,14 @@ public class DashboardController implements Serializable {
         	this.yesterdayRatPositiveRate = "0.0%";
         }
 
+        this.samplesAwaitingDispatch = dashboardApplicationController.samplesAwaitingDispatch(null, yesterdayStart, now, webUserController.getLoggedInstitution(), itemApplicationController.getPcr());
+
+//      This will generate a json to draw the epi curve of the hospital dashboard
+        Map<String, String> positiveSeries = dashboardApplicationController.getSeriesOfCases(now,
+         180, null, this.itemApplicationController.getPcrPositive(), webUserController.getLoggedInstitution());
+
+        this.posiveCasesJSON = new JSONObject(positiveSeries);
+        System.out.println(this.posiveCasesJSON);
     }
 
     public void prepareRegionalDashboard() {
@@ -769,6 +784,14 @@ public class DashboardController implements Serializable {
         m.put("pos", itemApplicationController.getPcrPositive());
         samplesPositive = encounterFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
 
+//      This will generate a json to draw the epi curve of the hospital dashboard
+        Calendar c = Calendar.getInstance();
+        Date now = c.getTime();
+        Map<String, String> positiveSeries = dashboardApplicationController.getSeriesOfCases(now,
+        180, null, this.itemApplicationController.getPcrPositive(), webUserController.getLoggedInstitution());
+
+        this.posiveCasesJSON = new JSONObject(positiveSeries);
+        System.out.println(this.posiveCasesJSON);
     }
 
     public String toCalculateNumbers() {
@@ -1209,6 +1232,15 @@ public class DashboardController implements Serializable {
     private CovidData findMyCovidData() {
         CovidData cd  = dashboardApplicationController.findMyCovidData(webUserController.getLoggedUser());
         return cd;
+    }
+
+
+    public JSONObject getPosiveCasesJSON() {
+        return this.posiveCasesJSON;
+    }
+
+    public void setPosiveCasesJSON(JSONObject jsonObject) {
+        this.posiveCasesJSON = jsonObject;
     }
 
 }

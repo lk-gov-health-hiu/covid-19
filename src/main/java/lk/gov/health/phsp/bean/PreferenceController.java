@@ -49,6 +49,7 @@ public class PreferenceController implements Serializable {
     Institution Preferences
      */
     private String labReportHtml;
+    private String qurantineReportHtml;
     private String numberOfRowsPerPage;
     private String labReportBulkHtml;
     private String labApprovalSteps;
@@ -62,6 +63,8 @@ public class PreferenceController implements Serializable {
     private String pcrInvalidComment;
     private String ct1Term;
     private String ct2Term;
+    private String ct3Term;
+    private String ct4Term;
     private String bulkExcelTitle;
     private String bulkExcelSubtitle;
     private String bulkExcelLeftColTop;
@@ -72,6 +75,11 @@ public class PreferenceController implements Serializable {
     private String bulkExcelRightColBottom;
     private String pcrTestTerm;
     private String ratTestTerm;
+    private String customLabName;
+    private String ratPositiveComment;
+    private String ratNegativeComment;
+    private String ratInconclusiveComment;
+    private String ratInvalidComment;
 
     private String startingSerialCount;
     String labNumberGeneration;
@@ -161,8 +169,14 @@ public class PreferenceController implements Serializable {
         this.ratTestTerm = findPreferanceValue("ratTestTerm", webUserController.getLoggedInstitution());
         startingSerialCount = findPreferanceValue("startingSerialCount", webUserController.getLoggedInstitution());
 
+        // get qurantine certificate printout template
+        this.qurantineReportHtml = findPreferanceValue("qurantineReportHtml", webUserController.getLoggedInstitution());
+
         ct1Term = findPreferanceValue("ct1Term", webUserController.getLoggedInstitution(), "");
         ct2Term = findPreferanceValue("ct2Term", webUserController.getLoggedInstitution(), "");
+        ct3Term = findPreferanceValue("ct3Term", webUserController.getLoggedInstitution(), "");
+        ct4Term = findPreferanceValue("ct4Term", webUserController.getLoggedInstitution(), "");
+
         bulkExcelTitle = findPreferanceValue("bulkExcelTitle", webUserController.getLoggedInstitution(), "");
         bulkExcelSubtitle = findPreferanceValue("bulkExcelSubtitle", webUserController.getLoggedInstitution(), "");
         bulkExcelLeftColTop = findPreferanceValue("bulkExcelLeftColTop", webUserController.getLoggedInstitution(), "");
@@ -248,6 +262,9 @@ public class PreferenceController implements Serializable {
 
         savePreference("ct1Term", webUserController.getLoggedInstitution(), ct1Term);
         savePreference("ct2Term", webUserController.getLoggedInstitution(), ct2Term);
+        savePreference("ct3Term", webUserController.getLoggedInstitution(), ct3Term);
+        savePreference("ct4Term", webUserController.getLoggedInstitution(), ct4Term);
+
         savePreference("bulkExcelTitle", webUserController.getLoggedInstitution(), bulkExcelTitle);
         savePreference("bulkExcelSubtitle", webUserController.getLoggedInstitution(), bulkExcelSubtitle);
         savePreference("bulkExcelLeftColTop", webUserController.getLoggedInstitution(), bulkExcelLeftColTop);
@@ -262,7 +279,18 @@ public class PreferenceController implements Serializable {
         savePreference("pcrTestTerm", webUserController.getLoggedInstitution(), this.pcrTestTerm);
         // save rat test term as a preference
         savePreference("ratTestTerm", webUserController.getLoggedInstitution(), this.ratTestTerm);
-
+        // save custom lab name as a preference
+        savePreference("customLabName", webUserController.getLoggedInstitution(), this.customLabName);
+        // save ratpostiveComment as a preference
+        savePreference("ratPositiveComment", webUserController.getLoggedInstitution(), this.ratPositiveComment);
+        // save ratNegativeComment as a preference
+        savePreference("ratNegativeComment", webUserController.getLoggedInstitution(), this.ratNegativeComment);
+        // save ratInvalidComment as a preference
+        savePreference("ratInvalidComment", webUserController.getLoggedInstitution(), this.ratInvalidComment);
+        // save ratInconclusiveComment as a preference
+        savePreference("ratInconclusiveComment", webUserController.getLoggedInstitution(), this.ratInconclusiveComment);
+        // save qurantine report template
+        savePreference("qurantineReportHtml", webUserController.getLoggedInstitution(), this.qurantineReportHtml);
     }
 
     public Preference findPreferance(String name) {
@@ -576,6 +604,28 @@ public class PreferenceController implements Serializable {
         this.ct2Term = ct2Term;
     }
 
+    public String getCt3Term() {
+        if (ct3Term == null) {
+            loadPreferencesInstitution();
+        }
+        return ct3Term;
+    }
+
+    public void setCt3Term(String value) {
+        this.ct3Term = value;
+    }
+
+    public String getCt4Term() {
+        if (ct4Term == null) {
+            loadPreferencesInstitution();
+        }
+        return ct4Term;
+    }
+
+    public void setCt4Term(String value) {
+        this.ct4Term = value;
+    }
+
     public String getBulkExcelTitle() {
         if (bulkExcelTitle == null) {
             loadPreferencesInstitution();
@@ -743,6 +793,54 @@ public class PreferenceController implements Serializable {
 
     public void setPcrInvalidComment(String pcrInvalidComment) {
         this.pcrInvalidComment = pcrInvalidComment;
+    }
+
+    public String getCustomLabName() {
+        return this.customLabName;
+    }
+
+    public void setCustomLabName(String labNameTerm) {
+        this.customLabName = labNameTerm;
+    }
+
+    public String getRatPositiveComment() {
+        return this.ratPositiveComment;
+    }
+
+    public String getRatNegativeComment() {
+        return this.ratNegativeComment;
+    }
+
+    public String getRatInconclusiveComment() {
+        return this.ratInconclusiveComment;
+    }
+
+    public String getRatInvalidComment() {
+        return this.ratInvalidComment;
+    }
+
+    public void setRatPositiveComment(String ratPositiveComment) {
+        this.ratPositiveComment = ratPositiveComment;
+    }
+
+    public void setRatNegativeComment(String ratNegativeComment) {
+        this.ratNegativeComment = ratNegativeComment;
+    }
+
+    public void setRatInconclusiveComment(String ratInconclusiveComment) {
+        this.ratInconclusiveComment = ratInconclusiveComment;
+    }
+
+    public void setRatInvalidComment(String ratInvalidComment) {
+        this.ratInvalidComment = ratInvalidComment;
+    }
+
+    public String getQurantineReportHtml() {
+        return this.qurantineReportHtml;
+    }
+
+    public void setQurantineReportHtml(String html) {
+        this.qurantineReportHtml = html;
     }
 
     // </editor-fold>

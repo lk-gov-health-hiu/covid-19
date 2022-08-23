@@ -25,17 +25,23 @@
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
 
-                            <p:commandButton ajax="false" value="Generate Excel" rendered="false">
-                                <p:dataExporter target="tbl" type="xlsx" fileName="result_list" ></p:dataExporter>
-                            </p:commandButton>
-                            <p:spacer ></p:spacer>
-                            <p:commandButton ajax="false" value="Process" 
-                                             action="#{mohController.toPcrPositiveCasesList}" ></p:commandButton>
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" value="Generate Excel" rendered="false">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="result_list" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Generate PDF" rendered="false">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="result_list" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:spacer ></p:spacer>
+                                <p:commandButton ajax="false" value="Process"
+                                                 action="#{mohController.toPcrPositiveCasesList}" ></p:commandButton>
+
+                            </f:facet>
                         </p:panelGrid>
-                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.tests}" 
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.tests}"
                                      rowIndexVar="n"
-                                     var="c" paginator="true" 
-                                     
+                                     var="c" paginator="true"
+
                                      rowKey="#{c.id}" rows="10">
                             <p:column headerText="Test No" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
@@ -43,11 +49,11 @@
                             <p:column headerText="Lab No" sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.labNumber}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Ordered MOH / Hospital"  sortBy="#{c.institution.name}" 
+                            <p:column headerText="Ordered MOH / Hospital"  sortBy="#{c.institution.name}"
                                       filterBy="#{c.institution.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Lab"  sortBy="#{c.referalInstitution.name}" 
+                            <p:column headerText="Lab"  sortBy="#{c.referalInstitution.name}"
                                       filterBy="#{c.referalInstitution.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.referalInstitution.name}" ></p:outputLabel>
                             </p:column>
@@ -100,7 +106,7 @@
                 </p:panelGrid>
             </ui:define>
         </ui:composition>
-    
+
     </h:body>
-    
+
 </html>

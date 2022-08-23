@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.Privilege;
+import lk.gov.health.phsp.enums.WebUserRoleLevel;
 
 /**
  *
@@ -219,6 +220,27 @@ public class MenuController implements Serializable {
                 return "";
         }
     }
+    
+    public String toAnalysisIndex() {
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Regional:
+                return "/regional/analysis_index";
+            case National:
+                return "/national/analysis_index";
+            case Hospital:
+                return "/hospital/analysis_index";
+            case Lab:
+                return "/lab/analysis_index";
+            case National_Lab:
+                return "/national/analysis_index";
+            case Moh:
+                return "/moh/analysis_index";
+            case Provincial:
+                return "/provincial/analysis_index";
+            default:
+                return "";
+        }
+    }
 
     public String toSearch() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
@@ -251,6 +273,7 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
@@ -285,6 +308,7 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
@@ -375,6 +399,40 @@ public class MenuController implements Serializable {
                 return "/moh/admin/institution";
             case Provincial:
                 return "/provincial/admin/institution";
+            default:
+                return "";
+        }
+    }
+    
+    public String toChangeInstitution() {
+        boolean privileged = false;
+        for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
+            if (up.getPrivilege() == Privilege.Institution_Administration) {
+                privileged = true;
+            }
+            if (up.getPrivilege() == Privilege.System_Administration) {
+                privileged = true;
+            }
+        }
+        if (!privileged) {
+            JsfUtil.addErrorMessage("You are NOT autherized");
+            return "";
+        }
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Regional:
+                return "/regional/admin/change_institution";
+            case National:
+                return "/national/admin/change_institution";
+            case Hospital:
+                return "/hospital/admin/change_institution";
+            case Lab:
+                return "/lab/admin/change_institution";
+            case National_Lab:
+                return "/national/admin/change_institution";
+            case Moh:
+                return "/moh/admin/change_institution";
+            case Provincial:
+                return "/provincial/admin/change_institution";
             default:
                 return "";
         }

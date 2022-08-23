@@ -79,6 +79,8 @@ public class ItemApplicationController {
     private Item pcrNegative;
     private Item pcrInconclusive;
     private Item pcrInvalid;
+    
+    Item dailyTotalRatCount;
 
     /**
      * Creates a new instance of ItemApplicationController
@@ -533,6 +535,15 @@ public class ItemApplicationController {
         }
         return rat;
     }
+
+    public Item getDailyTotalRatCount() {
+        if(dailyTotalRatCount==null){
+            dailyTotalRatCount = findItemByCode("daily_total_rat_count");
+        }
+        return dailyTotalRatCount;
+    }
+    
+    
 
     public void setRat(Item rat) {
         this.rat = rat;

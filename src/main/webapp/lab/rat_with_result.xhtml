@@ -142,7 +142,7 @@
                                         <h:message class="text-danger small" for="nic"></h:message>
                                         <h:panelGroup id="nicExists">
                                             <h:commandLink rendered="#{labController.nicExistsForRat}" immediate="true"
-                                                           action="#{labController.toAddNewRatWithExistingNic()}"
+                                                           action="#{labController.toAddNewRatWithResultWithExistingNic()}"
                                                            value="NIC Exists. Click here to Load Patient" class="btn btn-sm btn-secondary">
                                             </h:commandLink>
                                         </h:panelGroup>
@@ -288,6 +288,8 @@
                                         <h:commandButton class="btn btn-success mx-2 fw-bold"
                                                          action="#{labController.saveRatAndToRatView()}" value="Save and View RAT Details">
                                         </h:commandButton>
+                                        <h:commandButton class="btn btn-info mx-2 fw-bold" value="Save and Print Investigation" 
+                                            action="#{labController.saveRatAndPrintResult()}"></h:commandButton>
                                     </div>
                                 </div>
                             </div>

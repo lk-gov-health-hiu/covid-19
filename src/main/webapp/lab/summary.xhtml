@@ -50,11 +50,6 @@
                         </div>
                     </div>
 
-
-
-
-
-
                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
                         <p:dataTable reflow="true" id="tbl" value="#{labController.labSummaries}" class="table"
                                      rowIndexVar="n"
@@ -66,24 +61,27 @@
                                       sortBy="#{c.institution.name}" filterBy="#{c.institution.name}" filterMatchMode="contains">
                                 <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
                             </p:column>
-                            <p:column headerText="To Dispatch"   width="170">
+                            <p:column headerText="To Dispatch" width="170">
                                 <h:commandLink value="#{c.toDispatch}" action="#{labController.toDispatchFromActionSummary()}" >
                                     <f:setPropertyActionListener value="#{c}" target="#{labController.labSummary}" ></f:setPropertyActionListener>
                                 </h:commandLink>
                             </p:column>
-                            <p:column headerText="To Receive"   width="170">
+                            <p:column headerText="To Receive" width="170">
                                 <h:commandLink value="#{c.toReceive}"  action="#{labController.toReceiveFromActionSummary()}" >
                                     <f:setPropertyActionListener value="#{c}" target="#{labController.labSummary}" ></f:setPropertyActionListener>
                                 </h:commandLink>
                             </p:column>
-                            <p:column headerText="To Enter Results"   width="170">
+                            <p:column headerText="To Enter Results" width="170">
                                 <h:commandLink value="#{c.toEnterData}"  action="#{labController.toEnterFromActionSummary()}" ><f:setPropertyActionListener value="#{c}" target="#{labController.labSummary}" ></f:setPropertyActionListener></h:commandLink>
                             </p:column>
-                            <p:column headerText="To Review Results"   width="170" >
+                            <p:column headerText="To Review Results" width="170" >
                                 <h:commandLink value="#{c.toReview}"  action="#{labController.toReviewFromActionSummary()}" ><f:setPropertyActionListener value="#{c}" target="#{labController.labSummary}" ></f:setPropertyActionListener></h:commandLink>
                             </p:column>
-                            <p:column headerText="To Approve Results"   width="170">
+                            <p:column headerText="To Approve Results" width="170">
                                 <h:commandLink value="#{c.toConfirm}"  action="#{labController.toConfirmFromActionSummary()}" ><f:setPropertyActionListener value="#{c}" target="#{labController.labSummary}" ></f:setPropertyActionListener></h:commandLink>
+                            </p:column>
+                            <p:column headerText="Confirmed Results">
+                                <h:outputLabel value="#{c.confirmed}"></h:outputLabel>
                             </p:column>
                         </p:dataTable>
                     </h:panelGrid>
