@@ -1884,12 +1884,6 @@ public class LabController implements Serializable {
             JsfUtil.addErrorMessage("No Institution");
             return;
         }
-        if (deleting.getReceivedAtLab() != null && deleting.getReferalInstitution() != null) {
-            if (deleting.getReceivedAtLab() != null && deleting.getReferalInstitution() != webUserController.getLoggedInstitution()) {
-                JsfUtil.addErrorMessage("Already receievd by the Lab. Can't delete.");
-                return;
-            }
-        }
         deleting.setRetired(true);
         deleting.setRetiredAt(new Date());
         deleting.setRetiredBy(webUserController.getLoggedUser());
@@ -2132,7 +2126,7 @@ public class LabController implements Serializable {
         }
         if (test.getPcrTestType().equals(itemApplicationController.getRat())) {
             rat = test;
-            return toRatOrderEdit();
+            return toRatEdit();
         } else if (test.getPcrTestType().equals(itemApplicationController.getPcr())) {
             pcr = test;
             return toPcrEdit();
@@ -2188,7 +2182,7 @@ public class LabController implements Serializable {
             JsfUtil.addErrorMessage("Not a RAT");
             return "";
         }
-        return "/lab/rat";
+        return "/lab/rat_with_result";
     }
 
     public String toRatOrderEdit() {

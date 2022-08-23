@@ -104,24 +104,6 @@
                                             <f:ajax event="blur" execute="moh"></f:ajax>
                                         </p:autoComplete>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="gn" class="form-label fw-bold">GN Division</label>
-                                        <p:commandLink id="lnkLastGn" action="#{labController.retrieveLastGnRat()}" process="lnkLastGn"
-                                                       update="gn">
-                                            <i class="bi bi-arrow-clockwise"></i>
-                                        </p:commandLink>
-                                        <p:autoComplete id="gn" value="#{labController.rat.client.person.gnArea}"
-                                                        completeMethod="#{labController.completeGnAreasForRat}" var="gn" itemLabel="#{gn.name}"
-                                                        itemValue="#{gn}" maxResults="20" forceSelection="true" minQueryLength="2">
-                                        </p:autoComplete>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="phiArea" class="form-label fw-bold">PHI Area</label>
-                                        <p:autoComplete id="phiArea" value="#{labController.rat.client.person.phiArea}"
-                                                        completeMethod="#{labController.completePhiAreasForRat}" var="gn" itemLabel="#{gn.name}"
-                                                        itemValue="#{gn}" maxResults="20" forceSelection="true" minQueryLength="2">
-                                        </p:autoComplete>
-                                    </div>
                                 </div>
                                 <div class="row my-4">
                                     <h5 class="text-muted fw-bold">Personal Details</h5>
@@ -252,27 +234,6 @@
                                         <label for="coment" class="form-label fw-bold">Comment</label>
                                         <h:inputText class="form-control" id="coment" value="#{labController.rat.client.comments}"
                                                      title="coment">
-                                        </h:inputText>
-                                    </div>
-                                </div>
-                                <div class="my-4 py-2 bg-light row">
-                                    <h5 class="text-muted fw-bold">Workplace Details</h5>
-                                    <div class="col-md-4">
-                                        <label for="workplace" class="form-label fw-bold">Workplace Name</label>
-                                        <h:inputText class="form-control" value="#{labController.rat.client.person.workPlace}"
-                                                     id="workplace">
-                                        </h:inputText>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="workplaceContact" class="form-label fw-bold">Workplace Contact Person's Name</label>
-                                        <h:inputText class="form-control" value="#{labController.rat.client.person.workplaceContact}"
-                                                     id="workplaceContact">
-                                        </h:inputText>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="workplaceContactNumber" class="form-label fw-bold">Workplace Contact Number</label>
-                                        <h:inputText class="form-control"
-                                                     value="#{labController.rat.client.person.workplaceContactDetails}" id="workplaceContactNumber">
                                         </h:inputText>
                                     </div>
                                 </div>

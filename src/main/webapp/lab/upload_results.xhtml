@@ -28,20 +28,25 @@
                                 </f:selectItems>
                             </p:selectOneMenu>
 
-                            <h:outputLabel value="Ordered From" ></h:outputLabel>
-                            <p:autoComplete value="#{clientController.institution}" completeMethod="#{institutionController.completeInstitutions}"
-                                            var="ins" itemLabel="#{ins.name}" itemValue="#{ins}" >
-                            </p:autoComplete>
+                           
 
 
                             <h:outputLabel value="Lab" ></h:outputLabel>
-                            <p:selectOneMenu value="#{clientController.referingInstitution}" required="true"
+                            <p:selectOneMenu value="#{clientController.referingInstitution}" 
+                                             required="true"
                                              requiredMessage="Need to select a lab">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}" var="l"
                                                itemLabel="#{l.name}" itemValue="#{l}" >
                                 </f:selectItems>
                             </p:selectOneMenu>
+                            
+                             <h:outputLabel value="Ordered From" ></h:outputLabel>
+                            <p:autoComplete value="#{clientController.institution}" 
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="ins" itemLabel="#{ins.name}" itemValue="#{ins}" 
+                                            placeholder="Leave Blank for Same Institute">
+                            </p:autoComplete>
 
                             <p:outputLabel value="Ordering Category" ></p:outputLabel>
                             <p:selectOneMenu value="#{clientController.orderingCategory}" required="true" >
@@ -170,12 +175,14 @@
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="CT3 Column" ></p:outputLabel>
                             <p:selectOneMenu value="#{clientController.ct3Col}" >
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="CT4 Column" ></p:outputLabel>
                             <p:selectOneMenu value="#{clientController.ct4Col}" >

@@ -1828,9 +1828,9 @@ public class ClientController implements Serializable {
         });
 
         try {
-            for (Encounter e: selectedToPrint) {
+            for (Encounter e : selectedToPrint) {
                 System.out.println(e.getClient().getPerson().getEmail());
-                if(e.getClient().getPerson().getEmail() != null) {
+                if (e.getClient().getPerson().getEmail() != null) {
                     String to = e.getClient().getPerson().getEmail();
                     MimeMessage message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(from));
@@ -2685,7 +2685,7 @@ public class ClientController implements Serializable {
             html = html.replace("{pcr_comment_string}", "");
         }
         QrCode qr = QrCode.encodeText("https://nchis.health.gov.lk/digicert?id=" + e.getEncounterIdHash(), QrCode.Ecc.MEDIUM);
-        String qr_string =  "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
+        String qr_string = "<div style='margin-top: 36px; margin-bottom:36px;'><span style='height: 100px; width: 100px; display:block;'>" + qr.toSvgString(4) + "<span></div>";
         if (html.contains("{qr}") == true) {
             html = html.replace("{qr}", qr_string);
         } else {
@@ -3564,6 +3564,10 @@ public class ClientController implements Serializable {
             return "";
         }
 
+        if (institution == null) {
+            institution = referingInstitution;
+        }
+
         district = institution.getDistrict();
 
         String strTestNo = null;
@@ -3623,7 +3627,6 @@ public class ClientController implements Serializable {
             XSSFSheet mySheet = myWorkBook.getSheetAt(0);
             Iterator<Row> rowIterator = mySheet.iterator();
             Long count = 0l;
-            startRow--;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() < startRow) {
@@ -3822,7 +3825,6 @@ public class ClientController implements Serializable {
                 if (ptCt1 != null && ptCt1 < 1) {
                     ptCt1 = null;
                 }
-
 
                 if (ptCt2 != null && ptCt2 < 1) {
                     ptCt2 = null;
@@ -4193,6 +4195,24 @@ public class ClientController implements Serializable {
         clientImports = new ArrayList<>();
         clientImportsSelected = new ArrayList<>();
         return toUploadOrders();
+    }
+
+    public String clearUploadedResultData() {
+        clientImports = new ArrayList<>();
+        clientImportsSelected = new ArrayList<>();
+        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
+            case Hospital:
+                return "/hospital/upload_results";
+            case Lab:
+                return "/lab/upload_results";
+            case Regional:
+            case National:
+            case National_Lab:
+            case Moh:
+            case Provincial:
+            default:
+                return "";
+        }
     }
 
     private void toAddNewPcrWithNewClientOld(ClientImport ci) {
