@@ -10,12 +10,12 @@
 >
   <h:body>
     <ui:composition template="/template1.xhtml">
-      <ui:define name="title">New PCR Request With Result</ui:define>
+      <ui:define name="title">PCR Result</ui:define>
       <ui:define name="content">
         <h:form class="form">
           <p:focus for="result"></p:focus>
           <div class="row bg-white py-4">
-            <h4 class="text-center fw-bold">NEW PCR REQUEST WITH RESULT</h4>
+            <h4 class="text-center fw-bold">PCR RESULT</h4>
             <div class="my-2 px-4">
               <div class="row mb-4">
                 <h5 class="text-muted fw-bold">Investigation Details</h5>
@@ -172,44 +172,6 @@
                   >
                     <f:ajax event="itemSelect" execute="mohArea"></f:ajax>
                     <f:ajax event="blur" execute="mohArea"></f:ajax>
-                  </p:autoComplete>
-                </div>
-                <div class="col-md-3">
-                  <label for="gnarea" class="form-label fw-bold"
-                    >GN Division</label
-                  >
-                  <p:commandLink
-                    id="lnkLastGn"
-                    action="#{labController.retrieveLastGnPcr()}"
-                    update="gnarea"
-                  >
-                    <i class="bi bi-arrow-clockwise"></i>
-                  </p:commandLink>
-                  <p:autoComplete
-                    id="gnarea"
-                    value="#{labController.pcr.client.person.gnArea}"
-                    completeMethod="#{labController.completeGnAreasForPcr}"
-                    var="gnAreas"
-                    itemLabel="#{gnAreas.name}"
-                    itemValue="#{gnAreas}"
-                    maxResults="20"
-                    forceSelection="true"
-                    minQueryLength="2"
-                  ></p:autoComplete>
-                </div>
-                <div class="col-md-3">
-                  <label for="phi" class="form-label fw-bold">PHI Area</label>
-                  <p:autoComplete
-                    id="phi"
-                    value="#{labController.pcr.client.person.phiArea}"
-                    completeMethod="#{labController.completePhiAreasForPcr}"
-                    var="gn"
-                    itemLabel="#{gn.name}"
-                    itemValue="#{gn}"
-                    maxResults="20"
-                    forceSelection="true"
-                    minQueryLength="2"
-                  >
                   </p:autoComplete>
                 </div>
               </div>
@@ -478,40 +440,6 @@
                   ></h:inputText>
                 </div>
               </div>
-              <div class="mb-4 row">
-                <h5 class="text-muted fw-bold">Workplace Details</h5>
-                <div class="col-md-4 bg-light py-2">
-                  <label for="workplace" class="form-label fw-bold"
-                    >Workplace Name</label
-                  >
-                  <h:inputText
-                    id="workplace"
-                    class="form-control"
-                    value="#{labController.pcr.client.person.workPlace}"
-                  >
-                  </h:inputText>
-                </div>
-                <div class="col md-4 bg-light py-2">
-                  <label for="workplaceContactName" class="form-label fw-bold"
-                    >Workplace Contact Person's Name</label
-                  >
-                  <h:inputText
-                    class="form-control"
-                    id="workplaceContactName"
-                    value="#{labController.pcr.client.person.workplaceContact}"
-                  ></h:inputText>
-                </div>
-                <div class="col md-4 bg-light py-2">
-                  <label for="workplaceContact" class="form-label fw-bold"
-                    >Workplace Contact Number</label
-                  >
-                  <h:inputText
-                    class="form-control"
-                    id="workplaceContact"
-                    value="#{labController.pcr.client.person.workplaceContactDetails}"
-                  ></h:inputText>
-                </div>
-              </div>
               <div class="row">
                 <p:messages class="my-2"></p:messages>
               </div>
@@ -520,7 +448,7 @@
                   <h:commandButton
                     class="btn btn-success mx-2 fw-bold"
                     action="#{labController.toSaveAndNewPcrWithResult()}"
-                    value="Save and NEW PCR With Result"
+                    value="Save and NEW PCR Result"
                   >
                   </h:commandButton>
                   <h:commandButton
@@ -529,12 +457,14 @@
                     value="Save and View PCR"
                   ></h:commandButton>
                   <h:commandButton
+                      rendered="false"
                     class="btn btn-warning mx-2 fw-bold"
                     action="#{labController.savePcrAndToTestList()}"
                     value="Save and To Test List"
                   >
                   </h:commandButton>
                   <h:commandButton
+                      rendered="false"
                     class="btn btn-info mx-2 fw-bold"
                     value="Save and Print Result"
                     action="#{labController.savePcrAndPrintResult()}"

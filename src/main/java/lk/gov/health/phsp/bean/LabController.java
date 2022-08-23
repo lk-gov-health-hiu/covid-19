@@ -2214,6 +2214,18 @@ public class LabController implements Serializable {
         }
         return "/lab/pcr_with_result";
     }
+    
+    public String toPcrEditOrder() {
+        if (pcr == null) {
+            JsfUtil.addErrorMessage("No PCR");
+            return "";
+        }
+        if (!pcr.getPcrTestType().equals(itemApplicationController.getPcr())) {
+            JsfUtil.addErrorMessage("Not a PCR");
+            return "";
+        }
+        return "/lab/pcr_order";
+    }
 
     public List<Area> completeDistricts(String qry) {
         return areaController.completeDistricts(qry);
@@ -2295,7 +2307,7 @@ public class LabController implements Serializable {
         pcr.setEncounterQuarter(CommonController.getQuarter(date));
         pcr.setEncounterYear(CommonController.getYear(date));
 
-        if (sessionController.getLastLab() == null) {
+        if (sessionController.getLastLab() != null) {
             pcr.setReferalInstitution(sessionController.getLastLab());
         } else {
             pcr.setReferalInstitution(webUserController.getLoggedInstitution());

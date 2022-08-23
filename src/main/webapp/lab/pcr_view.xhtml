@@ -1,197 +1,195 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-  xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
-  xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-<body>
+    <body>
 
-  <ui:composition template="/template1.xhtml">
-    <ui:define name="title">
-      VIEW PCR DETAILS
-    </ui:define>
-    <ui:define name="content">
-      <table class="table table-striped">
-        <tbody>
-          <tr>
-            <td class="fw-bold">Latest PCR Request</td>
-          </tr>
-          <tr>
-            <td class="fw-bold">
-              Result
-            </td>
-            <td>
-              #{labController.pcr.pcrResult.name}
-            </td>
-            <td class="fw-bold">
-              Ordering Category
-            </td>
-            <td>
-              #{labController.pcr.pcrOrderingCategory.name}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">
-              Sampled Date | Time
-            </td>
-            <td>
-              <p:outputLabel value="#{labController.pcr.sampledAt}">
-                <f:convertDateTime pattern="dd MMMM yyyy hh:mm"></f:convertDateTime>
-              </p:outputLabel>
-            </td>
-            <td class="fw-bold">
-              Result Issued Date | Time
-            </td>
-            <td>
-              <p:outputLabel value="#{labController.pcr.resultConfirmedAt}">
-                <f:convertDateTime pattern="dd MMMM yyyy hh:mm"></f:convertDateTime>
-              </p:outputLabel>
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">Name</td>
-            <td>
-              #{labController.pcr.client.person.name}
-            </td>
-            <td class="fw-bold">
-              Citizenship
-            </td>
-            <td>
-              #{labController.pcr.client.person.citizenship.name}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">PHN Number</td>
-            <td>
-              #{labController.pcr.client.phn}
-            </td>
-            <td class="fw-bold">
-              Symptomatic Status
-            </td>
-            <td>
-              #{labController.pcr.symptomatic?'Yes':''}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">NIC | Passport Number</td>
-            <td>
-              #{labController.pcr.client.person.nic}
-            </td>
-            <td class="fw-bold">Gender</td>
-            <td>
-              #{labController.pcr.client.person.sex}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">Age</td>
-            <td>
-              #{labController.pcr.client.person.age}
-            </td>
-            <td class="fw-bold">Current Residential Address</td>
-            <td>
-              #{labController.pcr.client.person.address}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">District</td>
-            <td>
-              #{labController.pcr.client.person.district}
-            </td>
-            <td class="fw-bold">MOH Area</td>
-            <td>
-              #{labController.pcr.client.person.mohArea}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">
-              GN Division
-            </td>
-            <td>
-              #{labController.pcr.client.person.gnArea.name}
-            </td>
-            <td class="fw-bold">
-              Contact Number
-            </td>
-            <td>
-              #{labController.pcr.client.person.phone1}
-            </td>
-          </tr>
-          <tr>
-            <td class="fw-bold">
-              PHI Area
-            </td>
-            <td>
-              #{labController.pcr.client.person.phiArea.name}
-            </td>
-            <td class="fw-bold">
-              Unit | Ward
-            </td>
-            <td>
-              #{labController.pcr.unitWard}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="row">
-        <h:form>
-          <h:commandButton value="Edit Details" action="#{mohController.toPcrEdit()}" ajax="false"
-            class="btn btn-primary fw-bold">
-          </h:commandButton>
-          <h:commandButton value="Add New PCR Request" ajax="false" class="btn btn-primary fw-bold"
-            action="#{mohController.toAddNewPcrWithNewClient()}">
-          </h:commandButton>
-        </h:form>
-      </div>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                VIEW PCR DETAILS
+            </ui:define>
+            <ui:define name="content">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold">PCR Details</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">
+                                Result
+                            </td>
+                            <td>
+                                #{labController.pcr.pcrResult.name}
+                            </td>
+                            <td class="fw-bold">
+                                Ordering Category
+                            </td>
+                            <td>
+                                #{labController.pcr.pcrOrderingCategory.name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">
+                                Sampled Date | Time
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{labController.pcr.sampledAt}">
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm"></f:convertDateTime>
+                                </p:outputLabel>
+                            </td>
+                            <td class="fw-bold">
+                                Result Issued Date | Time
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{labController.pcr.resultConfirmedAt}">
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm"></f:convertDateTime>
+                                </p:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Name</td>
+                            <td>
+                                #{labController.pcr.client.person.name}
+                            </td>
+                            <td class="fw-bold">
+                                Citizenship
+                            </td>
+                            <td>
+                                #{labController.pcr.client.person.citizenship.name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">PHN Number</td>
+                            <td>
+                                #{labController.pcr.client.phn}
+                            </td>
+                            <td class="fw-bold">
+                                Symptomatic Status
+                            </td>
+                            <td>
+                                #{labController.pcr.symptomatic?'Yes':''}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">NIC | Passport Number</td>
+                            <td>
+                                #{labController.pcr.client.person.nic}
+                            </td>
+                            <td class="fw-bold">Gender</td>
+                            <td>
+                                #{labController.pcr.client.person.sex}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">Age</td>
+                            <td>
+                                #{labController.pcr.client.person.age}
+                            </td>
+                            <td class="fw-bold">Current Residential Address</td>
+                            <td>
+                                #{labController.pcr.client.person.address}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">District</td>
+                            <td>
+                                #{labController.pcr.client.person.district}
+                            </td>
+                            <td class="fw-bold">MOH Area</td>
+                            <td>
+                                #{labController.pcr.client.person.mohArea}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold">
+                                Contact Number
+                            </td>
+                            <td>
+                                #{labController.pcr.client.person.phone1}
+                            </td>
+                            <td class="fw-bold">
+                                Unit | Ward
+                            </td>
+                            <td>
+                                #{labController.pcr.unitWard}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <h:form>
+                        <h:commandButton value="Edit Request" action="#{labController.toPcrEditOrder()}" 
+                                         class="btn btn-warning fw-bold mx-4">
+                        </h:commandButton>
+                        <h:commandButton value="Edit Results" action="#{labController.toPcrEdit()}" 
+                                         class="btn btn-warning fw-bold  mx-4">
+                        </h:commandButton>
+                        <h:commandButton value="Add New PCR Request" 
+                                         class="btn btn-success fw-bold  mx-4"
+                                         action="#{labController.toAddNewPcrWithNewClient()}">
+                        </h:commandButton>
+                        <h:commandButton value="Add New PCR Result" 
+                                         class="btn btn-success fw-bold  mx-4"
+                                         action="#{labController.toAddNewPcrResultWithNewClient()}">
+                        </h:commandButton>
+                    </h:form>
+                </div>
 
-      <div class="row">
-        <h:form>
-          <div>
-            <div class="my-2">
-              <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
-                value="Columns" />
-              <p:columnToggler datasource="tbl" trigger="toggler" />
-            </div>
+                <div class="row">
+                    <h:form>
+                        <div>
+                            <div class="my-2">
+                                <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                                                 value="Columns" />
+                                <p:columnToggler datasource="tbl" trigger="toggler" />
+                            </div>
 
-            <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand"
-              value="#{sessionController.pcrList}" id="tbl" var="c" paginator="true" rowKey="#{c.id}" rows="10">
-              <f:facet name="header">
-                Latest Entries
-              </f:facet>
-              <p:column headerText="Test No" sortBy="#{c.encounterNumber}">
-                <p:outputLabel value="#{c.encounterNumber}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="Name" sortBy="#{c.client.person.name}">
-                <p:outputLabel value="#{c.client.person.name}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="Age" sortBy="#{c.client.person.ageInDays}">
-                <p:outputLabel value="#{c.client.person.age}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="Sex" sortBy="#{c.client.person.sex.name}">
-                <p:outputLabel value="#{c.client.person.sex.name}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="NIC" sortBy="#{c.client.person.nic}">
-                <p:outputLabel value="#{c.client.person.nic}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="Address">
-                <p:outputLabel value="#{c.client.person.address}"></p:outputLabel>
-              </p:column>
-              <p:column headerText="Actions">
-                <h:commandButton value="Edit" ajax="false" action="#{mohController.toPcrEdit()}" class="btn btn-sm btn-primary">
-                  <f:setPropertyActionListener value="#{c}" target="#{mohController.pcr}">
-                  </f:setPropertyActionListener>
-                </h:commandButton>
-                <h:commandButton value="Delete" ajax="false" action="#{mohController.toDeleteTestFromLastPcrList()}" class="btn btn-sm btn-danger">
-                  <f:setPropertyActionListener value="#{c}" target="#{mohController.deleting}">
-                  </f:setPropertyActionListener>
-                </h:commandButton>
-              </p:column>
-            </p:dataTable>
-          </div>
-        </h:form>
-      </div>
-    </ui:define>
-  </ui:composition>
-</body>
+                            <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand"
+                                         value="#{sessionController.pcrList}" id="tbl" var="c" paginator="true" rowKey="#{c.id}" rows="10">
+                                <f:facet name="header">
+                                    Latest Entries
+                                </f:facet>
+                                <p:column headerText="Test No" sortBy="#{c.encounterNumber}">
+                                    <p:outputLabel value="#{c.encounterNumber}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Name" sortBy="#{c.client.person.name}">
+                                    <p:outputLabel value="#{c.client.person.name}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Age" sortBy="#{c.client.person.ageInDays}">
+                                    <p:outputLabel value="#{c.client.person.age}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Sex" sortBy="#{c.client.person.sex.name}">
+                                    <p:outputLabel value="#{c.client.person.sex.name}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="NIC" sortBy="#{c.client.person.nic}">
+                                    <p:outputLabel value="#{c.client.person.nic}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Address">
+                                    <p:outputLabel value="#{c.client.person.address}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Actions">
+                                    <h:commandButton value="Edit Request"  action="#{labController.toPcrEditOrder()}" class="btn btn-sm btn-primary">
+                                        <f:setPropertyActionListener value="#{c}" target="#{labController.pcr}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:commandButton value="Edit Result"  action="#{labController.toPcrEdit()}" class="btn btn-sm btn-primary">
+                                        <f:setPropertyActionListener value="#{c}" target="#{labController.pcr}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:commandButton value="Delete"  action="#{labController.toDeleteTestFromLastPcrList()}" class="btn btn-sm btn-danger">
+                                        <f:setPropertyActionListener value="#{c}" target="#{labController.deleting}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
 
 </html>
